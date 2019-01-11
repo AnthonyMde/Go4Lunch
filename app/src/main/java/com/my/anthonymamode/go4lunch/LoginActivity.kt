@@ -12,30 +12,38 @@ import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {
     private val RC_SIGN_IN = 123
+    private val googleProvider = arrayListOf(
+        AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()
+    )
+    private val facebookProvider = arrayListOf(
+        AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
         loginGoogleButton.setOnClickListener {
-            val providers = arrayListOf(
-                AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()
-            )
-
-            startActivityForResult(
-                AuthUI.getInstance()
-                    .createSignInIntentBuilder()
-                    .setAvailableProviders(providers)
-                    .build(),
-                RC_SIGN_IN
-            )
+            startSignin(googleProvider)
+        }
+        loginFacebookButton.setOnClickListener {
+            startSignin(facebookProvider)
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
         redirectAfterSignin(requestCode, resultCode, data)
+    }
+
+    private fun startSignin(provider : ArrayList<AuthUI.IdpConfig>) {
+        startActivityForResult(
+            AuthUI.getInstance()
+                .createSignInIntentBuilder()
+                .setAvailableProviders(provider)
+                .build(),
+            RC_SIGN_IN
+        )
     }
 
     private fun redirectAfterSignin(requestCode: Int, resultCode: Int, data: Intent?) {

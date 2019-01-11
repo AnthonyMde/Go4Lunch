@@ -1,12 +1,21 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Activity -->
     <string name="app_name">Go4Lunch</string>
+
+    <!-- HomeActivity -->
     <string name="title_mapview">Map View</string>
     <string name="title_listview">List View</string>
     <string name="title_workmates">Workmates</string>
+
+    <!-- LoginActivity -->
     <string name="login_subtitle">Find a nice restaurant and invite co-workers for lunch!</string>
     <string name="login_facebook_button">Sign in with Facebook</string>
     <string name="login_google_button">Sign in with Google</string>
     <string name="login_canceled">Connection failed</string>
     <string name="login_no_network">No internet connection</string>
     <string name="login_unknown_error">An unknown error has occurred</string>
+
+    <!-- Facebook -->
+    <string name="facebook_app_id" translatable="false">281477675880579</string>
+    <string name="fb_login_protocol_scheme" translatable="false" tools:ignore="UnusedResources">fb281477675880579</string>
 </resources>
