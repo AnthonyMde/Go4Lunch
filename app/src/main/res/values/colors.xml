@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#fd582f</color>
+    <color name="colorPrimaryDark">#c21e12</color>
+    <color name="colorAccent">#6fefb0</color>
+
+    <color name="facebook_button">#3b5998</color>
+    <color name="google_button">#dd4e42</color>
+</resources>
