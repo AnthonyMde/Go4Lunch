@@ -5,9 +5,12 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.Snackbar
+import android.util.Log
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.ErrorCodes
 import com.firebase.ui.auth.IdpResponse
+import com.firebase.ui.auth.data.model.FirebaseUiException
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {
@@ -22,6 +25,9 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        if (FirebaseAuth.getInstance().currentUser != null)
+            launchHomeActivity()
 
         loginGoogleButton.setOnClickListener {
             startSignin(googleProvider)
@@ -64,10 +70,12 @@ class LoginActivity : AppCompatActivity() {
 
     private fun launchHomeActivity() {
         intent = Intent(this, HomeActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_TASK_ON_HOME
         startActivity(intent)
+        this.finish()
     }
 
     private fun showCanceledSnackBar(errorMessage: Int) {
-        Snackbar.make(loginActivityLayout, errorMessage, Snackbar.LENGTH_SHORT)
+        Snackbar.make(loginActivityLayout, errorMessage, Snackbar.LENGTH_SHORT).show()
     }
 }
