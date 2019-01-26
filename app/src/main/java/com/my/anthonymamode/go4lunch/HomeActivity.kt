@@ -2,7 +2,9 @@ package com.my.anthonymamode.go4lunch
 
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
+import android.support.v4.view.GravityCompat
 import android.support.v7.app.AppCompatActivity
+import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_home.*
 
 class HomeActivity : AppCompatActivity() {
@@ -31,6 +33,16 @@ class HomeActivity : AppCompatActivity() {
             }
         }
         false
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return when (item?.itemId) {
+            android.R.id.home -> {
+                homeDrawerLayout.openDrawer(GravityCompat.START)
+                true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
     }
 
     private fun configureDrawerMenu() {
