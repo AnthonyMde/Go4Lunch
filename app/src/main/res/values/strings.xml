@@ -19,4 +19,6 @@
     <string name="facebook_app_id" translatable="false">281477675880579</string>
     <string name="fb_login_protocol_scheme" translatable="false" tools:ignore="UnusedResources">fb281477675880579</string>
     <string name="drawer_logout">LOGOUT</string>
+    <string name="drawer_settings">SETTINGS</string>
+    <string name="drawer_my_food">MY FOOD</string>
 </resources>

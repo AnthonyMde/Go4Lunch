@@ -5,6 +5,8 @@ import android.support.design.widget.BottomNavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import android.widget.Toast
+import com.my.anthonymamode.go4lunch.R.id.*
 import kotlinx.android.synthetic.main.activity_home.*
 
 class HomeActivity : AppCompatActivity() {
@@ -49,6 +51,16 @@ class HomeActivity : AppCompatActivity() {
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             setHomeAsUpIndicator(R.drawable.ic_menu_drawer_white_24dp)
+        }
+        homeNavigationView.setNavigationItemSelectedListener {
+            when (it.itemId) {
+                drawer_logout -> {
+                    Toast.makeText(this, "Logout", Toast.LENGTH_SHORT).show()
+                }
+                drawer_settings -> Toast.makeText(this, "Non implémenté", Toast.LENGTH_SHORT).show()
+                drawer_my_food -> Toast.makeText(this, "Non implémenté", Toast.LENGTH_SHORT).show() 
+            }
+            true
         }
     }
 
