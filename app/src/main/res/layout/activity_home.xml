@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.DrawerLayout
-        android:id="@+id/homeDrawerLayout"
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/homeDrawerLayout"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:fitsSystemWindows="true"
 >
 
     <android.support.constraint.ConstraintLayout
-            android:id="@+id/homeConstraintContainer"
+            android:id="@+id/homeConstraintLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -17,14 +17,23 @@
                 android:id="@+id/homeToolbar"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
+                app:titleTextColor="@android:color/white"
                 app:title="I'm Hungry"
                 android:theme="@style/HomeToolbarTheme"
         />
+
+        <include layout="@layout/base_loader"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 app:layout_constraintTop_toTopOf="parent"
+                 app:layout_constraintBottom_toBottomOf="parent"
+                 app:layout_constraintStart_toStartOf="parent"
+                 app:layout_constraintEnd_toEndOf="parent"
+        />
         <FrameLayout
-                android:id="@+id/homeFragmentContainer"
+                android:id="@+id/contentView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:background="@android:color/white"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/homeToolbar"
                 app:layout_constraintBottom_toTopOf="@id/homeBottomNavBar"/>

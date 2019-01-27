@@ -12,7 +12,7 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true">
         <activity
-                android:name="com.my.anthonymamode.go4lunch.LoginActivity"
+                android:name=".LoginActivity"
                 android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -20,13 +20,17 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity
+                android:name=".HomeActivity"
+                android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
-        <activity android:name="com.my.anthonymamode.go4lunch.HomeActivity"
-                  android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <meta-data
+                android:name="com.facebook.sdk.ApplicationId"
+                android:value="@string/facebook_app_id"
+                tools:replace="android:value"/>
 
-        <meta-data tools:replace="android:value"
-                   android:name="com.facebook.sdk.ApplicationId"
-                   android:value="@string/facebook_app_id"/>
+        <activity android:name=".BaseActivity">
+        </activity>
     </application>
 
 </manifest>

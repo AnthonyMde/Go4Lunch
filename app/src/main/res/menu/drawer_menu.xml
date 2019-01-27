@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/drawer_logout"
-          android:title="@string/drawer_logout"
-          android:icon="@drawable/ic_logout_white_24dp"/>
-    <item android:id="@+id/drawer_settings"
-          android:title="@string/drawer_settings"
-          android:icon="@drawable/ic_settings_white_24dp"/>
     <item android:id="@+id/drawer_my_food"
           android:title="@string/drawer_my_food"
           android:icon="@drawable/ic_my_food_white_24dp"/>
+    <item android:id="@+id/drawer_settings"
+          android:title="@string/drawer_settings"
+          android:icon="@drawable/ic_settings_white_24dp"/>
+    <item android:id="@+id/drawer_logout"
+          android:title="@string/drawer_logout"
+          android:icon="@drawable/ic_logout_white_24dp"/>
 </menu>

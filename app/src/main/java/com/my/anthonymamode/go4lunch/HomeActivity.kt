@@ -1,15 +1,16 @@
 package com.my.anthonymamode.go4lunch
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.view.GravityCompat
-import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.MenuItem
-import android.widget.Toast
+import com.firebase.ui.auth.AuthUI
 import com.my.anthonymamode.go4lunch.R.id.*
 import kotlinx.android.synthetic.main.activity_home.*
 
-class HomeActivity : AppCompatActivity() {
+class HomeActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,14 +56,34 @@ class HomeActivity : AppCompatActivity() {
         homeNavigationView.setNavigationItemSelectedListener {
             when (it.itemId) {
                 drawer_logout -> {
-                    Toast.makeText(this, "Logout", Toast.LENGTH_SHORT).show()
+                    logout()
                 }
-                drawer_settings -> Toast.makeText(this, "Non implémenté", Toast.LENGTH_SHORT).show()
-                drawer_my_food -> Toast.makeText(this, "Non implémenté", Toast.LENGTH_SHORT).show() 
+                drawer_settings -> showMessage("Non implémenté")
+                drawer_my_food -> showMessage("Non implémenté")
             }
+            homeDrawerLayout.closeDrawers()
             true
         }
     }
 
+    private fun logout() {
+        showLoader()
+        AuthUI.getInstance()
+            .signOut(this)
+            .addOnSuccessListener {
+                redirectToLogin()
+                finish()
+            }
+            .addOnFailureListener {
+                showContent()
+                showToastError("Sorry, an error occurred")
+                Log.e("Logout Fail", it.toString())
+            }
+    }
 
+    private fun redirectToLogin() {
+        intent = Intent(this, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_TASK_ON_HOME
+        startActivity(intent)
+    }
 }
