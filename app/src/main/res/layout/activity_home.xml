@@ -58,8 +58,13 @@
             android:id="@+id/homeNavigationView"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:background="@color/navdrawer_dark"
+            app:itemIconTint="@android:color/white"
+            app:itemTextColor="@android:color/white"
             android:fitsSystemWindows="true"
             android:layout_gravity="start"
-            app:menu="@menu/drawer_menu"/>
+            app:menu="@menu/drawer_menu"
+            app:headerLayout="@layout/nav_drawer_header"
+    />
 
 </android.support.v4.widget.DrawerLayout>

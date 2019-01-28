@@ -22,4 +22,5 @@
     <string name="drawer_logout">LOGOUT</string>
     <string name="drawer_settings">SETTINGS</string>
     <string name="drawer_my_food">MY FOOD</string>
+    <string name="nav_header_image_profile_description">Image profile</string>
 </resources>
