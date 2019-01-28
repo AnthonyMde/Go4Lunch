@@ -1,5 +1,6 @@
 package com.my.anthonymamode.go4lunch
 
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
@@ -11,7 +12,9 @@ import com.my.anthonymamode.go4lunch.R.id.*
 import kotlinx.android.synthetic.main.activity_home.*
 
 class HomeActivity : BaseActivity() {
-
+    private val viewmodel: HomeViewModel by lazy {
+        ViewModelProviders.of(this).get(HomeViewModel::class.java)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)

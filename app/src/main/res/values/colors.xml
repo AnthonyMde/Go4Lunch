@@ -6,4 +6,6 @@
 
     <color name="facebook_button">#3b5998</color>
     <color name="google_button">#dd4e42</color>
+
+    <color name="navdrawer_dark">#424242</color>
 </resources>

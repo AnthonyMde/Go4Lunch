@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             xmlns:tools="http://schemas.android.com/tools"
+                                             android:background="@color/colorAccent"
+                                             android:paddingStart="16dp"
+                                             android:paddingEnd="16dp"
+                                             android:paddingTop="16dp"
+                                             android:paddingBottom="32dp"
+                                             android:layout_width="match_parent"
+                                             android:layout_height="match_parent">
+
+    <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/navheaderTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:padding="8dp"
+            android:layout_marginTop="24dp"
+            android:textColor="@android:color/white"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:textColor="@android:color/black"
+    />
+
+    <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/navheaderProfileImage"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="24dp"
+            android:background="@color/colorPrimary"
+            android:contentDescription="@string/nav_header_image_profile_description"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/navheaderTitle"
+    />
+
+    <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/navheaderFullName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            tools:text="John Smith"
+            android:text="John Smith"
+            app:layout_constraintStart_toEndOf="@id/navheaderProfileImage"
+            app:layout_constraintTop_toTopOf="@id/navheaderProfileImage"
+    />
+
+    <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/navheaderEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            tools:text="john.smith@gmail.com"
+            android:text="john.smith@gmail.com"
+            app:layout_constraintStart_toEndOf="@id/navheaderProfileImage"
+            app:layout_constraintTop_toBottomOf="@id/navheaderFullName"
+    />
+
+
+</android.support.constraint.ConstraintLayout>
