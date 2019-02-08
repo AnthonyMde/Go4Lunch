@@ -1,10 +1,10 @@
 package com.my.anthonymamode.go4lunch
 
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.BottomNavigationView
-import android.support.v4.view.GravityCompat
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.core.view.GravityCompat
 import android.util.Log
 import android.view.MenuItem
 import com.firebase.ui.auth.AuthUI
