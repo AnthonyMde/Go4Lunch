@@ -1,18 +1,19 @@
 package com.my.anthonymamode.go4lunch
 
 import androidx.lifecycle.ViewModelProviders
-import android.content.Intent
 import android.os.Bundle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.core.view.GravityCompat
 import android.util.Log
 import android.view.MenuItem
-import com.firebase.ui.auth.AuthUI
+import androidx.lifecycle.Observer
 import com.my.anthonymamode.go4lunch.R.id.*
+import com.my.anthonymamode.go4lunch.utils.Resource
 import kotlinx.android.synthetic.main.activity_home.*
+import org.jetbrains.anko.startActivity
 
 class HomeActivity : BaseActivity() {
-    private val viewmodel: HomeViewModel by lazy {
+    private val viewModel: HomeViewModel by lazy {
         ViewModelProviders.of(this).get(HomeViewModel::class.java)
     }
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,8 +22,14 @@ class HomeActivity : BaseActivity() {
         setSupportActionBar(homeToolbar)
         configureDrawerMenu()
         homeBottomNavBar.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+
+        setObservers()
     }
 
+    /**
+     * Listen to click event on the BottomNavigationView items.
+     * Each item redirects to a different app fragment.
+     */
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_map -> {
@@ -41,6 +48,31 @@ class HomeActivity : BaseActivity() {
         false
     }
 
+    /**
+     * Set observers for the view which observes the live data of
+     * its ViewModel.
+     * For each live data observed, we can act according to its
+     * current value.
+     */
+    private fun setObservers() {
+        viewModel.logout.observe(this, Observer {
+            when (it) {
+                is Resource.Success -> {
+                    startActivity<LoginActivity>()
+                    finish()
+                }
+                is Resource.Error -> {
+                    showContent()
+                    showToastError("Sorry, an error occurred")
+                    Log.e("Logout Fail", it.error.message)
+                }
+            }
+        })
+    }
+
+    /**
+     * Set action to toolbar items.
+     */
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item?.itemId) {
             android.R.id.home -> {
@@ -51,6 +83,9 @@ class HomeActivity : BaseActivity() {
         }
     }
 
+    /**
+     * Set menu and behavior of menu items in the navigation drawer.
+     */
     private fun configureDrawerMenu() {
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
@@ -59,7 +94,8 @@ class HomeActivity : BaseActivity() {
         homeNavigationView.setNavigationItemSelectedListener {
             when (it.itemId) {
                 drawer_logout -> {
-                    logout()
+                    showLoader()
+                    viewModel.logoutUser()
                 }
                 drawer_settings -> showMessage("Non implémenté")
                 drawer_my_food -> showMessage("Non implémenté")
@@ -67,26 +103,5 @@ class HomeActivity : BaseActivity() {
             homeDrawerLayout.closeDrawers()
             true
         }
-    }
-
-    private fun logout() {
-        showLoader()
-        AuthUI.getInstance()
-            .signOut(this)
-            .addOnSuccessListener {
-                redirectToLogin()
-                finish()
-            }
-            .addOnFailureListener {
-                showContent()
-                showToastError("Sorry, an error occurred")
-                Log.e("Logout Fail", it.toString())
-            }
-    }
-
-    private fun redirectToLogin() {
-        intent = Intent(this, LoginActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_TASK_ON_HOME
-        startActivity(intent)
     }
 }
