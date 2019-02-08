@@ -1,9 +1,10 @@
 package com.my.anthonymamode.go4lunch
 
+import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.BottomNavigationView
-import android.support.v4.view.GravityCompat
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.core.view.GravityCompat
 import android.util.Log
 import android.view.MenuItem
 import com.firebase.ui.auth.AuthUI
@@ -11,7 +12,9 @@ import com.my.anthonymamode.go4lunch.R.id.*
 import kotlinx.android.synthetic.main.activity_home.*
 
 class HomeActivity : BaseActivity() {
-
+    private val viewmodel: HomeViewModel by lazy {
+        ViewModelProviders.of(this).get(HomeViewModel::class.java)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)

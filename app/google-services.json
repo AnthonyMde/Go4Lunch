@@ -15,7 +15,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "1013939373229-pgbbvouv0v062r07198ulbgunpj26nqu.apps.googleusercontent.com",
+          "client_id": "1013939373229-sdakodkjgds0sdho0eu95102j4g3s017.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.my.anthonymamode.go4lunch",
+            "certificate_hash": "1fb10da78e2b3c1343e26177c0a1345c320759a3"
+          }
+        },
+        {
+          "client_id": "1013939373229-20h4gh3edp0nage8m82i12e8vrne2aev.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.my.anthonymamode.go4lunch",
