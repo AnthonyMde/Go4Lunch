@@ -20,12 +20,14 @@ class HomeActivity : BaseActivity() {
     private val viewModel: HomeViewModel by lazy {
         ViewModelProviders.of(this).get(HomeViewModel::class.java)
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
         setSupportActionBar(homeToolbar)
         configureDrawerMenu()
         homeBottomNavBar.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        supportFragmentManager.beginTransaction().add(R.id.contentView, MapsFragment.newInstance()).commit()
 
         setObservers()
         viewModel.getUserInfo()
@@ -38,15 +40,17 @@ class HomeActivity : BaseActivity() {
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_map -> {
-                // TODO: fragment transaction (map fragment)
+                supportFragmentManager.beginTransaction().replace(R.id.contentView, MapsFragment.newInstance()).commit()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_list -> {
-                // TODO: fragment transaction (list fragment)
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.contentView, RestaurantListFragment.newInstance()).commit()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_workmates -> {
-                // TODO: fragment transaction (workmates fragment)
+                supportFragmentManager.beginTransaction().replace(R.id.contentView, WorkmatesFragment.newInstance())
+                    .commit()
                 return@OnNavigationItemSelectedListener true
             }
         }
