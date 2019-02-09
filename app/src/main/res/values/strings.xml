@@ -23,7 +23,11 @@
     <string name="drawer_logout">LOGOUT</string>
     <string name="drawer_settings">SETTINGS</string>
     <string name="drawer_my_food">YOUR LUNCH</string>
-    <string name="nav_header_image_profile_description">Image profile</string>
+
+    <!-- IMAGE DESCRIPTIONS -->
+    <string name="nav_header_image_profile_desc">Image profile</string>
+    <string name="nav_header_app_logo_desc">Application logo</string>
+    <string name="login_app_logo_desc">Application logo</string>
 
     <!-- ERRORS -->
     <string name="profile_data_error">For some reasons, we can\'t fetch your profile data</string>

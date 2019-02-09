@@ -60,12 +60,27 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="@android:color/white"
-            app:itemIconTint="@color/colorAccent"
+            app:itemIconTint="@color/colorPrimary"
             app:itemTextColor="@color/colorAccent"
             android:fitsSystemWindows="true"
             android:layout_gravity="start"
             app:menu="@menu/drawer_menu"
             app:headerLayout="@layout/nav_drawer_header"
-    />
+    >
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:orientation="vertical"
+                android:padding="16dp">
+            <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_drawer_logo_orange"
+                    android:contentDescription="@string/nav_header_app_logo_desc"
+            />
+        </LinearLayout>
+    </com.google.android.material.navigation.NavigationView>
 
 </androidx.drawerlayout.widget.DrawerLayout>

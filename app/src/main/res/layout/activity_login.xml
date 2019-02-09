@@ -14,6 +14,7 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:src="@drawable/ic_login_logo_white"
+            android:contentDescription="@string/login_app_logo_desc"
             app:layout_constraintTop_toBottomOf="@id/loginTopGuideline"
             app:layout_constraintStart_toEndOf="@id/loginStartGuideline"
             app:layout_constraintEnd_toStartOf="@id/loginEndGuideline"
