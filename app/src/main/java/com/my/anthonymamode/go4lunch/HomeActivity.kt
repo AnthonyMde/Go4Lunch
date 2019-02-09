@@ -14,10 +14,6 @@ import com.my.anthonymamode.go4lunch.utils.Resource
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.nav_drawer_header.view.*
 import org.jetbrains.anko.startActivity
-import android.view.WindowManager
-import android.os.Build
-
-
 
 class HomeActivity : BaseActivity() {
     private val viewModel: HomeViewModel by lazy {

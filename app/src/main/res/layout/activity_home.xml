@@ -6,7 +6,6 @@
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:fitsSystemWindows="true"
-        android:theme="@style/AppTheme"
 >
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -61,8 +60,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="@android:color/white"
-            app:itemIconTint="@color/lightBlack"
-            app:itemTextColor="@color/lightBlack"
+            app:itemIconTint="@color/colorAccent"
+            app:itemTextColor="@color/colorAccent"
             android:fitsSystemWindows="true"
             android:layout_gravity="start"
             app:menu="@menu/drawer_menu"
