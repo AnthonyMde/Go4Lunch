@@ -10,6 +10,10 @@ import com.firebase.ui.auth.ErrorCodes
 import com.firebase.ui.auth.IdpResponse
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_login.*
+import android.view.WindowManager
+import android.os.Build
+
+
 
 class LoginActivity : AppCompatActivity() {
     private val RC_SIGN_IN = 123
@@ -23,6 +27,7 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+        setStatusBarTransparent()
 
         if (FirebaseAuth.getInstance().currentUser != null)
             launchHomeActivity()
@@ -75,5 +80,15 @@ class LoginActivity : AppCompatActivity() {
 
     private fun showCanceledSnackBar(errorMessage: Int) {
         Snackbar.make(loginActivityLayout, errorMessage, Snackbar.LENGTH_SHORT).show()
+    }
+
+    private fun setStatusBarTransparent() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            val w = window
+            w.setFlags(
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+            )
+        }
     }
 }

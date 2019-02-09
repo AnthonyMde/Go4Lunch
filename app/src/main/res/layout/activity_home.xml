@@ -6,6 +6,7 @@
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:fitsSystemWindows="true"
+        android:theme="@style/AppTheme"
 >
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,9 +18,10 @@
                 android:id="@+id/homeToolbar"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
+                android:background="@color/colorPrimary"
                 app:titleTextColor="@android:color/white"
-                app:title="I'm Hungry"
-                android:theme="@style/HomeToolbarTheme"
+                app:title="@string/home_toolbar_title"
+                app:layout_constraintTop_toTopOf="parent"
         />
 
         <include layout="@layout/base_loader"
@@ -58,9 +60,9 @@
             android:id="@+id/homeNavigationView"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:background="@color/navdrawer_dark"
-            app:itemIconTint="@android:color/white"
-            app:itemTextColor="@android:color/white"
+            android:background="@android:color/white"
+            app:itemIconTint="@color/lightBlack"
+            app:itemTextColor="@color/lightBlack"
             android:fitsSystemWindows="true"
             android:layout_gravity="start"
             app:menu="@menu/drawer_menu"

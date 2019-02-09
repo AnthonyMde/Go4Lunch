@@ -1,16 +1,23 @@
 package com.my.anthonymamode.go4lunch
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import androidx.core.view.GravityCompat
 import android.util.Log
 import android.view.MenuItem
+import androidx.core.view.GravityCompat
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import com.bumptech.glide.request.RequestOptions
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.my.anthonymamode.go4lunch.R.id.*
+import com.my.anthonymamode.go4lunch.utils.GlideApp
 import com.my.anthonymamode.go4lunch.utils.Resource
 import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.nav_drawer_header.view.*
 import org.jetbrains.anko.startActivity
+import android.view.WindowManager
+import android.os.Build
+
+
 
 class HomeActivity : BaseActivity() {
     private val viewModel: HomeViewModel by lazy {
@@ -24,6 +31,7 @@ class HomeActivity : BaseActivity() {
         homeBottomNavBar.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
         setObservers()
+        viewModel.getUserInfo()
     }
 
     /**
@@ -63,8 +71,22 @@ class HomeActivity : BaseActivity() {
                 }
                 is Resource.Error -> {
                     showContent()
-                    showToastError("Sorry, an error occurred")
-                    Log.e("Logout Fail", it.error.message)
+                    showToastError(getString(R.string.logout_error))
+                    Log.e("Firebase error", "Can't log out user : ${it.error.message}")
+                }
+            }
+        })
+        viewModel.userInfo.observe(this, Observer {
+            when (it) {
+                is Resource.Success -> {
+                    val header = homeNavigationView.getHeaderView(0)
+                    header.navheaderEmail.text = it.data?.email
+                    header.navheaderFullName.text = it.data?.displayName
+                    GlideApp.with(this)
+                        .load(it.data?.photoUrl)
+                        .placeholder(R.drawable.profil_placeholder)
+                        .apply(RequestOptions.circleCropTransform())
+                        .into(header.navheaderProfileImage)
                 }
             }
         })

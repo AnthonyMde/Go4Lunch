@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#fd582f</color>
-    <color name="colorPrimaryDark">#c21e12</color>
-    <color name="colorAccent">#6fefb0</color>
+    <color name="colorPrimary">#ad6335</color>
+    <color name="colorPrimaryDark">#79380a</color>
+    <color name="colorPrimaryLight">#e29161</color>
+    <color name="colorAccent">#ad0423</color>
 
-    <color name="facebook_button">#3b5998</color>
-    <color name="google_button">#dd4e42</color>
+    <color name="facebookButton">#3b5998</color>
+    <color name="googleButton">#dd4e42</color>
 
-    <color name="navdrawer_dark">#424242</color>
+    <color name="lightBlack">#394157</color>
+    <color name="navdrawerDark">#424242</color>
 </resources>
