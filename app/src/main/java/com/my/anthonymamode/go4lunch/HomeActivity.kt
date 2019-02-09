@@ -6,6 +6,7 @@ import android.view.MenuItem
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.my.anthonymamode.go4lunch.R.id.*
@@ -80,6 +81,8 @@ class HomeActivity : BaseActivity() {
                     header.navheaderFullName.text = it.data?.displayName
                     GlideApp.with(this)
                         .load(it.data?.photoUrl)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
                         .placeholder(R.drawable.profil_placeholder)
                         .apply(RequestOptions.circleCropTransform())
                         .into(header.navheaderProfileImage)

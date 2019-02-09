@@ -1,68 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/loginActivityLayout"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/loginActivityLayout"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:background="@drawable/login_blur_background"
 >
 
+    <!-- LOGO -->
     <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/loginImageLogo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:src="@drawable/ic_login_logo_white"
-            android:layout_marginTop="48dp"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/loginTopGuideline"
             app:layout_constraintStart_toEndOf="@id/loginStartGuideline"
             app:layout_constraintEnd_toStartOf="@id/loginEndGuideline"
     />
 
-    <FrameLayout
-            android:id="@+id/loginTitleContainer"
-            android:layout_width="match_parent"
+    <!-- TITLE/SUBTITLE -->
+    <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/loginTitle"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:text="@string/app_name"
+            android:textSize="56sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="16dp"
             app:layout_constraintTop_toBottomOf="@id/loginImageLogo"
             app:layout_constraintStart_toEndOf="@id/loginStartGuideline"
-            app:layout_constraintEnd_toStartOf="@id/loginEndGuideline">
+            app:layout_constraintEnd_toStartOf="@id/loginEndGuideline"
+    />
 
-        <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/loginTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/app_name"
-                android:textSize="64sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/white"
-                android:layout_marginBottom="4dp"
-                android:layout_gravity="center"
-        />
+    <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/loginSubtitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/login_subtitle"
+            android:textSize="18sp"
+            android:textStyle="italic"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            app:layout_constraintTop_toBottomOf="@id/loginTitle"
+            app:layout_constraintStart_toEndOf="@id/loginStartGuideline"
+            app:layout_constraintEnd_toStartOf="@id/loginEndGuideline"
+    />
 
-        <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/loginSubtitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/login_subtitle"
-                android:textSize="12sp"
-                android:textStyle="italic"
-                android:textColor="@android:color/white"
-                android:layout_gravity="center|bottom"
-        />
-    </FrameLayout>
-
+    <!-- BUTTONS -->
     <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/loginFacebookButton"
             android:layout_width="0dp"
-            android:layout_height="60dp"
+            android:layout_height="56dp"
             android:text="@string/login_facebook_button"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
             android:background="@drawable/back_rounded_facebook_button"
             android:layout_marginBottom="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
             app:layout_constraintBottom_toTopOf="@id/loginGoogleButton"
             app:layout_constraintStart_toEndOf="@id/loginStartGuideline"
             app:layout_constraintEnd_toStartOf="@id/loginEndGuideline"
@@ -71,19 +69,20 @@
     <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/loginGoogleButton"
             android:layout_width="0dp"
-            android:layout_height="60dp"
+            android:layout_height="56dp"
             android:text="@string/login_google_button"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
             android:background="@drawable/back_rounded_google_button"
             android:layout_marginBottom="48dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            app:layout_constraintBottom_toTopOf="@id/loginBottomGuideline"
             app:layout_constraintStart_toEndOf="@id/loginStartGuideline"
             app:layout_constraintEnd_toStartOf="@id/loginEndGuideline"
     />
 
+    <!-- GUIDELINES -->
     <androidx.constraintlayout.widget.Guideline
             android:id="@+id/loginStartGuideline"
             android:layout_width="wrap_content"
@@ -98,5 +97,18 @@
             android:orientation="vertical"
             app:layout_constraintGuide_end="24dp"
     />
+    <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/loginTopGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.12"/>
+
+    <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/loginBottomGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.95"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
