@@ -9,7 +9,9 @@ import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.my.anthonymamode.go4lunch.R.id.*
+import com.my.anthonymamode.go4lunch.R.id.drawer_logout
+import com.my.anthonymamode.go4lunch.R.id.drawer_settings
+import com.my.anthonymamode.go4lunch.R.id.drawer_my_food
 import com.my.anthonymamode.go4lunch.utils.GlideApp
 import com.my.anthonymamode.go4lunch.utils.Resource
 import kotlinx.android.synthetic.main.activity_home.*

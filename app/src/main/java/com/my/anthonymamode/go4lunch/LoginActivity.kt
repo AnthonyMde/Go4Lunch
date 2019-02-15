@@ -13,8 +13,6 @@ import kotlinx.android.synthetic.main.activity_login.*
 import android.view.WindowManager
 import android.os.Build
 
-
-
 class LoginActivity : AppCompatActivity() {
     private val RC_SIGN_IN = 123
     private val googleProvider = arrayListOf(
@@ -45,7 +43,7 @@ class LoginActivity : AppCompatActivity() {
         redirectAfterSignin(requestCode, resultCode, data)
     }
 
-    private fun startSignin(provider : ArrayList<AuthUI.IdpConfig>) {
+    private fun startSignin(provider: ArrayList<AuthUI.IdpConfig>) {
         startActivityForResult(
             AuthUI.getInstance()
                 .createSignInIntentBuilder()

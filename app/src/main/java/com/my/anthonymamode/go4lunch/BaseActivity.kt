@@ -10,7 +10,7 @@ import android.widget.Toast
 abstract class BaseActivity : AppCompatActivity() {
 
     val loadingView: View by lazy { findViewById<View>(R.id.base_loader) }
-    val contentView: View by lazy { findViewById<View>(R.id.contentView)}
+    val contentView: View by lazy { findViewById<View>(R.id.contentView) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
