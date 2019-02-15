@@ -1,6 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- GENERAL -->
-    <string name="app_name">Go4Lunch</string>
+    <string name="app_name" translatable="false">Go4Lunch</string>
+    <string name="google_maps_key" translatable="false">AIzaSyAxNj0upUnrYnDoxbufqeA5BbIlpqttzYw</string>
 
     <!-- HOME -->
     <string name="home_map_view_title">Map View</string>

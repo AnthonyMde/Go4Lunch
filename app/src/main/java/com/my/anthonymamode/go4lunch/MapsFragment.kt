@@ -6,13 +6,21 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 
-class MapsFragment : Fragment() {
+class MapsFragment : Fragment(), OnMapReadyCallback {
 
     companion object {
         fun newInstance(): MapsFragment {
             return MapsFragment()
         }
+        private lateinit var mapsView: MapView
+        private val TOULOUSE = LatLng(43.600000, 1.433333)
+        private const val ZOOM_LEVEL = 12f
+        private const val MIN_ZOOM = 6f
+        private const val MAX_ZOOM = 20f
     }
 
     override fun onCreateView(
@@ -20,6 +28,40 @@ class MapsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_maps, container, false)
+        val view = inflater.inflate(R.layout.fragment_maps, container, false)
+        mapsView = view.findViewById(R.id.mapsView)
+        mapsView.getMapAsync(this)
+        mapsView.onCreate(savedInstanceState)
+        return view
+    }
+
+    override fun onMapReady(googleMap: GoogleMap?) {
+        googleMap ?: return
+        with(googleMap) {
+            setMinZoomPreference(MIN_ZOOM)
+            setMaxZoomPreference(MAX_ZOOM)
+            moveCamera(CameraUpdateFactory.newLatLngZoom(TOULOUSE, ZOOM_LEVEL))
+            addMarker(MarkerOptions().position(TOULOUSE))
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mapsView.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mapsView.onPause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mapsView.onDestroy()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        mapsView.onLowMemory()
     }
 }
