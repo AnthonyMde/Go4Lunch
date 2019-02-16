@@ -17,10 +17,7 @@
     <string name="login_no_network">No internet connection</string>
     <string name="login_unknown_error">An unknown error has occurred</string>
 
-    <!-- FACEBOOK -->
-    <string name="facebook_app_id" translatable="false">281477675880579</string>
-    <string name="fb_login_protocol_scheme" translatable="false" tools:ignore="UnusedResources">fb281477675880579
-    </string>
+    <!-- DRAWER -->
     <string name="drawer_logout">LOGOUT</string>
     <string name="drawer_settings">SETTINGS</string>
     <string name="drawer_my_food">YOUR LUNCH</string>
@@ -33,4 +30,9 @@
     <!-- ERRORS -->
     <string name="profile_data_error">For some reasons, we can\'t fetch your profile data</string>
     <string name="logout_error">Sorry, the log out has failed</string>
+
+    <!-- FACEBOOK -->
+    <string name="facebook_application_id" translatable="false">281477675880579</string>
+    <string name="facebook_login_protocol_scheme" translatable="false" tools:ignore="UnusedResources">fb281477675880579
+    </string>
 </resources>

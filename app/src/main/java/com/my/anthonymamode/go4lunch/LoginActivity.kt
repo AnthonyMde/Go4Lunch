@@ -16,10 +16,10 @@ import android.os.Build
 class LoginActivity : AppCompatActivity() {
     private val RC_SIGN_IN = 123
     private val googleProvider = arrayListOf(
-        AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()
+        AuthUI.IdpConfig.GoogleBuilder().build()
     )
     private val facebookProvider = arrayListOf(
-        AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()
+        AuthUI.IdpConfig.FacebookBuilder().build()
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,8 +61,8 @@ class LoginActivity : AppCompatActivity() {
                     val response = IdpResponse.fromResultIntent(data)
                     when {
                         response == null -> showCanceledSnackBar(R.string.login_canceled)
-                        response.errorCode == ErrorCodes.NO_NETWORK -> showCanceledSnackBar(R.string.login_no_network)
-                        response.errorCode == ErrorCodes.UNKNOWN_ERROR -> showCanceledSnackBar(R.string.login_unknown_error)
+                        response.error?.errorCode == ErrorCodes.NO_NETWORK -> showCanceledSnackBar(R.string.login_no_network)
+                        response.error?.errorCode == ErrorCodes.UNKNOWN_ERROR -> showCanceledSnackBar(R.string.login_unknown_error)
                     }
                 }
             }
@@ -82,8 +82,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun setStatusBarTransparent() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            val w = window
-            w.setFlags(
+            window.setFlags(
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
             )
