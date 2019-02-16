@@ -62,11 +62,6 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0-alpha02'
     kapt 'androidx.lifecycle:lifecycle-compiler:2.1.0-alpha02'
 
-    // TESTS
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.2-alpha02'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.2-alpha01'
-
     // UTILS
     implementation "org.jetbrains.anko:anko:0.10.8"
     implementation 'com.github.bumptech.glide:glide:4.8.0'
@@ -74,14 +69,23 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3'
     ktlint "com.github.shyiko:ktlint:0.30.0"
 
-    // FIREBASE AND GOOGLE SERVICES
+    // TESTS
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.1.2-alpha02'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.2-alpha01'
+
+    // FIREBASE
     implementation 'com.google.firebase:firebase-core:16.0.7'
-    implementation 'com.firebaseui:firebase-ui-auth:4.3.1'
     implementation 'com.google.firebase:firebase-auth:16.1.0'
+    implementation 'com.firebaseui:firebase-ui-auth:4.3.1'
     implementation 'com.firebaseui:firebase-ui-firestore:4.3.1'
+
+    // GOOGLE SERVICES
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
     implementation 'com.google.android.gms:play-services-location:16.0.0'
     implementation 'com.google.android.gms:play-services-maps:16.1.0'
+
+    // FACEBOOK
     implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
 }
 apply plugin: 'com.google.gms.google-services'

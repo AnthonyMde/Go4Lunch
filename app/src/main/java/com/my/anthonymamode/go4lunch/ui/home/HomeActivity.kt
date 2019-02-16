@@ -1,4 +1,4 @@
-package com.my.anthonymamode.go4lunch
+package com.my.anthonymamode.go4lunch.ui.home
 
 import android.os.Bundle
 import android.util.Log
@@ -9,9 +9,12 @@ import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.my.anthonymamode.go4lunch.utils.BaseActivity
+import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.R.id.drawer_logout
 import com.my.anthonymamode.go4lunch.R.id.drawer_settings
 import com.my.anthonymamode.go4lunch.R.id.drawer_my_food
+import com.my.anthonymamode.go4lunch.ui.LoginActivity
 import com.my.anthonymamode.go4lunch.utils.GlideApp
 import com.my.anthonymamode.go4lunch.utils.Resource
 import kotlinx.android.synthetic.main.activity_home.*
@@ -29,7 +32,10 @@ class HomeActivity : BaseActivity() {
         setSupportActionBar(homeToolbar)
         configureDrawerMenu()
         homeBottomNavBar.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-        supportFragmentManager.beginTransaction().add(R.id.contentView, MapsFragment.newInstance()).commit()
+        supportFragmentManager.beginTransaction().add(
+            R.id.contentView,
+            MapsFragment.newInstance()
+        ).commit()
 
         setObservers()
         viewModel.getUserInfo()
@@ -42,16 +48,25 @@ class HomeActivity : BaseActivity() {
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_map -> {
-                supportFragmentManager.beginTransaction().replace(R.id.contentView, MapsFragment.newInstance()).commit()
+                supportFragmentManager.beginTransaction().replace(
+                    R.id.contentView,
+                    MapsFragment.newInstance()
+                ).commit()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_list -> {
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.contentView, RestaurantListFragment.newInstance()).commit()
+                    .replace(
+                        R.id.contentView,
+                        RestaurantListFragment.newInstance()
+                    ).commit()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_workmates -> {
-                supportFragmentManager.beginTransaction().replace(R.id.contentView, WorkmatesFragment.newInstance())
+                supportFragmentManager.beginTransaction().replace(
+                    R.id.contentView,
+                    WorkmatesFragment.newInstance()
+                )
                     .commit()
                 return@OnNavigationItemSelectedListener true
             }

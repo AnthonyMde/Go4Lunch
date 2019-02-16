@@ -30,6 +30,7 @@
     <!-- ERRORS -->
     <string name="profile_data_error">For some reasons, we can\'t fetch your profile data</string>
     <string name="logout_error">Sorry, the log out has failed</string>
+    <string name="firebase_crud_error">An error has occurred while updating your data</string>
 
     <!-- FACEBOOK -->
     <string name="facebook_application_id" translatable="false">281477675880579</string>

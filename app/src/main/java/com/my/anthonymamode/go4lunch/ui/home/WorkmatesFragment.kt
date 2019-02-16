@@ -1,12 +1,13 @@
-package com.my.anthonymamode.go4lunch
+package com.my.anthonymamode.go4lunch.ui.home
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.my.anthonymamode.go4lunch.R
+import com.my.anthonymamode.go4lunch.utils.BaseFragment
 
-class WorkmatesFragment : Fragment() {
+class WorkmatesFragment : BaseFragment() {
 
     companion object {
         fun newInstance(): WorkmatesFragment {

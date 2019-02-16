@@ -1,4 +1,4 @@
-package com.my.anthonymamode.go4lunch
+package com.my.anthonymamode.go4lunch.ui.home
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

@@ -1,23 +1,25 @@
-package com.my.anthonymamode.go4lunch
+package com.my.anthonymamode.go4lunch.ui.home
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.MapView
-import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.my.anthonymamode.go4lunch.R
+import com.my.anthonymamode.go4lunch.utils.BaseFragment
 
-class MapsFragment : Fragment(), OnMapReadyCallback {
+class MapsFragment : BaseFragment(), OnMapReadyCallback {
 
     companion object {
         fun newInstance(): MapsFragment {
             return MapsFragment()
         }
+
         private lateinit var mapsView: MapView
         private val TOULOUSE = LatLng(43.600000, 1.433333)
         private const val ZOOM_LEVEL = 12f
@@ -43,7 +45,12 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         with(googleMap) {
             setMinZoomPreference(MIN_ZOOM)
             setMaxZoomPreference(MAX_ZOOM)
-            moveCamera(CameraUpdateFactory.newLatLngZoom(TOULOUSE, ZOOM_LEVEL))
+            moveCamera(
+                CameraUpdateFactory.newLatLngZoom(
+                    TOULOUSE,
+                    ZOOM_LEVEL
+                )
+            )
             addMarker(MarkerOptions().position(TOULOUSE))
         }
     }
