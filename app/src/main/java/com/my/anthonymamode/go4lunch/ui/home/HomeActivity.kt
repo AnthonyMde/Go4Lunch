@@ -9,12 +9,13 @@ import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.my.anthonymamode.go4lunch.utils.BaseActivity
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.R.id.drawer_logout
-import com.my.anthonymamode.go4lunch.R.id.drawer_settings
 import com.my.anthonymamode.go4lunch.R.id.drawer_my_food
+import com.my.anthonymamode.go4lunch.R.id.drawer_settings
 import com.my.anthonymamode.go4lunch.ui.LoginActivity
+import com.my.anthonymamode.go4lunch.ui.SettingsActivity
+import com.my.anthonymamode.go4lunch.utils.BaseActivity
 import com.my.anthonymamode.go4lunch.utils.GlideApp
 import com.my.anthonymamode.go4lunch.utils.Resource
 import kotlinx.android.synthetic.main.activity_home.*
@@ -97,19 +98,30 @@ class HomeActivity : BaseActivity() {
         viewModel.userInfo.observe(this, Observer {
             when (it) {
                 is Resource.Success -> {
-                    val header = homeNavigationView.getHeaderView(0)
-                    header.navheaderEmail.text = it.data?.email
-                    header.navheaderFullName.text = it.data?.displayName
-                    GlideApp.with(this)
-                        .load(it.data?.photoUrl)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .skipMemoryCache(true)
-                        .placeholder(R.drawable.profil_placeholder)
-                        .apply(RequestOptions.circleCropTransform())
-                        .into(header.navheaderProfileImage)
+                    it.data?.let { userData ->
+                        val header = homeNavigationView.getHeaderView(0)
+                        header.navheaderEmail.text = userData.email
+                        header.navheaderFullName.text = userData.displayName
+                        GlideApp.with(this)
+                            .load(userData.photoUrl)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true)
+                            .placeholder(R.drawable.profil_placeholder)
+                            .apply(RequestOptions.circleCropTransform())
+                            .into(header.navheaderProfileImage)
+                    } ?: redirectToLoginIfSessionExpired()
+                }
+                is Resource.Error -> {
+                    redirectToLoginIfSessionExpired()
                 }
             }
         })
+    }
+
+    private fun redirectToLoginIfSessionExpired() {
+        showToastError(getString(R.string.session_expired_error))
+        startActivity<LoginActivity>()
+        finish()
     }
 
     /**
@@ -139,7 +151,7 @@ class HomeActivity : BaseActivity() {
                     showLoader()
                     viewModel.logoutUser()
                 }
-                drawer_settings -> showMessage("Non implémenté")
+                drawer_settings -> startActivity<SettingsActivity>()
                 drawer_my_food -> showMessage("Non implémenté")
             }
             homeDrawerLayout.closeDrawers()

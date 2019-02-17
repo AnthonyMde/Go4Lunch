@@ -1,7 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- GENERAL -->
     <string name="app_name" translatable="false">Go4Lunch</string>
-    <string name="google_maps_key" translatable="false">AIzaSyAxNj0upUnrYnDoxbufqeA5BbIlpqttzYw</string>
 
     <!-- HOME -->
     <string name="home_map_view_title">Map View</string>
@@ -17,6 +16,19 @@
     <string name="login_no_network">No internet connection</string>
     <string name="login_unknown_error">An unknown error has occurred</string>
 
+    <!-- SETTINGS -->
+    <string name="settings_activity_name">Settings</string>
+    <string name="settings_delete_account_button">Delete my account</string>
+    <string name="settings_delete_account_alert_dialog_title">Are you sure you want to do this ?</string>
+    <string name="settings_delete_account_alert_dialog_message">All your data will be lost immediately.</string>
+    <string name="settings_delete_account_alert_dialog_positive_button">Delete</string>
+    <string name="settings_delete_account_alert_dialog_negative_button">Cancel</string>
+    <string name="settings_delete_account_success_toast">Your account has been successfully deleted</string>
+    <string name="settings_delete_account_success_but_no_logout">Your account has been successfully deleted but we can\'t log you out</string>
+    <string name="settings_delete_account_error">Oops, we can\'t suppress your account by now. Your session might have
+        expired.
+    </string>
+
     <!-- DRAWER -->
     <string name="drawer_logout">LOGOUT</string>
     <string name="drawer_settings">SETTINGS</string>
@@ -29,6 +41,7 @@
 
     <!-- ERRORS -->
     <string name="profile_data_error">For some reasons, we can\'t fetch your profile data</string>
+    <string name="session_expired_error">It seems your session has expired. Please try to reconnect.</string>
     <string name="logout_error">Sorry, the log out has failed</string>
     <string name="firebase_crud_error">An error has occurred while updating your data</string>
 
@@ -36,4 +49,7 @@
     <string name="facebook_application_id" translatable="false">281477675880579</string>
     <string name="facebook_login_protocol_scheme" translatable="false" tools:ignore="UnusedResources">fb281477675880579
     </string>
+
+    <!-- GOOGLE -->
+    <string name="google_maps_key" translatable="false">AIzaSyAxNj0upUnrYnDoxbufqeA5BbIlpqttzYw</string>
 </resources>

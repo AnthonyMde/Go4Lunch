@@ -85,7 +85,7 @@ class LoginActivity : BaseActivity() {
                             it.displayName,
                             it.email,
                             null
-                        ).addOnFailureListener(this.onFailureListener())
+                        ).addOnFailureListener(super.onFailureListener())
                     }
                     launchHomeActivity()
                 }
