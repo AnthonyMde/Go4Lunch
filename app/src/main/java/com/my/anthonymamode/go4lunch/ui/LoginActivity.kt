@@ -84,7 +84,7 @@ class LoginActivity : BaseActivity() {
                             it.uid,
                             it.displayName,
                             it.email,
-                            null
+                            it.photoUrl.toString()
                         ).addOnFailureListener(super.onFailureListener())
                     }
                     launchHomeActivity()
