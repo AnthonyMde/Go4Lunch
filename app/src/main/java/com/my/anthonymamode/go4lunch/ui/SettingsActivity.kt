@@ -38,7 +38,7 @@ class SettingsActivity : BaseActivity() {
     }
 
     private fun deleteConfirmation(uid: String) {
-        AlertDialog.Builder(this, R.style.AlertDialogCustom).create()
+        AlertDialog.Builder(this).create()
             .apply {
                 setMessage(getString(R.string.settings_delete_account_alert_dialog_message))
                 setTitle(getString(R.string.settings_delete_account_alert_dialog_title))
@@ -56,9 +56,7 @@ class SettingsActivity : BaseActivity() {
                     getString(R.string.settings_delete_account_alert_dialog_negative_button)
                 ) { dialog, _ -> dialog.dismiss() }
                 this.show()
-                getButton(BUTTON_POSITIVE)?.background =
-                    resources.getDrawable(R.drawable.back_rounded_delete_account_button)
-                getButton(BUTTON_POSITIVE)?.setTextColor(resources.getColor(android.R.color.black))
+                getButton(BUTTON_POSITIVE)?.setTextColor(resources.getColor(android.R.color.holo_red_light))
                 this.show()
             }
     }

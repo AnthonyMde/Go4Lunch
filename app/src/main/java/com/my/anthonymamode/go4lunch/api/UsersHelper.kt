@@ -3,6 +3,7 @@ package com.my.anthonymamode.go4lunch.api
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.my.anthonymamode.go4lunch.model.User
 
 private const val USERS_COLLECTION_NAME = "users"
@@ -18,4 +19,8 @@ fun createUser(uid: String, displayName: String?, email: String?, photoPath: Str
 
 fun deleteUser(uid: String): Task<Void> {
     return getUsersCollection().document(uid).delete()
+}
+
+fun getUsersOrderedByLunch(): Query {
+    return getUsersCollection().orderBy("hasLunch", Query.Direction.DESCENDING)
 }

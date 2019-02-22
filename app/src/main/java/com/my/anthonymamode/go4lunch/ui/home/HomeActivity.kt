@@ -15,6 +15,7 @@ import com.my.anthonymamode.go4lunch.R.id.drawer_my_food
 import com.my.anthonymamode.go4lunch.R.id.drawer_settings
 import com.my.anthonymamode.go4lunch.ui.LoginActivity
 import com.my.anthonymamode.go4lunch.ui.SettingsActivity
+import com.my.anthonymamode.go4lunch.ui.home.workmates.WorkmatesFragment
 import com.my.anthonymamode.go4lunch.utils.BaseActivity
 import com.my.anthonymamode.go4lunch.utils.GlideApp
 import com.my.anthonymamode.go4lunch.utils.Resource

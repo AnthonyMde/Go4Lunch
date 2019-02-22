@@ -2,12 +2,6 @@
     <!-- GENERAL -->
     <string name="app_name" translatable="false">Go4Lunch</string>
 
-    <!-- HOME -->
-    <string name="home_map_view_title">Map View</string>
-    <string name="home_list_view_title">List View</string>
-    <string name="home_workmates_title">Workmates</string>
-    <string name="home_toolbar_title">I\'m hungry</string>
-
     <!-- LOGIN -->
     <string name="login_subtitle">Find a nice restaurant and invite co-workers for lunch!</string>
     <string name="login_facebook_button">Sign in with Facebook</string>
@@ -15,6 +9,21 @@
     <string name="login_canceled">Connection failed</string>
     <string name="login_no_network">No internet connection</string>
     <string name="login_unknown_error">An unknown error has occurred</string>
+
+    <!-- HOME -->
+    <string name="home_map_view_title">Map View</string>
+    <string name="home_list_view_title">List View</string>
+    <string name="home_workmates_title">Workmates</string>
+    <string name="home_toolbar_title">I\'m hungry</string>
+
+    <!-- WORKMATES -->
+    <string name="workamtes_has_lunch">%1$s is eating</string>
+    <string name="workmates_has_no_lunch">%1$s has not decided yet</string>
+
+    <!-- DRAWER -->
+    <string name="drawer_logout">LOGOUT</string>
+    <string name="drawer_settings">SETTINGS</string>
+    <string name="drawer_my_food">YOUR LUNCH</string>
 
     <!-- SETTINGS -->
     <string name="settings_activity_name">Settings</string>
@@ -28,11 +37,6 @@
     <string name="settings_delete_account_error">Oops, we can\'t suppress your account by now. Your session might have
         expired.
     </string>
-
-    <!-- DRAWER -->
-    <string name="drawer_logout">LOGOUT</string>
-    <string name="drawer_settings">SETTINGS</string>
-    <string name="drawer_my_food">YOUR LUNCH</string>
 
     <!-- IMAGE DESCRIPTIONS -->
     <string name="nav_header_image_profile_desc">Image profile</string>

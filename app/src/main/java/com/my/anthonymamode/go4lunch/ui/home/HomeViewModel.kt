@@ -26,6 +26,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     val userInfo: LiveData<Resource<FirebaseUser?>>
         get() = _userInfo
 
+    var currentUser: String? = null
+
     /**
      * @return the FirebaseUser object which contains his data.
      */
@@ -33,6 +35,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         val infoUser = FirebaseAuth.getInstance().currentUser
         if (infoUser != null) {
             _userInfo.postValue(Resource.Success(infoUser))
+            currentUser = infoUser.uid
         }
     }
 
