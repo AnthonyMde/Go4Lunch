@@ -110,6 +110,10 @@ class LoginActivity : BaseActivity() {
         Snackbar.make(loginActivityLayout, errorMessage, Snackbar.LENGTH_SHORT).show()
     }
 
+    /**
+     * Can't be done directly in the xml theme to the sake of
+     * backward compatibility to android 4.4 (kitkat).
+     */
     private fun setStatusBarTransparent() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             window.setFlags(

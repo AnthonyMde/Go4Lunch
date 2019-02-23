@@ -37,6 +37,11 @@ class SettingsActivity : BaseActivity() {
         }
     }
 
+    /**
+     * Ask confirmation before deleting user account.
+     * Set a success listener to logout the user or (if not success)
+     * to warn the user of the failure.
+     */
     private fun deleteConfirmation(uid: String) {
         AlertDialog.Builder(this).create()
             .apply {
@@ -66,6 +71,10 @@ class SettingsActivity : BaseActivity() {
         finish()
     }
 
+    /**
+     * Here, the user account has been successfully deleted but we
+     * want to warn him if the logout hasn't succeed.
+     */
     private fun onSuccessListener(): OnSuccessListener<Void> {
         return OnSuccessListener {
             AuthUI.getInstance().delete(this).addOnSuccessListener {

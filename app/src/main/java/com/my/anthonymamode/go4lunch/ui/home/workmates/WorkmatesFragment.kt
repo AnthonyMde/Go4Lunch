@@ -18,7 +18,7 @@ import com.my.anthonymamode.go4lunch.utils.BaseFragment
 import kotlinx.android.synthetic.main.fragment_workmates.*
 import org.jetbrains.anko.support.v4.startActivity
 
-class WorkmatesFragment : BaseFragment(), WorkmatesAdapter.OnWorkmateClickListener {
+class WorkmatesFragment : BaseFragment(), WorkmatesViewHolder.OnWorkmateClickListener {
 
     companion object {
         fun newInstance(): WorkmatesFragment {
@@ -37,11 +37,15 @@ class WorkmatesFragment : BaseFragment(), WorkmatesAdapter.OnWorkmateClickListen
         return inflater.inflate(R.layout.fragment_workmates, container, false)
     }
 
+    // TODO: better place to configure recyclerView ?
     override fun onResume() {
         super.onResume()
         activity?.let { configureRecyclerView(it) }
     }
 
+    /**
+     * Set the adapter for the recycler and pass the data through it here
+     */
     private fun configureRecyclerView(activity: FragmentActivity) {
         val viewModel = ViewModelProviders.of(activity).get(HomeViewModel::class.java)
         val current = viewModel.currentUser
@@ -50,6 +54,10 @@ class WorkmatesFragment : BaseFragment(), WorkmatesAdapter.OnWorkmateClickListen
         workmatesRecyclerView.layoutManager = LinearLayoutManager(context)
     }
 
+    /**
+     * @return FirestoreRecyclerOptions of User which can be
+     * directly used to in a recycler view to fill it with those data.
+     */
     private fun generateOptionForAdapter(query: Query): FirestoreRecyclerOptions<User> {
         return FirestoreRecyclerOptions.Builder<User>()
             .setQuery(query, User::class.java)
