@@ -14,8 +14,16 @@ import com.my.anthonymamode.go4lunch.model.User
 import com.my.anthonymamode.go4lunch.utils.GlideApp
 import kotlinx.android.synthetic.main.workmates_list_item.view.*
 
-class WorkmatesAdapter(options: FirestoreRecyclerOptions<User>, private val currentUser: String?) :
+class WorkmatesAdapter(
+    options: FirestoreRecyclerOptions<User>,
+    private val currentUser: String?,
+    private val listener: OnWorkmateClickListener
+) :
     FirestoreRecyclerAdapter<User, WorkmatesViewHolder>(options) {
+    interface OnWorkmateClickListener {
+        fun onClick()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorkmatesViewHolder {
         return WorkmatesViewHolder(
             LayoutInflater.from(parent.context).inflate(
@@ -31,6 +39,10 @@ class WorkmatesAdapter(options: FirestoreRecyclerOptions<User>, private val curr
             holder.bindDataToItemView(data)
         else
             holder.viewGone()
+    }
+
+    private fun onItemClicked() {
+        listener.onClick()
     }
 }
 

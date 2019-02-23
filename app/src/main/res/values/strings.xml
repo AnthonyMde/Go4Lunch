@@ -33,7 +33,9 @@
     <string name="settings_delete_account_alert_dialog_positive_button">Delete</string>
     <string name="settings_delete_account_alert_dialog_negative_button">Cancel</string>
     <string name="settings_delete_account_success_toast">Your account has been successfully deleted</string>
-    <string name="settings_delete_account_success_but_no_logout">Your account has been successfully deleted but we can\'t log you out</string>
+    <string name="settings_delete_account_success_but_no_logout">Your account has been successfully deleted but we
+        can\'t log you out
+    </string>
     <string name="settings_delete_account_error">Oops, we can\'t suppress your account by now. Your session might have
         expired.
     </string>

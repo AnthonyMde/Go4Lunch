@@ -12,11 +12,13 @@ import com.google.firebase.firestore.Query
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.api.getUsersOrderedByLunch
 import com.my.anthonymamode.go4lunch.model.User
+import com.my.anthonymamode.go4lunch.ui.DetailRestaurantActivity
 import com.my.anthonymamode.go4lunch.ui.home.HomeViewModel
 import com.my.anthonymamode.go4lunch.utils.BaseFragment
 import kotlinx.android.synthetic.main.fragment_workmates.*
+import org.jetbrains.anko.support.v4.startActivity
 
-class WorkmatesFragment : BaseFragment() {
+class WorkmatesFragment : BaseFragment(), WorkmatesAdapter.OnWorkmateClickListener {
 
     companion object {
         fun newInstance(): WorkmatesFragment {
@@ -44,7 +46,7 @@ class WorkmatesFragment : BaseFragment() {
         val viewModel = ViewModelProviders.of(activity).get(HomeViewModel::class.java)
         val current = viewModel.currentUser
         workmatesRecyclerView.adapter =
-            WorkmatesAdapter(generateOptionForAdapter(workmatesQuery), current)
+            WorkmatesAdapter(generateOptionForAdapter(workmatesQuery), current, this)
         workmatesRecyclerView.layoutManager = LinearLayoutManager(context)
     }
 
@@ -53,5 +55,12 @@ class WorkmatesFragment : BaseFragment() {
             .setQuery(query, User::class.java)
             .setLifecycleOwner(this)
             .build()
+    }
+
+    /**
+     * Method called when an workmates list item is clicked
+     */
+    override fun onClick() {
+        startActivity<DetailRestaurantActivity>()
     }
 }

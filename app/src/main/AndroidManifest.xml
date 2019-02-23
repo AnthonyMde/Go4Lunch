@@ -14,10 +14,12 @@
             android:label="@string/app_name"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true">
-        <activity android:name=".ui.SettingsActivity"
-                  android:parentActivityName=".ui.home.HomeActivity"
-                  android:theme="@style/AppTheme"
-        />
+        <activity android:name=".ui.DetailRestaurantActivity">
+        </activity>
+        <activity
+                android:name=".ui.SettingsActivity"
+                android:parentActivityName=".ui.home.HomeActivity"
+                android:theme="@style/AppTheme"/>
         <activity
                 android:name=".ui.LoginActivity"
                 android:screenOrientation="portrait"
