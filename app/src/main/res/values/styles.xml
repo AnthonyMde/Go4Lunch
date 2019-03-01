@@ -11,7 +11,7 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <!-- For android version before v21 there is no difference in comparison to the main theme -->
+    <!-- For android before v21 -->
     <style name="AppThemeTranslucent" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
