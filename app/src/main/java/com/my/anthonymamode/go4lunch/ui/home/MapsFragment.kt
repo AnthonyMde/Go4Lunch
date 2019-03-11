@@ -61,17 +61,17 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
     }
 
     override fun onPause() {
-        super.onPause()
         mapsView.onPause()
+        super.onPause()
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         mapsView.onDestroy()
+        super.onDestroy()
     }
 
     override fun onLowMemory() {
-        super.onLowMemory()
         mapsView.onLowMemory()
+        super.onLowMemory()
     }
 }

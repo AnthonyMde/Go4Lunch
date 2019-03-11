@@ -1,8 +1,11 @@
 package com.my.anthonymamode.go4lunch.ui.home
 
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -10,10 +13,11 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.my.anthonymamode.go4lunch.R
-import com.my.anthonymamode.go4lunch.R.id.drawer_logout
 import com.my.anthonymamode.go4lunch.R.id.drawer_my_food
+import com.my.anthonymamode.go4lunch.R.id.drawer_logout
 import com.my.anthonymamode.go4lunch.R.id.drawer_settings
 import com.my.anthonymamode.go4lunch.ui.LoginActivity
+import com.my.anthonymamode.go4lunch.ui.PermissionActivity
 import com.my.anthonymamode.go4lunch.ui.SettingsActivity
 import com.my.anthonymamode.go4lunch.ui.home.workmates.WorkmatesFragment
 import com.my.anthonymamode.go4lunch.utils.BaseActivity
@@ -30,17 +34,21 @@ class HomeActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        checkLocationPermission()
         setContentView(R.layout.activity_home)
         setSupportActionBar(homeToolbar)
+        setObservers()
+        viewModel.getUserInfo()
+    }
+
+    override fun onStart() {
+        super.onStart()
         configureDrawerMenu()
         homeBottomNavBar.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         supportFragmentManager.beginTransaction().add(
             R.id.contentView,
             MapsFragment.newInstance()
         ).commit()
-
-        setObservers()
-        viewModel.getUserInfo()
     }
 
     /**
@@ -123,6 +131,14 @@ class HomeActivity : BaseActivity() {
         showToastError(getString(R.string.session_expired_error))
         startActivity<LoginActivity>()
         finish()
+    }
+
+    private fun checkLocationPermission() {
+        val locationPermission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+        if (Build.VERSION.SDK_INT >= 23 && locationPermission != PackageManager.PERMISSION_GRANTED) {
+            startActivity<PermissionActivity>()
+            finish()
+        }
     }
 
     /**

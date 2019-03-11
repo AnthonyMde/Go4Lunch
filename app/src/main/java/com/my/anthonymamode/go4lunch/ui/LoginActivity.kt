@@ -2,9 +2,11 @@ package com.my.anthonymamode.go4lunch.ui
 
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
+import androidx.core.content.ContextCompat
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.ErrorCodes
 import com.firebase.ui.auth.IdpResponse
@@ -19,11 +21,9 @@ import com.my.anthonymamode.go4lunch.utils.BaseActivity
 import kotlinx.android.synthetic.main.activity_login.*
 import org.jetbrains.anko.startActivity
 
+private const val RC_SIGN_IN = 1
+
 class LoginActivity : BaseActivity() {
-    companion object {
-        // Use to know which type of activity result is coming back.
-        private const val RC_SIGN_IN = 1
-    }
 
     private val googleProvider = arrayListOf(
         AuthUI.IdpConfig.GoogleBuilder().build()
@@ -31,6 +31,10 @@ class LoginActivity : BaseActivity() {
     private val facebookProvider = arrayListOf(
         AuthUI.IdpConfig.FacebookBuilder().build()
     )
+    private val hasLocationPermission: Boolean by lazy {
+        val locationPermission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+        locationPermission == PackageManager.PERMISSION_GRANTED
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,6 +91,7 @@ class LoginActivity : BaseActivity() {
                             it.photoUrl.toString()
                         ).addOnFailureListener(super.onFailureListener())
                     }
+                    checkLocationPermission()
                     launchHomeActivity()
                 }
                 Activity.RESULT_CANCELED -> {
@@ -98,6 +103,13 @@ class LoginActivity : BaseActivity() {
                     }
                 }
             }
+        }
+    }
+
+    private fun checkLocationPermission() {
+        if (!hasLocationPermission) {
+            startActivity<PermissionActivity>()
+            finish()
         }
     }
 
