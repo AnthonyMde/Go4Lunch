@@ -9,12 +9,6 @@ import com.my.anthonymamode.go4lunch.utils.BaseFragment
 
 class RestaurantListFragment : BaseFragment() {
 
-    companion object {
-        fun newInstance(): RestaurantListFragment {
-            return RestaurantListFragment()
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

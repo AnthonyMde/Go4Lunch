@@ -47,7 +47,7 @@ class PermissionActivity : BaseActivity() {
     private fun setListeners() {
         permissionAgreeButton.setOnClickListener {
             ActivityCompat.requestPermissions(this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 PERMISSION_REQUEST)
         }
         permissionLogoutButton.setOnClickListener {

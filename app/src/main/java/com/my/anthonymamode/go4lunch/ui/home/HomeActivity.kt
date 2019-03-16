@@ -1,6 +1,8 @@
 package com.my.anthonymamode.go4lunch.ui.home
 
+import android.Manifest
 import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -11,11 +13,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.my.anthonymamode.go4lunch.R
-import com.my.anthonymamode.go4lunch.R.id.drawer_my_food
 import com.my.anthonymamode.go4lunch.R.id.drawer_logout
 import com.my.anthonymamode.go4lunch.R.id.drawer_settings
+import com.my.anthonymamode.go4lunch.R.id.drawer_my_food
 import com.my.anthonymamode.go4lunch.ui.LoginActivity
 import com.my.anthonymamode.go4lunch.ui.PermissionActivity
 import com.my.anthonymamode.go4lunch.ui.SettingsActivity
@@ -31,6 +36,7 @@ class HomeActivity : BaseActivity() {
     private val viewModel: HomeViewModel by lazy {
         ViewModelProviders.of(this).get(HomeViewModel::class.java)
     }
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,15 +45,17 @@ class HomeActivity : BaseActivity() {
         setSupportActionBar(homeToolbar)
         setObservers()
         viewModel.getUserInfo()
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
     }
 
     override fun onStart() {
         super.onStart()
         configureDrawerMenu()
         homeBottomNavBar.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        getCurrentLocation()
         supportFragmentManager.beginTransaction().add(
             R.id.contentView,
-            MapsFragment.newInstance()
+            MapsFragment()
         ).commit()
     }
 
@@ -58,26 +66,27 @@ class HomeActivity : BaseActivity() {
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_map -> {
-                supportFragmentManager.beginTransaction().replace(
-                    R.id.contentView,
-                    MapsFragment.newInstance()
-                ).commit()
+                supportFragmentManager.beginTransaction()
+                    .replace(
+                        R.id.contentView,
+                        MapsFragment()
+                    ).commit()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_list -> {
                 supportFragmentManager.beginTransaction()
                     .replace(
                         R.id.contentView,
-                        RestaurantListFragment.newInstance()
+                        RestaurantListFragment()
                     ).commit()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_workmates -> {
-                supportFragmentManager.beginTransaction().replace(
-                    R.id.contentView,
-                    WorkmatesFragment.newInstance()
-                )
-                    .commit()
+                supportFragmentManager.beginTransaction()
+                    .replace(
+                        R.id.contentView,
+                        WorkmatesFragment()
+                    ).commit()
                 return@OnNavigationItemSelectedListener true
             }
         }
@@ -127,6 +136,19 @@ class HomeActivity : BaseActivity() {
         })
     }
 
+    private fun getCurrentLocation() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED
+        ) {
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { loc: Location? ->
+                    loc?.let {
+                        viewModel.setCurrentLocation(LatLng(loc.latitude, loc.longitude))
+                    }
+                }
+        }
+    }
+
     private fun redirectToLoginIfSessionExpired() {
         showToastError(getString(R.string.session_expired_error))
         startActivity<LoginActivity>()
@@ -134,7 +156,8 @@ class HomeActivity : BaseActivity() {
     }
 
     private fun checkLocationPermission() {
-        val locationPermission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+        val locationPermission =
+            ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
         if (Build.VERSION.SDK_INT >= 23 && locationPermission != PackageManager.PERMISSION_GRANTED) {
             startActivity<PermissionActivity>()
             finish()

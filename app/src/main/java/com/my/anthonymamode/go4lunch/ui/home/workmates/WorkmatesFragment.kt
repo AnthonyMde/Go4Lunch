@@ -37,9 +37,8 @@ class WorkmatesFragment : BaseFragment(), WorkmatesViewHolder.OnWorkmateClickLis
         return inflater.inflate(R.layout.fragment_workmates, container, false)
     }
 
-    // TODO: better place to configure recyclerView ?
-    override fun onResume() {
-        super.onResume()
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         activity?.let { configureRecyclerView(it) }
     }
 

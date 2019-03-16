@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.firebase.ui.auth.AuthUI
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.my.anthonymamode.go4lunch.utils.Resource
@@ -25,6 +26,10 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private var _userInfo = MutableLiveData<Resource<FirebaseUser?>>()
     val userInfo: LiveData<Resource<FirebaseUser?>>
         get() = _userInfo
+
+    private var _location = MutableLiveData<LatLng>()
+    val location: LiveData<LatLng>
+        get() = _location
 
     var currentUser: String? = null
 
@@ -51,5 +56,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             .addOnFailureListener {
                 _logout.postValue(Resource.Error(it))
             }
+    }
+
+    fun setCurrentLocation(currentLocation: LatLng) {
+        _location.postValue(currentLocation)
     }
 }
