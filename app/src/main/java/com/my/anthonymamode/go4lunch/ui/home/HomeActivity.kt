@@ -13,8 +13,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.my.anthonymamode.go4lunch.R
@@ -36,14 +39,40 @@ class HomeActivity : BaseActivity() {
     private val viewModel: HomeViewModel by lazy {
         ViewModelProviders.of(this).get(HomeViewModel::class.java)
     }
+
+    /**
+     * @val locationRequest is used to configure location updates.
+     * locationRequest.interval is the update interval by default.
+     * locationRequest.fastestInterval is the fastest interval than can be
+     * get from other application location updates.
+     * locationRequest.priority defines that the more accurate geolocalisation
+     * should be used by the phone (i.e : GPS).
+     */
+    private val locationRequest by lazy {
+        LocationRequest().apply {
+            interval = 10000
+            fastestInterval = 5000
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
+    }
+
+    /**
+     * @var fusedLocationClient client which allows to use the fused location API of google.
+     * We use it to get the last known location and to get location updates.
+     */
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+    /**
+     * @var locationCallback is called when we get new location updates.
+     */
+    private lateinit var locationCallback: LocationCallback
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        checkLocationPermission()
         setContentView(R.layout.activity_home)
         setSupportActionBar(homeToolbar)
         setObservers()
+        setLocationCallback()
         viewModel.getUserInfo()
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
     }
@@ -52,11 +81,17 @@ class HomeActivity : BaseActivity() {
         super.onStart()
         configureDrawerMenu()
         homeBottomNavBar.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-        getCurrentLocation()
+        setCurrentLocation()
         supportFragmentManager.beginTransaction().add(
             R.id.contentView,
             MapsFragment()
         ).commit()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkLocationPermission()
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
     }
 
     /**
@@ -136,7 +171,10 @@ class HomeActivity : BaseActivity() {
         })
     }
 
-    private fun getCurrentLocation() {
+    /**
+     * Store the last known user location into the HomeViewModel.
+     */
+    private fun setCurrentLocation() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
             == PackageManager.PERMISSION_GRANTED
         ) {
@@ -146,6 +184,20 @@ class HomeActivity : BaseActivity() {
                         viewModel.setCurrentLocation(LatLng(loc.latitude, loc.longitude))
                     }
                 }
+        }
+    }
+
+    /**
+     * Updates the HomeViewModel location value to notify our fragments it has changed.
+     */
+    private fun setLocationCallback() {
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult?) {
+                locationResult ?: return
+                for (location in locationResult.locations) {
+                    viewModel.setCurrentLocation(LatLng(location.latitude, location.longitude))
+                }
+            }
         }
     }
 
