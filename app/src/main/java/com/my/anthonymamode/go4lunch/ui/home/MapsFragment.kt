@@ -14,13 +14,15 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.utils.BaseFragment
+import kotlinx.android.synthetic.main.fragment_maps.*
 
 private const val ZOOM_LEVEL = 15f
 private const val MIN_ZOOM = 6f
 private const val MAX_ZOOM = 20f
 
 class MapsFragment : BaseFragment(), OnMapReadyCallback {
-    private val viewModel by lazy { activity?.let {
+    private val viewModel by lazy {
+        activity?.let {
             ViewModelProviders.of(it).get(HomeViewModel::class.java)
         }
     }
@@ -28,6 +30,11 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
     private lateinit var mapsView: MapView
     private var marker: Marker? = null
     private var _googleMap: GoogleMap? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setObservers()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,9 +49,20 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
         return view
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setObservers()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        mapsFragmentRecenterFab.setOnClickListener {
+            _googleMap?.apply {
+                viewModel?.currentLocation?.value?.let {
+                    moveCamera(
+                        CameraUpdateFactory.newLatLngZoom(
+                            it,
+                            ZOOM_LEVEL
+                        )
+                    )
+                }
+            }
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
@@ -68,6 +86,7 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
                 marker = addMarker(MarkerOptions().position(it))
             }
         })
+
         viewModel?.currentLocation?.observe(this, Observer {
             _googleMap.apply {
                 if (marker == null && this != null) {
