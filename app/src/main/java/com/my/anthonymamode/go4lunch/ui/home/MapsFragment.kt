@@ -10,11 +10,12 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.utils.BaseFragment
 
-private const val ZOOM_LEVEL = 12f
+private const val ZOOM_LEVEL = 15f
 private const val MIN_ZOOM = 6f
 private const val MAX_ZOOM = 20f
 
@@ -25,6 +26,7 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
     }
 
     private lateinit var mapsView: MapView
+    private var marker: Marker? = null
     private var _googleMap: GoogleMap? = null
 
     override fun onCreateView(
@@ -42,17 +44,7 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel?.location?.observe(this, Observer {
-            _googleMap?.apply {
-                moveCamera(
-                    CameraUpdateFactory.newLatLngZoom(
-                        it,
-                        ZOOM_LEVEL
-                    )
-                )
-                addMarker(MarkerOptions().position(it))
-            }
-        })
+        setObservers()
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
@@ -62,6 +54,29 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
             setMinZoomPreference(MIN_ZOOM)
             setMaxZoomPreference(MAX_ZOOM)
         }
+    }
+
+    private fun setObservers() {
+        viewModel?.lastLocation?.observe(this, Observer {
+            _googleMap?.apply {
+                moveCamera(
+                    CameraUpdateFactory.newLatLngZoom(
+                        it,
+                        ZOOM_LEVEL
+                    )
+                )
+                marker = addMarker(MarkerOptions().position(it))
+            }
+        })
+        viewModel?.currentLocation?.observe(this, Observer {
+            _googleMap.apply {
+                if (marker == null && this != null) {
+                    marker = addMarker(MarkerOptions().position(it))
+                } else {
+                    marker?.position = it
+                }
+            }
+        })
     }
 
     override fun onResume() {

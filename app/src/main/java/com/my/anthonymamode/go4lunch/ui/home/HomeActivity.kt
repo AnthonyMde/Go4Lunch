@@ -81,7 +81,7 @@ class HomeActivity : BaseActivity() {
         super.onStart()
         configureDrawerMenu()
         homeBottomNavBar.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-        setCurrentLocation()
+        setLastLocation()
         supportFragmentManager.beginTransaction().add(
             R.id.contentView,
             MapsFragment()
@@ -172,23 +172,23 @@ class HomeActivity : BaseActivity() {
     }
 
     /**
-     * Store the last known user location into the HomeViewModel.
+     * Store the last known user lastLocation into the HomeViewModel.
      */
-    private fun setCurrentLocation() {
+    private fun setLastLocation() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
             == PackageManager.PERMISSION_GRANTED
         ) {
             fusedLocationClient.lastLocation
                 .addOnSuccessListener { loc: Location? ->
                     loc?.let {
-                        viewModel.setCurrentLocation(LatLng(loc.latitude, loc.longitude))
+                        viewModel.setLastLocation(LatLng(it.latitude, it.longitude))
                     }
                 }
         }
     }
 
     /**
-     * Updates the HomeViewModel location value to notify our fragments it has changed.
+     * Updates the HomeViewModel lastLocation value to notify our fragments the value has changed.
      */
     private fun setLocationCallback() {
         locationCallback = object : LocationCallback() {

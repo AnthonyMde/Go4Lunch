@@ -27,9 +27,13 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     val userInfo: LiveData<Resource<FirebaseUser?>>
         get() = _userInfo
 
-    private var _location = MutableLiveData<LatLng>()
-    val location: LiveData<LatLng>
-        get() = _location
+    private var _lastLocation = MutableLiveData<LatLng>()
+    val lastLocation: LiveData<LatLng>
+        get() = _lastLocation
+
+    private var _currentLocation = MutableLiveData<LatLng>()
+    val currentLocation: LiveData<LatLng>
+        get() = _currentLocation
 
     var currentUser: String? = null
 
@@ -58,7 +62,11 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             }
     }
 
+    fun setLastLocation(lastLocation: LatLng) {
+        _lastLocation.postValue(lastLocation)
+    }
+
     fun setCurrentLocation(currentLocation: LatLng) {
-        _location.postValue(currentLocation)
+        _currentLocation.postValue(currentLocation)
     }
 }
