@@ -14,7 +14,7 @@
             android:layout_gravity="end|bottom"
             android:src="@drawable/ic_gps_fixed_black_24dp"
             app:backgroundTint="@android:color/white"
-            app:rippleColor="@color/yellowStar"
+            app:rippleColor="@color/colorPrimary"
             android:layout_marginBottom="24dp"
             android:layout_marginEnd="24dp"
     />

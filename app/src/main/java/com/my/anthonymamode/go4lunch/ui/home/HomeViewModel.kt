@@ -31,10 +31,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     val lastLocation: LiveData<LatLng>
         get() = _lastLocation
 
-    private var _currentLocation = MutableLiveData<LatLng>()
-    val currentLocation: LiveData<LatLng>
-        get() = _currentLocation
-
     var currentUser: String? = null
 
     /**
@@ -64,9 +60,5 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     fun setLastLocation(lastLocation: LatLng) {
         _lastLocation.postValue(lastLocation)
-    }
-
-    fun setCurrentLocation(currentLocation: LatLng) {
-        _currentLocation.postValue(currentLocation)
     }
 }

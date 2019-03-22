@@ -16,7 +16,7 @@ import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.utils.BaseFragment
 import kotlinx.android.synthetic.main.fragment_maps.*
 
-private const val ZOOM_LEVEL = 15f
+private const val ZOOM_LEVEL = 16f
 private const val MIN_ZOOM = 6f
 private const val MAX_ZOOM = 20f
 
@@ -30,11 +30,6 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
     private lateinit var mapsView: MapView
     private var marker: Marker? = null
     private var _googleMap: GoogleMap? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setObservers()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,7 +48,7 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState)
         mapsFragmentRecenterFab.setOnClickListener {
             _googleMap?.apply {
-                viewModel?.currentLocation?.value?.let {
+                viewModel?.lastLocation?.value?.let {
                     moveCamera(
                         CameraUpdateFactory.newLatLngZoom(
                             it,
@@ -72,9 +67,10 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
             setMinZoomPreference(MIN_ZOOM)
             setMaxZoomPreference(MAX_ZOOM)
         }
+        setLocation()
     }
 
-    private fun setObservers() {
+    private fun setLocation() {
         viewModel?.lastLocation?.observe(this, Observer {
             _googleMap?.apply {
                 moveCamera(
@@ -86,21 +82,11 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
                 marker = addMarker(MarkerOptions().position(it))
             }
         })
-
-        viewModel?.currentLocation?.observe(this, Observer {
-            _googleMap.apply {
-                if (marker == null && this != null) {
-                    marker = addMarker(MarkerOptions().position(it))
-                } else {
-                    marker?.position = it
-                }
-            }
-        })
     }
 
     override fun onResume() {
-        super.onResume()
         mapsView?.onResume()
+        super.onResume()
     }
 
     override fun onPause() {
