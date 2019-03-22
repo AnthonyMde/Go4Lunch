@@ -10,6 +10,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.my.anthonymamode.go4lunch.R
@@ -28,6 +29,7 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
     }
 
     private lateinit var mapsView: MapView
+    private lateinit var mapsCenter: LatLng
     private var marker: Marker? = null
     private var _googleMap: GoogleMap? = null
 
@@ -55,6 +57,8 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
                             ZOOM_LEVEL
                         )
                     )
+                    mapsCenter = cameraPosition.target
+                    marker?.position = mapsCenter
                 }
             }
         }
@@ -66,6 +70,10 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
             _googleMap = this
             setMinZoomPreference(MIN_ZOOM)
             setMaxZoomPreference(MAX_ZOOM)
+            setOnCameraMoveListener {
+                mapsCenter = cameraPosition.target
+                marker?.position = mapsCenter
+            }
         }
         setLocation()
     }
@@ -80,6 +88,7 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
                     )
                 )
                 marker = addMarker(MarkerOptions().position(it))
+                mapsCenter = it
             }
         })
     }
