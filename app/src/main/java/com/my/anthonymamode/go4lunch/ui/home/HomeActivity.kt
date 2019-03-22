@@ -13,22 +13,22 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.my.anthonymamode.go4lunch.R
-import com.my.anthonymamode.go4lunch.R.id.drawer_logout
 import com.my.anthonymamode.go4lunch.R.id.drawer_settings
 import com.my.anthonymamode.go4lunch.R.id.drawer_my_food
+import com.my.anthonymamode.go4lunch.R.id.drawer_logout
 import com.my.anthonymamode.go4lunch.ui.LoginActivity
 import com.my.anthonymamode.go4lunch.ui.PermissionActivity
 import com.my.anthonymamode.go4lunch.ui.SettingsActivity
 import com.my.anthonymamode.go4lunch.ui.home.workmates.WorkmatesFragment
 import com.my.anthonymamode.go4lunch.utils.BaseActivity
+import com.my.anthonymamode.go4lunch.utils.BoundLocationManager.Companion.boundLocationListenerIn
 import com.my.anthonymamode.go4lunch.utils.GlideApp
 import com.my.anthonymamode.go4lunch.utils.Resource
 import kotlinx.android.synthetic.main.activity_home.*
@@ -36,24 +36,9 @@ import kotlinx.android.synthetic.main.nav_drawer_header.view.*
 import org.jetbrains.anko.startActivity
 
 class HomeActivity : BaseActivity() {
+
     private val viewModel: HomeViewModel by lazy {
         ViewModelProviders.of(this).get(HomeViewModel::class.java)
-    }
-
-    /**
-     * @val locationRequest is used to configure location updates.
-     * locationRequest.interval is the update interval by default.
-     * locationRequest.fastestInterval is the fastest interval than can be
-     * get from other application location updates.
-     * locationRequest.priority defines that the more accurate geolocalisation
-     * should be used by the phone (i.e : GPS).
-     */
-    private val locationRequest by lazy {
-        LocationRequest().apply {
-            interval = 10000
-            fastestInterval = 5000
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        }
     }
 
     /**
@@ -62,26 +47,26 @@ class HomeActivity : BaseActivity() {
      */
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
-    /**
-     * @var locationCallback is called when we get new location updates.
-     */
-    private lateinit var locationCallback: LocationCallback
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
         setSupportActionBar(homeToolbar)
         setObservers()
-        setLocationCallback()
         viewModel.getUserInfo()
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+        if (hasAcceptedLocationPermission())
+            boundLocationListenerIn(this, fusedLocationClient, getLocationCallback())
+        else {
+            startActivity<PermissionActivity>()
+            finish()
+        }
     }
 
     override fun onStart() {
         super.onStart()
         configureDrawerMenu()
         homeBottomNavBar.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-        setLastLocation()
         supportFragmentManager.beginTransaction().add(
             R.id.contentView,
             MapsFragment()
@@ -90,8 +75,7 @@ class HomeActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        checkLocationPermission()
-        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
+        setLastLocation()
     }
 
     /**
@@ -175,7 +159,7 @@ class HomeActivity : BaseActivity() {
      * Store the last known user lastLocation into the HomeViewModel.
      */
     private fun setLastLocation() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
             == PackageManager.PERMISSION_GRANTED
         ) {
             fusedLocationClient.lastLocation
@@ -188,10 +172,10 @@ class HomeActivity : BaseActivity() {
     }
 
     /**
-     * Updates the HomeViewModel lastLocation value to notify our fragments the value has changed.
+     * Updates the HomeViewModel location value to notify our fragments the value has changed.
      */
-    private fun setLocationCallback() {
-        locationCallback = object : LocationCallback() {
+    private fun getLocationCallback(): LocationCallback {
+        return object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult?) {
                 locationResult ?: return
                 for (location in locationResult.locations) {
@@ -201,19 +185,16 @@ class HomeActivity : BaseActivity() {
         }
     }
 
+    private fun hasAcceptedLocationPermission(): Boolean {
+        val locationPermission =
+            ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+        return !(Build.VERSION.SDK_INT >= 23 && locationPermission != PackageManager.PERMISSION_GRANTED)
+    }
+
     private fun redirectToLoginIfSessionExpired() {
         showToastError(getString(R.string.session_expired_error))
         startActivity<LoginActivity>()
         finish()
-    }
-
-    private fun checkLocationPermission() {
-        val locationPermission =
-            ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-        if (Build.VERSION.SDK_INT >= 23 && locationPermission != PackageManager.PERMISSION_GRANTED) {
-            startActivity<PermissionActivity>()
-            finish()
-        }
     }
 
     /**
