@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.Query
 import com.my.anthonymamode.go4lunch.R
-import com.my.anthonymamode.go4lunch.api.getUsersOrderedByLunch
-import com.my.anthonymamode.go4lunch.model.User
+import com.my.anthonymamode.go4lunch.data.api.getUsersOrderedByLunch
+import com.my.anthonymamode.go4lunch.domain.User
 import com.my.anthonymamode.go4lunch.ui.DetailRestaurantActivity
 import com.my.anthonymamode.go4lunch.ui.home.HomeViewModel
 import com.my.anthonymamode.go4lunch.utils.BaseFragment

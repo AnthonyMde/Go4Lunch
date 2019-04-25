@@ -1,10 +1,10 @@
-package com.my.anthonymamode.go4lunch.api
+package com.my.anthonymamode.go4lunch.data.api
 
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.my.anthonymamode.go4lunch.model.User
+import com.my.anthonymamode.go4lunch.domain.User
 
 private const val USERS_COLLECTION_NAME = "users"
 

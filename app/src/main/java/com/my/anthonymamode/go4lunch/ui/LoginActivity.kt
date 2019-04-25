@@ -15,7 +15,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.my.anthonymamode.go4lunch.R
-import com.my.anthonymamode.go4lunch.api.createUser
+import com.my.anthonymamode.go4lunch.data.api.createUser
 import com.my.anthonymamode.go4lunch.ui.home.HomeActivity
 import com.my.anthonymamode.go4lunch.utils.BaseActivity
 import kotlinx.android.synthetic.main.activity_login.*

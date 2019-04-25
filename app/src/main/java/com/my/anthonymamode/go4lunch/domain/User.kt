@@ -1,4 +1,4 @@
-package com.my.anthonymamode.go4lunch.model
+package com.my.anthonymamode.go4lunch.domain
 
 data class User(
     var uid: String = "",

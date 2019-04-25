@@ -10,7 +10,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.my.anthonymamode.go4lunch.R
-import com.my.anthonymamode.go4lunch.model.User
+import com.my.anthonymamode.go4lunch.domain.User
 import com.my.anthonymamode.go4lunch.utils.GlideApp
 import kotlinx.android.synthetic.main.workmates_list_item.view.*
 

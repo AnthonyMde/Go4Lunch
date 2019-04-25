@@ -14,8 +14,14 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.my.anthonymamode.go4lunch.R
+import com.my.anthonymamode.go4lunch.domain.Place
+import com.my.anthonymamode.go4lunch.domain.Places
 import com.my.anthonymamode.go4lunch.utils.BaseFragment
 import kotlinx.android.synthetic.main.fragment_maps.*
+import org.jetbrains.anko.support.v4.longToast
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 private const val ZOOM_LEVEL = 16f
 private const val MIN_ZOOM = 6f
@@ -73,6 +79,7 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
             setOnCameraMoveListener {
                 mapsCenter = cameraPosition.target
                 marker?.position = mapsCenter
+                displayNearbyRestaurant()
             }
         }
         setLocation()
@@ -89,8 +96,34 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
                 )
                 marker = addMarker(MarkerOptions().position(it))
                 mapsCenter = it
+                displayNearbyRestaurant()
             }
         })
+    }
+
+    private fun displayNearbyRestaurant() {
+        val callback = object : Callback<Places> {
+            override fun onFailure(call: Call<Places>, t: Throwable) {
+                // TODO: set better error
+                longToast("Impossible to get nearby restaurants : ${t.message}")
+            }
+
+            override fun onResponse(call: Call<Places>, response: Response<Places>) {
+                if (response.isSuccessful) {
+                    response.body()?.places?.let { setRestaurantMarkers(it) }
+                }
+            }
+        }
+        viewModel?.getRestaurantPlaces(mapsCenter, 1000)?.enqueue(callback)
+    }
+
+    private fun setRestaurantMarkers(restaurants: List<Place>) {
+        for (restaurant in restaurants) {
+            val latLng = LatLng(restaurant.geometry.location.lat, restaurant.geometry.location.lng)
+            val markerOptions = MarkerOptions()
+            markerOptions.position(latLng)
+            _googleMap?.addMarker(markerOptions)
+        }
     }
 
     override fun onResume() {
