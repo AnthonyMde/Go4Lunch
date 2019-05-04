@@ -24,7 +24,9 @@ class NetworkModule {
                 .connectTimeout(30, TimeUnit.SECONDS)
 
             if (BuildConfig.DEBUG) {
-                okHttpClient.addInterceptor(HttpLoggingInterceptor())
+                okHttpClient.addInterceptor(HttpLoggingInterceptor().apply {
+                    level = HttpLoggingInterceptor.Level.BASIC
+                })
             }
             return okHttpClient.build()
         }

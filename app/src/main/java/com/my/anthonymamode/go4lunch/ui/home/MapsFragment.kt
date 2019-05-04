@@ -1,6 +1,7 @@
 package com.my.anthonymamode.go4lunch.ui.home
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +12,6 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.domain.Place
@@ -36,8 +36,8 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
 
     private lateinit var mapsView: MapView
     private lateinit var mapsCenter: LatLng
-    private var marker: Marker? = null
     private var _googleMap: GoogleMap? = null
+    private var lastTimePositionChanged = 0L
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -64,7 +64,6 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
                         )
                     )
                     mapsCenter = cameraPosition.target
-                    marker?.position = mapsCenter
                 }
             }
         }
@@ -76,13 +75,22 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
             _googleMap = this
             setMinZoomPreference(MIN_ZOOM)
             setMaxZoomPreference(MAX_ZOOM)
-            setOnCameraMoveListener {
+            setOnCameraIdleListener {
                 mapsCenter = cameraPosition.target
-                marker?.position = mapsCenter
-                displayNearbyRestaurant()
+                displayNearbyRestaurantWithDebounce()
             }
         }
         setLocation()
+    }
+
+    private fun displayNearbyRestaurantWithDebounce() {
+        val debounceTime = 600L
+        Handler().postDelayed({
+            if (System.currentTimeMillis() - lastTimePositionChanged >= debounceTime) {
+                displayNearbyRestaurant()
+            }
+        }, debounceTime)
+        lastTimePositionChanged = System.currentTimeMillis()
     }
 
     private fun setLocation() {
@@ -94,7 +102,6 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
                         ZOOM_LEVEL
                     )
                 )
-                marker = addMarker(MarkerOptions().position(it))
                 mapsCenter = it
                 displayNearbyRestaurant()
             }
@@ -118,6 +125,7 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
     }
 
     private fun setRestaurantMarkers(restaurants: List<Place>) {
+        _googleMap?.clear()
         for (restaurant in restaurants) {
             val latLng = LatLng(restaurant.geometry.location.lat, restaurant.geometry.location.lng)
             val markerOptions = MarkerOptions()
