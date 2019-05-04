@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- LOGIN -->
+    <string name="login_subtitle">Trouve un restaurant agréable et invite tes collègues à diner !</string>
+    <string name="login_facebook_button">Se connecter avec Facebook</string>
+    <string name="login_google_button">Se connecter avec Google</string>
+    <string name="login_canceled">La connexion a échoué</string>
+    <string name="login_no_network">Pas de connexion internet</string>
+    <string name="login_unknown_error">Une erreur inconnue est survenue</string>
+
+    <!-- HOME -->
+    <string name="home_map_view_title">Carte</string>
+    <string name="home_list_view_title">Liste</string>
+    <string name="home_workmates_title">Collègues</string>
+    <string name="home_toolbar_title">Une petite faim ?</string>
+
+    <!-- WORKMATES -->
+    <string name="workamtes_has_lunch">%1$s y mange</string>
+    <string name="workmates_has_no_lunch">%1$s n\'a pas encore choisi</string>
+
+    <!-- DRAWER -->
+    <string name="drawer_logout">DÉCONNEXION</string>
+    <string name="drawer_settings">PARAMÈTRES</string>
+    <string name="drawer_my_food">VOTRE RESTAURANT</string>
+
+    <!-- SETTINGS -->
+    <string name="settings_activity_name">Paramètres</string>
+    <string name="settings_delete_account_button">Supprimer mon compte</string>
+    <string name="settings_delete_account_alert_dialog_title">Vous êtes sur le point de supprimer votre compte</string>
+    <string name="settings_delete_account_alert_dialog_message">Toutes vos données seront supprimées immédiatemment</string>
+    <string name="settings_delete_account_alert_dialog_positive_button">Supprimer</string>
+    <string name="settings_delete_account_alert_dialog_negative_button">Annuler</string>
+    <string name="settings_delete_account_success_toast">Votre compte a été supprimé avec succès</string>
+    <string name="settings_delete_account_success_but_no_logout">Votre compte a été supprimé avec succès mais nous n\'avons pas pu vous déconnecter
+    </string>
+    <string name="settings_delete_account_error">Oops, nous n\'arrivons pas à supprimer votre compte pour le moment. Votre session est peut-être expirée.
+    </string>
+
+    <!-- IMAGE DESCRIPTIONS -->
+    <string name="nav_header_image_profile_desc">La photo de profil</string>
+    <string name="nav_header_app_logo_desc">Le logo de l\'application</string>
+    <string name="login_app_logo_desc">Le logo de l\'application</string>
+
+    <!-- ERRORS -->
+    <string name="profile_data_error">Pour une raison inconnue, nous ne pouvons récupérer vos données pour le moment.</string>
+    <string name="session_expired_error">Il semblerait que votre session ait expirée. Essayer de vous reconnecter.</string>
+    <string name="logout_error">Désolé, la déconnexion semble impossible pour le moment.</string>
+    <string name="firebase_crud_error">Une erreur est survenue lors de la mise à jour de vos informations.</string>
+
+    <!-- GOOGLE -->
+    <string name="detail_restaurant_call_button">Téléphone</string>
+    <string name="detail_restaurant_like_button">Favori</string>
+    <string name="detail_restaurant_website_button">Site</string>
+</resources>
