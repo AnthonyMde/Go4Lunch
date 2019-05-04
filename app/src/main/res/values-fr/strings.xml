@@ -16,7 +16,7 @@
     <string name="home_toolbar_title">Une petite faim ?</string>
 
     <!-- WORKMATES -->
-    <string name="workamtes_has_lunch">%1$s y mange</string>
+    <string name="workmates_has_lunch">%1$s y mange</string>
     <string name="workmates_has_no_lunch">%1$s n\'a pas encore choisi</string>
 
     <!-- DRAWER -->

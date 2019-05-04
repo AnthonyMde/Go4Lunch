@@ -17,7 +17,7 @@
     <string name="home_toolbar_title">I\'m hungry</string>
 
     <!-- WORKMATES -->
-    <string name="workamtes_has_lunch">%1$s is eating</string>
+    <string name="workmates_has_lunch">%1$s is eating</string>
     <string name="workmates_has_no_lunch">%1$s has not decided yet</string>
 
     <!-- DRAWER -->

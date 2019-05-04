@@ -1,22 +1,19 @@
 package com.my.anthonymamode.go4lunch.ui.home
 
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import com.my.anthonymamode.go4lunch.R
-import com.my.anthonymamode.go4lunch.domain.Place
 import com.my.anthonymamode.go4lunch.domain.Places
 import com.my.anthonymamode.go4lunch.utils.BaseFragment
+import com.my.anthonymamode.go4lunch.utils.MapsHelper
+import com.my.anthonymamode.go4lunch.utils.debounceThatFunction
 import kotlinx.android.synthetic.main.fragment_maps.*
 import org.jetbrains.anko.support.v4.longToast
 import retrofit2.Call
@@ -35,8 +32,7 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
     }
 
     private lateinit var mapsView: MapView
-    private lateinit var mapsCenter: LatLng
-    private var _googleMap: GoogleMap? = null
+    private lateinit var mapsHelper: MapsHelper
     private var lastTimePositionChanged = 0L
 
     override fun onCreateView(
@@ -55,56 +51,32 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mapsFragmentRecenterFab.setOnClickListener {
-            _googleMap?.apply {
-                viewModel?.lastLocation?.value?.let {
-                    moveCamera(
-                        CameraUpdateFactory.newLatLngZoom(
-                            it,
-                            ZOOM_LEVEL
-                        )
-                    )
-                    mapsCenter = cameraPosition.target
-                }
+            viewModel?.lastLocation?.value?.let {
+                mapsHelper.recenterMap(it, ZOOM_LEVEL)
             }
         }
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
+        mapsHelper = MapsHelper(googleMap)
         googleMap ?: return
         with(googleMap) {
-            _googleMap = this
             setMinZoomPreference(MIN_ZOOM)
             setMaxZoomPreference(MAX_ZOOM)
             setOnCameraIdleListener {
-                mapsCenter = cameraPosition.target
-                displayNearbyRestaurantWithDebounce()
+                mapsHelper.setMapsCenter(cameraPosition.target)
+                lastTimePositionChanged =
+                    debounceThatFunction({ displayNearbyRestaurant() }, 600L, lastTimePositionChanged)
             }
         }
         setLocation()
     }
 
-    private fun displayNearbyRestaurantWithDebounce() {
-        val debounceTime = 600L
-        Handler().postDelayed({
-            if (System.currentTimeMillis() - lastTimePositionChanged >= debounceTime) {
-                displayNearbyRestaurant()
-            }
-        }, debounceTime)
-        lastTimePositionChanged = System.currentTimeMillis()
-    }
-
     private fun setLocation() {
+        // TODO: add a fallback if lastLocation == null
         viewModel?.lastLocation?.observe(this, Observer {
-            _googleMap?.apply {
-                moveCamera(
-                    CameraUpdateFactory.newLatLngZoom(
-                        it,
-                        ZOOM_LEVEL
-                    )
-                )
-                mapsCenter = it
-                displayNearbyRestaurant()
-            }
+            mapsHelper.recenterMap(it, ZOOM_LEVEL)
+            displayNearbyRestaurant()
         })
     }
 
@@ -117,40 +89,32 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
 
             override fun onResponse(call: Call<Places>, response: Response<Places>) {
                 if (response.isSuccessful) {
-                    response.body()?.places?.let { setRestaurantMarkers(it) }
+                    response.body()?.places?.let { mapsHelper.setRestaurantMarkers(it) }
                 }
             }
         }
-        viewModel?.getRestaurantPlaces(mapsCenter, 1000)?.enqueue(callback)
-    }
-
-    private fun setRestaurantMarkers(restaurants: List<Place>) {
-        _googleMap?.clear()
-        for (restaurant in restaurants) {
-            val latLng = LatLng(restaurant.geometry.location.lat, restaurant.geometry.location.lng)
-            val markerOptions = MarkerOptions()
-            markerOptions.position(latLng)
-            _googleMap?.addMarker(markerOptions)
-        }
+        val center = mapsHelper.getMapsCenter()
+        if (center != null)
+            viewModel?.getRestaurantPlaces(center, 1000)?.enqueue(callback)
     }
 
     override fun onResume() {
-        mapsView?.onResume()
+        mapsView.onResume()
         super.onResume()
     }
 
     override fun onPause() {
-        mapsView?.onPause()
+        mapsView.onPause()
         super.onPause()
     }
 
     override fun onDestroy() {
-        mapsView?.onDestroy()
+        mapsView.onDestroy()
         super.onDestroy()
     }
 
     override fun onLowMemory() {
-        mapsView?.onLowMemory()
+        mapsView.onLowMemory()
         super.onLowMemory()
     }
 }

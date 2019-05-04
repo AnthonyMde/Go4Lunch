@@ -73,7 +73,7 @@ class WorkmatesViewHolder(private val view: View, private val listener: OnWorkma
     fun bindDataToItemView(data: User) {
         val context = view.context
         if (data.hasLunch) {
-            view.workmatesItemText.text = context.getString(R.string.workamtes_has_lunch, data.displayName)
+            view.workmatesItemText.text = context.getString(R.string.workmates_has_lunch, data.displayName)
             view.workmatesItemText.setTypeface(null, Typeface.NORMAL)
             view.workmatesItemText.setTextColor(context.resources.getColor(android.R.color.black))
             view.setOnClickListener { onItemClicked(listener) }
