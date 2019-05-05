@@ -91,8 +91,7 @@ class LoginActivity : BaseActivity() {
                             it.photoUrl.toString()
                         ).addOnFailureListener(super.onFailureListener())
                     }
-                    checkLocationPermission()
-                    launchHomeActivity()
+                    checkLocationPermissionAndRedirect()
                 }
                 Activity.RESULT_CANCELED -> {
                     val response = IdpResponse.fromResultIntent(data)
@@ -106,10 +105,12 @@ class LoginActivity : BaseActivity() {
         }
     }
 
-    private fun checkLocationPermission() {
+    private fun checkLocationPermissionAndRedirect() {
         if (!hasLocationPermission) {
             startActivity<PermissionActivity>()
-            finish()
+            this.finish()
+        } else {
+            launchHomeActivity()
         }
     }
 

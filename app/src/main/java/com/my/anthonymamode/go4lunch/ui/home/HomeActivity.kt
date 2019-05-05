@@ -122,6 +122,7 @@ class HomeActivity : BaseActivity() {
                 }
             }
         })
+
         viewModel.userInfo.observe(this, Observer {
             when (it) {
                 is Resource.Success -> {
@@ -169,7 +170,7 @@ class HomeActivity : BaseActivity() {
 
     private fun checkLocationPermission() {
         val locationPermission =
-            ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+            ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
         if (Build.VERSION.SDK_INT >= 23 && locationPermission != PackageManager.PERMISSION_GRANTED) {
             startActivity<PermissionActivity>()
             finish()

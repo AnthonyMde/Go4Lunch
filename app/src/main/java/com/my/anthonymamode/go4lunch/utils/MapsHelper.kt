@@ -10,7 +10,7 @@ class MapsHelper(private val googleMap: GoogleMap?) {
 
     private var mapsCenter: LatLng? = null
 
-    fun recenterMap(currentPosition: LatLng, zoom: Float) {
+    fun centerMap(currentPosition: LatLng, zoom: Float) {
         googleMap?.apply {
             moveCamera(
                 CameraUpdateFactory.newLatLngZoom(

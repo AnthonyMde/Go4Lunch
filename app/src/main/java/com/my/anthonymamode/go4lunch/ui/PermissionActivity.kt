@@ -11,7 +11,9 @@ import com.my.anthonymamode.go4lunch.ui.home.HomeViewModel
 import com.my.anthonymamode.go4lunch.utils.BaseActivity
 import com.my.anthonymamode.go4lunch.utils.Resource
 import kotlinx.android.synthetic.main.activity_permission.*
-import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.clearTask
+import org.jetbrains.anko.intentFor
+import org.jetbrains.anko.newTask
 
 private const val PERMISSION_REQUEST = 99
 
@@ -32,7 +34,7 @@ class PermissionActivity : BaseActivity() {
         viewModel.logout.observe(this, Observer {
             when (it) {
                 is Resource.Success -> {
-                    startActivity<LoginActivity>()
+                    startActivity(intentFor<LoginActivity>().newTask().clearTask())
                     finish()
                 }
                 is Resource.Error -> {
