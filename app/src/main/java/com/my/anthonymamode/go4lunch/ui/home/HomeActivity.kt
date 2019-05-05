@@ -48,19 +48,19 @@ class HomeActivity : BaseActivity() {
         setContentView(R.layout.activity_home)
         setSupportActionBar(homeToolbar)
         setObservers()
-        viewModel.getUserInfo()
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        configureDrawerMenu()
         homeBottomNavBar.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-        setLastLocation()
+        configureDrawerMenu()
+        viewModel.getUserInfo()
         supportFragmentManager.beginTransaction().add(
             R.id.contentView,
             MapsFragment()
         ).commit()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        setLastLocation()
     }
 
     override fun onResume() {
