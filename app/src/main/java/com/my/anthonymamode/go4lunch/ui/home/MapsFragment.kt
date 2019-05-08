@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.model.LatLng
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.domain.Places
 import com.my.anthonymamode.go4lunch.utils.BaseFragment
@@ -69,16 +69,14 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
                     debounceThatFunction({ displayNearbyRestaurant() }, 600L, lastTimePositionChanged)
             }
         }
-        getUserLocation()?.let {
-            mapsHelper.centerMap(it, ZOOM_LEVEL)
-            displayNearbyRestaurant()
-        }
+        setUserLocation()
     }
 
-    private fun getUserLocation(): LatLng? {
-        viewModel?.lastLocation?.let {
-            return it.value
-        } ?: return null // TODO: force the location
+    private fun setUserLocation() {
+        viewModel?.lastLocation?.observe(this, Observer {
+            mapsHelper.centerMap(it, ZOOM_LEVEL)
+            displayNearbyRestaurant()
+        })
     }
 
     private fun displayNearbyRestaurant() {

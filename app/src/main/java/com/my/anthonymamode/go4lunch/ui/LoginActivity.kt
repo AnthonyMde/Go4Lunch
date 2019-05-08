@@ -3,9 +3,7 @@ package com.my.anthonymamode.go4lunch.ui
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.ErrorCodes
@@ -18,6 +16,7 @@ import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.data.api.createUser
 import com.my.anthonymamode.go4lunch.ui.home.HomeActivity
 import com.my.anthonymamode.go4lunch.utils.BaseActivity
+import com.my.anthonymamode.go4lunch.utils.setStatusBarTransparent
 import kotlinx.android.synthetic.main.activity_login.*
 import org.jetbrains.anko.startActivity
 
@@ -39,7 +38,7 @@ class LoginActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        setStatusBarTransparent()
+        window.setStatusBarTransparent()
         setupFirebaseDateConfig()
 
         if (FirebaseAuth.getInstance().currentUser != null)
@@ -121,19 +120,6 @@ class LoginActivity : BaseActivity() {
 
     private fun showCanceledSnackBar(errorMessage: Int) {
         Snackbar.make(loginActivityLayout, errorMessage, Snackbar.LENGTH_SHORT).show()
-    }
-
-    /**
-     * Can't be done directly in the xml theme to the sake of
-     * backward compatibility to android 4.4 (kitkat).
-     */
-    private fun setStatusBarTransparent() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            window.setFlags(
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-            )
-        }
     }
 
     /**

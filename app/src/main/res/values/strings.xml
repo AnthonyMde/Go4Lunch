@@ -2,6 +2,14 @@
     <!-- GENERAL -->
     <string name="app_name" translatable="false">Go4Lunch</string>
 
+    <!-- FACEBOOK -->
+    <string name="facebook_application_id" translatable="false">281477675880579</string>
+    <string name="facebook_login_protocol_scheme" translatable="false" tools:ignore="UnusedResources">fb281477675880579
+    </string>
+
+    <!-- GOOGLE -->
+    <string name="google_maps_key" translatable="false">AIzaSyAxNj0upUnrYnDoxbufqeA5BbIlpqttzYw</string>
+
     <!-- LOGIN -->
     <string name="login_subtitle">Find a nice restaurant and invite co-workers for lunch!</string>
     <string name="login_facebook_button">Sign in with Facebook</string>
@@ -14,7 +22,7 @@
     <string name="home_map_view_title">Map View</string>
     <string name="home_list_view_title">List View</string>
     <string name="home_workmates_title">Workmates</string>
-    <string name="home_toolbar_title">I\'m hungry</string>
+    <string name="home_toolbar_title">A bit hungry ?</string>
 
     <!-- WORKMATES -->
     <string name="workmates_has_lunch">%1$s is eating</string>
@@ -40,6 +48,19 @@
         expired.
     </string>
 
+    <!-- RESTAURANT DETAILS-->
+    <string name="detail_restaurant_call_button">call</string>
+    <string name="detail_restaurant_like_button">Like</string>
+    <string name="detail_restaurant_website_button">Website</string>
+
+    <!-- PERMISSION SCREEN -->
+    <string name="permission_activity_title">Let\'s activate localisation to find great restaurants !</string>
+    <string name="permission_activity_description">Go4Lunch is mainly based on geolocation, activate it to get fully
+        access to the app.
+    </string>
+    <string name="permission_activity_granted_btn">Ok got it</string>
+    <string name="permission_activity_log_out_btn">Log me out</string>
+
     <!-- IMAGE DESCRIPTIONS -->
     <string name="nav_header_image_profile_desc">Image profile</string>
     <string name="nav_header_app_logo_desc">Application logo</string>
@@ -50,15 +71,4 @@
     <string name="session_expired_error">It seems your session has expired. Please try to reconnect.</string>
     <string name="logout_error">Sorry, the log out has failed</string>
     <string name="firebase_crud_error">An error has occurred while updating your data</string>
-
-    <!-- FACEBOOK -->
-    <string name="facebook_application_id" translatable="false">281477675880579</string>
-    <string name="facebook_login_protocol_scheme" translatable="false" tools:ignore="UnusedResources">fb281477675880579
-    </string>
-
-    <!-- GOOGLE -->
-    <string name="google_maps_key" translatable="false">AIzaSyAxNj0upUnrYnDoxbufqeA5BbIlpqttzYw</string>
-    <string name="detail_restaurant_call_button">call</string>
-    <string name="detail_restaurant_like_button">Like</string>
-    <string name="detail_restaurant_website_button">Website</string>
 </resources>

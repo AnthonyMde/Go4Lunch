@@ -37,6 +37,18 @@
     <string name="settings_delete_account_error">Oops, nous n\'arrivons pas à supprimer votre compte pour le moment. Votre session est peut-être expirée.
     </string>
 
+    <!-- RESTAURANT DETAILS -->
+    <string name="detail_restaurant_call_button">Téléphone</string>
+    <string name="detail_restaurant_like_button">Favori</string>
+    <string name="detail_restaurant_website_button">Site</string>
+
+    <!-- PERMISSION SCREEN -->
+    <string name="permission_activity_title">Activez la géolocalisation et ne manquez plus un repas entre amis !</string>
+    <string name="permission_activity_description">Go4Lunch fonctionne principalement grâce à la géolocalisation, activez la pour pouvoir accéder au reste de l\'application.
+    </string>
+    <string name="permission_activity_granted_btn">J\'ai compris</string>
+    <string name="permission_activity_log_out_btn">Me déconnecter</string>
+
     <!-- IMAGE DESCRIPTIONS -->
     <string name="nav_header_image_profile_desc">La photo de profil</string>
     <string name="nav_header_app_logo_desc">Le logo de l\'application</string>
@@ -47,9 +59,4 @@
     <string name="session_expired_error">Il semblerait que votre session ait expirée. Essayer de vous reconnecter.</string>
     <string name="logout_error">Désolé, la déconnexion semble impossible pour le moment.</string>
     <string name="firebase_crud_error">Une erreur est survenue lors de la mise à jour de vos informations.</string>
-
-    <!-- GOOGLE -->
-    <string name="detail_restaurant_call_button">Téléphone</string>
-    <string name="detail_restaurant_like_button">Favori</string>
-    <string name="detail_restaurant_website_button">Site</string>
 </resources>

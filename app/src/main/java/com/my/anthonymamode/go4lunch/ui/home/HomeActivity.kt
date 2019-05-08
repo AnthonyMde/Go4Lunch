@@ -51,6 +51,8 @@ class HomeActivity : BaseActivity() {
         homeBottomNavBar.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         configureDrawerMenu()
         viewModel.getUserInfo()
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        setLastLocation()
         supportFragmentManager.beginTransaction().add(
             R.id.contentView,
             MapsFragment()
@@ -59,7 +61,6 @@ class HomeActivity : BaseActivity() {
 
     override fun onStart() {
         super.onStart()
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         setLastLocation()
     }
 
@@ -157,7 +158,7 @@ class HomeActivity : BaseActivity() {
                 .addOnSuccessListener { loc: Location? ->
                     loc?.let {
                         viewModel.setLastLocation(LatLng(it.latitude, it.longitude))
-                    }
+                    } // TODO: force location if null
                 }
         }
     }
