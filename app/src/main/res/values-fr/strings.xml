@@ -53,6 +53,7 @@
     <string name="nav_header_image_profile_desc">La photo de profil</string>
     <string name="nav_header_app_logo_desc">Le logo de l\'application</string>
     <string name="login_app_logo_desc">Le logo de l\'application</string>
+    <string name="restaurant_item_image_desc">Image du restaurant</string>
 
     <!-- ERRORS -->
     <string name="profile_data_error">Pour une raison inconnue, nous ne pouvons récupérer vos données pour le moment.</string>

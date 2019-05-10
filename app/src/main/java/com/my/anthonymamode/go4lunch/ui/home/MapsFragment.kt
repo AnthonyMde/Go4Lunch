@@ -12,6 +12,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.domain.Places
 import com.my.anthonymamode.go4lunch.utils.BaseFragment
+import com.my.anthonymamode.go4lunch.utils.MEDIUM_AREA
 import com.my.anthonymamode.go4lunch.utils.MapsHelper
 import com.my.anthonymamode.go4lunch.utils.debounceThatFunction
 import kotlinx.android.synthetic.main.fragment_maps.*
@@ -94,7 +95,7 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
         }
         val center = mapsHelper.getMapsCenter()
         if (center != null)
-            viewModel?.getRestaurantPlaces(center, 1000)?.enqueue(callback)
+            viewModel?.getRestaurantPlaces(center, MEDIUM_AREA)?.enqueue(callback)
     }
 
     override fun onResume() {

@@ -65,6 +65,7 @@
     <string name="nav_header_image_profile_desc">Image profile</string>
     <string name="nav_header_app_logo_desc">Application logo</string>
     <string name="login_app_logo_desc">Application logo</string>
+    <string name="restaurant_item_image_desc">Photo of the restaurant</string>
 
     <!-- ERRORS -->
     <string name="profile_data_error">For some reasons, we can\'t fetch your profile data</string>

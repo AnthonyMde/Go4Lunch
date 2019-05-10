@@ -24,6 +24,7 @@ import com.my.anthonymamode.go4lunch.R.id.drawer_my_food
 import com.my.anthonymamode.go4lunch.ui.LoginActivity
 import com.my.anthonymamode.go4lunch.ui.PermissionActivity
 import com.my.anthonymamode.go4lunch.ui.SettingsActivity
+import com.my.anthonymamode.go4lunch.ui.home.list.RestaurantListFragment
 import com.my.anthonymamode.go4lunch.ui.home.workmates.WorkmatesFragment
 import com.my.anthonymamode.go4lunch.utils.BaseActivity
 import com.my.anthonymamode.go4lunch.utils.GlideApp
@@ -31,6 +32,9 @@ import com.my.anthonymamode.go4lunch.utils.Resource
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.nav_drawer_header.view.*
 import org.jetbrains.anko.startActivity
+
+private const val TLSE_LAT = 43.6043
+private const val TLSE_LNG = 1.4437
 
 class HomeActivity : BaseActivity() {
     private val viewModel: HomeViewModel by lazy {
@@ -157,8 +161,9 @@ class HomeActivity : BaseActivity() {
             fusedLocationClient.lastLocation
                 .addOnSuccessListener { loc: Location? ->
                     loc?.let {
+                        // TODO: add a better fallback if location is null
                         viewModel.setLastLocation(LatLng(it.latitude, it.longitude))
-                    } // TODO: force location if null
+                    } ?: viewModel.setLastLocation(LatLng(TLSE_LAT, TLSE_LNG))
                 }
         }
     }
