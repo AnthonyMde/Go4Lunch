@@ -6,8 +6,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.my.anthonymamode.go4lunch.domain.Place
 
-const val MEDIUM_AREA = 1000
-
 class MapsHelper(private val googleMap: GoogleMap?) {
 
     private var mapsCenter: LatLng? = null

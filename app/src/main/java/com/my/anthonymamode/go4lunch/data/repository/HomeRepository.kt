@@ -10,7 +10,7 @@ class HomeRepository {
 
     private val retrofit = getRetrofit().create(GooglePlacesApi::class.java)
 
-    fun getRestaurantPlaces(position: LatLng, area: Int): Call<Places> {
-        return retrofit.getNearbyPlaces("${position.latitude},${position.longitude}", area, "restaurant")
+    fun getRestaurantPlaces(position: LatLng): Call<Places> {
+        return retrofit.getNearbyPlaces("${position.latitude},${position.longitude}", "restaurant")
     }
 }

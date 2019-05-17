@@ -13,7 +13,6 @@ import com.my.anthonymamode.go4lunch.domain.Place
 import com.my.anthonymamode.go4lunch.domain.Places
 import com.my.anthonymamode.go4lunch.ui.home.HomeViewModel
 import com.my.anthonymamode.go4lunch.utils.BaseFragment
-import com.my.anthonymamode.go4lunch.utils.MEDIUM_AREA
 import kotlinx.android.synthetic.main.fragment_restaurant_list.*
 import org.jetbrains.anko.support.v4.longToast
 import retrofit2.Call
@@ -28,12 +27,12 @@ class RestaurantListFragment : BaseFragment() {
     }
 
     private val restaurantAdapter = RestaurantAdapter()
-    private val callback: Callback<Places> = getCallback()
+    private val callback: Callback<Places> = getCallbackForPlaces()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel?.lastLocation?.observe(this, Observer {
-            viewModel?.getRestaurantPlaces(it, MEDIUM_AREA)?.enqueue(callback)
+        viewModel?.lastLocation?.observe(this, Observer { position ->
+            viewModel?.getRestaurantPlaces(position)?.enqueue(callback)
         })
     }
 
@@ -46,7 +45,7 @@ class RestaurantListFragment : BaseFragment() {
         return inflater.inflate(R.layout.fragment_restaurant_list, container, false)
     }
 
-    private fun getCallback(): Callback<Places> {
+    private fun getCallbackForPlaces(): Callback<Places> {
         return object : Callback<Places> {
             override fun onFailure(call: Call<Places>, t: Throwable) {
                 // TODO: set better error

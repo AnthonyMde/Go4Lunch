@@ -48,8 +48,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun getRestaurantPlaces(position: LatLng, area: Int): Call<Places> {
-        return repository.getRestaurantPlaces(position, area)
+    fun getRestaurantPlaces(position: LatLng): Call<Places> {
+        return repository.getRestaurantPlaces(position)
     }
 
     /**

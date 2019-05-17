@@ -7,5 +7,5 @@ import retrofit2.http.Query
 
 interface GooglePlacesApi {
     @GET("place/nearbysearch/json?key=$API_KEY_GOOGLE_PLACES")
-    fun getNearbyPlaces(@Query("location") location: String, @Query("radius") radius: Int, @Query("type") type: String): Call<Places>
+    fun getNearbyPlaces(@Query("location") location: String, @Query("type") type: String, @Query("rankby") rankby: String = "distance"): Call<Places>
 }

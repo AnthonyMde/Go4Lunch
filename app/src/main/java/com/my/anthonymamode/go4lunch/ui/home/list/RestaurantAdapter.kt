@@ -90,9 +90,4 @@ class RestaurantViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         val distance = currentLocation.distanceTo(restaurantLocation)
         itemView.restaurantItemDistance.text = distance.toFormatDistance()
     }
-
-    private fun orderedPlacesByProximity(data: List<Place>): List<Place> {
-        // TODO: return the list ordered by distance to display them in the right order in the list
-        return emptyList()
-    }
 }
