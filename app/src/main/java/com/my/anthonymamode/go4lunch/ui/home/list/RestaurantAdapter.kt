@@ -1,5 +1,6 @@
 package com.my.anthonymamode.go4lunch.ui.home.list
 
+import android.graphics.Bitmap
 import android.location.Location
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,8 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.domain.Place
 import com.my.anthonymamode.go4lunch.utils.toFormatDistance
@@ -15,6 +18,7 @@ import kotlinx.android.synthetic.main.listitem_restaurant.view.*
 
 class RestaurantAdapter : RecyclerView.Adapter<RestaurantViewHolder>() {
     private var restaurantList = emptyList<Place>()
+    private var restaurantPhoto: Array<Bitmap?>? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RestaurantViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.listitem_restaurant, parent, false)
@@ -26,38 +30,38 @@ class RestaurantAdapter : RecyclerView.Adapter<RestaurantViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: RestaurantViewHolder, position: Int) {
-        if (restaurantList.isNotEmpty()) {
-            holder.bindView(restaurantList[position])
+        if (position < restaurantPhoto?.size ?: position) {
+            holder.bindView(restaurantList[position], restaurantPhoto?.get(position))
         }
     }
 
-    fun setRestaurantList(list: List<Place>) {
+    fun setRestaurantList(list: List<Place>, photos: Array<Bitmap?>) {
         restaurantList = list
+        restaurantPhoto = photos
         notifyDataSetChanged()
     }
 }
 
 class RestaurantViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-    // TODO: add a placeholder for restaurant image (glide)
-    fun bindView(restaurant: Place) {
+    fun bindView(restaurant: Place, restaurantPhoto: Bitmap?) {
         itemView.restaurantItemTitle.text = restaurant.name
         itemView.restaurantItemAddress.text = restaurant.address
 
-        setPhoto(restaurant)
+        setPhoto(restaurant, restaurantPhoto)
         setRating(restaurant)
         setHowFarItIs(restaurant)
     }
 
-    private fun setPhoto(restaurant: Place) {
-        // TODO: display the right image for restaurant item
-        val photo = restaurant.icon
-        /*if (restaurant.photos != null && restaurant.photos.isNotEmpty()) {
-            restaurant.photos[0].html_attributions[0]
-        } else {
-            restaurant.icon
-        }*/
+    private fun setPhoto(restaurant: Place, bitmap: Bitmap?) {
+        // TODO: use this value to get real API photos
+        val photo = bitmap ?: restaurant.icon
+        val options = RequestOptions().apply {
+            diskCacheStrategy(DiskCacheStrategy.ALL)
+            skipMemoryCache(false)
+        }
         Glide.with(itemView)
-            .load(photo)
+            .load("https://picsum.photos/id/237/200/300")
+            .apply(options)
             .into(itemView.restaurantItemImage)
     }
 

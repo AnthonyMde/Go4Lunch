@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -27,7 +28,6 @@ import com.my.anthonymamode.go4lunch.ui.SettingsActivity
 import com.my.anthonymamode.go4lunch.ui.home.list.RestaurantListFragment
 import com.my.anthonymamode.go4lunch.ui.home.workmates.WorkmatesFragment
 import com.my.anthonymamode.go4lunch.utils.BaseActivity
-import com.my.anthonymamode.go4lunch.utils.GlideApp
 import com.my.anthonymamode.go4lunch.utils.Resource
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.nav_drawer_header.view.*
@@ -135,7 +135,7 @@ class HomeActivity : BaseActivity() {
                         val header = homeNavigationView.getHeaderView(0)
                         header.navheaderEmail.text = userData.email
                         header.navheaderFullName.text = userData.displayName
-                        GlideApp.with(this)
+                        Glide.with(this)
                             .load(userData.photoUrl)
                             .diskCacheStrategy(DiskCacheStrategy.NONE)
                             .skipMemoryCache(true)

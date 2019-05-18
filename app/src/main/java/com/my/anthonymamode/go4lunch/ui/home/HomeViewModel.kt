@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.my.anthonymamode.go4lunch.data.repository.HomeRepository
 import com.my.anthonymamode.go4lunch.domain.Places
 import com.my.anthonymamode.go4lunch.utils.Resource
+import okhttp3.ResponseBody
 import retrofit2.Call
 
 /**
@@ -50,6 +51,10 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getRestaurantPlaces(position: LatLng): Call<Places> {
         return repository.getRestaurantPlaces(position)
+    }
+
+    fun getPlacePhoto(reference: String?, maxWidth: Int): Call<ResponseBody> {
+        return repository.getPlacePhoto(reference, maxWidth)
     }
 
     /**

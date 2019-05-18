@@ -6,12 +6,12 @@ import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.domain.User
-import com.my.anthonymamode.go4lunch.utils.GlideApp
 import kotlinx.android.synthetic.main.workmates_list_item.view.*
 
 class WorkmatesAdapter(
@@ -83,7 +83,7 @@ class WorkmatesViewHolder(private val view: View, private val listener: OnWorkma
             view.workmatesItemText.setTextColor(context.resources.getColor(R.color.lightGray))
         }
 
-        GlideApp.with(context)
+        Glide.with(context)
             .load(data.photoPath)
             .placeholder(R.drawable.profil_placeholder)
             .apply(RequestOptions.circleCropTransform())
