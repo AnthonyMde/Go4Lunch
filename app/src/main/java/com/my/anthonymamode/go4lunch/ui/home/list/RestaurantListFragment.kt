@@ -1,5 +1,6 @@
 package com.my.anthonymamode.go4lunch.ui.home.list
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.domain.Place
 import com.my.anthonymamode.go4lunch.domain.Places
+import com.my.anthonymamode.go4lunch.ui.DetailRestaurantActivity
 import com.my.anthonymamode.go4lunch.ui.home.HomeViewModel
 import com.my.anthonymamode.go4lunch.utils.BaseFragment
 import kotlinx.android.synthetic.main.fragment_restaurant_list.*
@@ -31,7 +33,11 @@ class RestaurantListFragment : BaseFragment() {
         }
     }
 
-    private val restaurantAdapter = RestaurantAdapter()
+    private val restaurantAdapter = RestaurantAdapter(onClick = {
+        val intent = Intent(context, DetailRestaurantActivity::class.java)
+        intent.putExtra("place", it)
+        startActivity(intent)
+    })
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

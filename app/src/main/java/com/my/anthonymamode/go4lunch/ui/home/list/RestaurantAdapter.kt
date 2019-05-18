@@ -14,9 +14,10 @@ import com.bumptech.glide.request.RequestOptions
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.domain.Place
 import com.my.anthonymamode.go4lunch.utils.toFormatDistance
+import com.my.anthonymamode.go4lunch.utils.toStarsFormat
 import kotlinx.android.synthetic.main.listitem_restaurant.view.*
 
-class RestaurantAdapter : RecyclerView.Adapter<RestaurantViewHolder>() {
+class RestaurantAdapter(private val onClick: (Place) -> Unit) : RecyclerView.Adapter<RestaurantViewHolder>() {
     private var restaurantList = emptyList<Place>()
     private var restaurantPhoto: Array<Bitmap?>? = null
 
@@ -31,7 +32,7 @@ class RestaurantAdapter : RecyclerView.Adapter<RestaurantViewHolder>() {
 
     override fun onBindViewHolder(holder: RestaurantViewHolder, position: Int) {
         if (position < restaurantPhoto?.size ?: position) {
-            holder.bindView(restaurantList[position], restaurantPhoto?.get(position))
+            holder.bindView(restaurantList[position], restaurantPhoto?.get(position), onClick)
         }
     }
 
@@ -43,7 +44,7 @@ class RestaurantAdapter : RecyclerView.Adapter<RestaurantViewHolder>() {
 }
 
 class RestaurantViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-    fun bindView(restaurant: Place, restaurantPhoto: Bitmap?) {
+    fun bindView(restaurant: Place, restaurantPhoto: Bitmap?, onClick: (Place) -> Unit) {
         itemView.restaurantItemTitle.text = restaurant.name
         itemView.restaurantItemAddress.text = restaurant.address
 
@@ -51,6 +52,10 @@ class RestaurantViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         setRating(restaurant)
         setHowFarItIs(restaurant)
         setHours(restaurant)
+
+        itemView.restaurantItemContainer.setOnClickListener {
+            onClick(restaurant)
+        }
     }
 
     private fun setHours(restaurant: Place) {
@@ -88,16 +93,10 @@ class RestaurantViewHolder(v: View) : RecyclerView.ViewHolder(v) {
     }
 
     private fun setRating(restaurant: Place) {
-        if (restaurant.rating != null) {
+        val rating = toStarsFormat(restaurant.rating)
+        if (rating > 0) {
             itemView.restaurantItemRating.visibility = VISIBLE
-            when ((restaurant.rating * 0.6).toFloat()) { // From 5 stars rating to 3 stars rating
-                in 0f..0.49f -> {
-                    itemView.restaurantItemRating.visibility = GONE
-                }
-                in 0.5f..1f -> itemView.restaurantItemRating.rating = 1f
-                in 1f..2f -> itemView.restaurantItemRating.rating = 2f
-                in 2f..3f -> itemView.restaurantItemRating.rating = 3f
-            }
+            itemView.restaurantItemRating.rating = rating
         } else {
             itemView.restaurantItemRating.visibility = GONE
         }

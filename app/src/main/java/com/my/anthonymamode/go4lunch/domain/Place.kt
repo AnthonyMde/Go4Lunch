@@ -1,6 +1,7 @@
 package com.my.anthonymamode.go4lunch.domain
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class Place(
     val geometry: Geometry,
@@ -14,4 +15,4 @@ data class Place(
     val user_ratings_total: Double?,
     @SerializedName("vicinity")
     val address: String?
-)
+) : Serializable

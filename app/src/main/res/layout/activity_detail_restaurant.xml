@@ -28,7 +28,7 @@
                         android:id="@+id/detailRestaurantName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Le Tajmahal"
+                        tools:text="Le Tajmahal"
                         android:textSize="16sp"
                         android:textColor="@android:color/white"
                         android:layout_marginStart="8dp"
@@ -36,10 +36,12 @@
                         app:layout_constraintStart_toStartOf="parent"
                 />
                 <me.zhanghai.android.materialratingbar.MaterialRatingBar
+                        android:id="@+id/detailRestaurantRating"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:numStars="4"
-                        android:rating="1"
+                        android:numStars="3"
+                        tools:rating="2"
+                        android:clickable="false"
                         app:mrb_fillBackgroundStars="true"
                         app:mrb_progressTint="@color/yellowStar"
                         app:mrb_indeterminateTint="@color/emptyStarColor"
