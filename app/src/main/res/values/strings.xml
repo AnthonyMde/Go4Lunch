@@ -48,6 +48,10 @@
         expired.
     </string>
 
+    <!-- RESTAURANT LIST -->
+    <string name="restaurant_item_is_opened">Currently opened</string>
+    <string name="restaurant_item_is_closed">Currently closed</string>
+
     <!-- RESTAURANT DETAILS-->
     <string name="detail_restaurant_call_button">call</string>
     <string name="detail_restaurant_like_button">Like</string>
@@ -72,4 +76,5 @@
     <string name="session_expired_error">It seems your session has expired. Please try to reconnect.</string>
     <string name="logout_error">Sorry, the log out has failed</string>
     <string name="firebase_crud_error">An error has occurred while updating your data</string>
+
 </resources>

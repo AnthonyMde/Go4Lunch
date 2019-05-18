@@ -37,6 +37,10 @@
     <string name="settings_delete_account_error">Oops, nous n\'arrivons pas à supprimer votre compte pour le moment. Votre session est peut-être expirée.
     </string>
 
+    <!-- RESTAURANT LIST -->
+    <string name="restaurant_item_is_opened">Actuellement ouvert</string>
+    <string name="restaurant_item_is_closed">Actuellement fermé</string>
+
     <!-- RESTAURANT DETAILS -->
     <string name="detail_restaurant_call_button">Téléphone</string>
     <string name="detail_restaurant_like_button">Favori</string>

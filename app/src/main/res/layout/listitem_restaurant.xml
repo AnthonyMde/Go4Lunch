@@ -42,7 +42,7 @@
             android:id="@+id/restaurantItemHours"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="open until 7 pm"
+            tools:text="@string/restaurant_item_is_opened"
             android:textStyle="italic"
             android:maxLines="1"
             android:ellipsize="end"

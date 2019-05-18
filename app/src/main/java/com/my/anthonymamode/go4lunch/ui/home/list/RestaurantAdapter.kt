@@ -50,6 +50,28 @@ class RestaurantViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         setPhoto(restaurant, restaurantPhoto)
         setRating(restaurant)
         setHowFarItIs(restaurant)
+        setHours(restaurant)
+    }
+
+    private fun setHours(restaurant: Place) {
+        val res = itemView.resources
+        val hours = itemView.restaurantItemHours
+
+        if (restaurant.opening_hours?.open_now == null) {
+            hours.visibility = GONE
+            return
+        }
+
+        restaurant.opening_hours.open_now.let { open ->
+            hours.visibility = VISIBLE
+            if (open) {
+                hours.text = res.getString(R.string.restaurant_item_is_opened)
+                hours.setTextColor(res.getColor(R.color.lightGray))
+            } else {
+                hours.text = res.getString(R.string.restaurant_item_is_closed)
+                hours.setTextColor(res.getColor(android.R.color.holo_red_light))
+            }
+        }
     }
 
     private fun setPhoto(restaurant: Place, bitmap: Bitmap?) {
