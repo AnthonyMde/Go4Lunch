@@ -5,7 +5,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.DetailRestaurantActivity">
+        tools:context=".ui.detail.DetailRestaurantActivity">
 
     <!-- CONTENT VIEW -->
     <androidx.core.widget.NestedScrollView
@@ -26,14 +26,16 @@
                     app:layout_constraintTop_toTopOf="parent">
                 <TextView
                         android:id="@+id/detailRestaurantName"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         tools:text="Le Tajmahal"
                         android:textSize="16sp"
                         android:textColor="@android:color/white"
                         android:layout_marginStart="8dp"
+                        android:layout_marginEnd="4dp"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/detailRestaurantRating"
                 />
                 <me.zhanghai.android.materialratingbar.MaterialRatingBar
                         android:id="@+id/detailRestaurantRating"
@@ -48,10 +50,17 @@
                         app:mrb_progressBackgroundTint="@color/emptyStarColor"
                         style="@style/Widget.MaterialRatingBar.RatingBar.Small"
                         android:layout_marginStart="16dp"
-                        app:layout_constraintStart_toEndOf="@id/detailRestaurantName"
+                        app:layout_constraintEnd_toStartOf="@id/detailMiddleGuideline"
                         app:layout_constraintTop_toTopOf="@id/detailRestaurantName"
                         app:layout_constraintBottom_toBottomOf="@id/detailRestaurantName"
                 />
+
+                <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/detailMiddleGuideline"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
