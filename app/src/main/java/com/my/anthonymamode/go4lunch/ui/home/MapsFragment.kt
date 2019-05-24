@@ -66,7 +66,9 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
             setOnCameraIdleListener {
                 mapsHelper.setMapsCenter(cameraPosition.target)
                 lastTimePositionChanged =
-                    debounceThatFunction({ displayNearbyRestaurant() }, 600L, lastTimePositionChanged)
+                    // TODO: Delete this line and uncomment to displayRestaurant
+                    debounceThatFunction({}, 600L, lastTimePositionChanged)
+                    // debounceThatFunction({ displayNearbyRestaurant() }, 600L, lastTimePositionChanged)
             }
         }
         setUserLocation()
@@ -75,7 +77,8 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
     private fun setUserLocation() {
         viewModel?.lastLocation?.observe(this, Observer {
             mapsHelper.centerMap(it, ZOOM_LEVEL)
-            displayNearbyRestaurant()
+            // TODO: uncomment to displayRestaurant
+            // displayNearbyRestaurant()
         })
     }
 

@@ -37,6 +37,21 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/detailRestaurantRating"
                 />
+
+                <TextView
+                        android:id="@+id/detailRestaurantAddress"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:maxLines="2"
+                        android:ellipsize="end"
+                        tools:text="24 rue du gaucher d'antibes"
+                        android:textColor="@android:color/white"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/detailRestaurantName"
+                />
                 <me.zhanghai.android.materialratingbar.MaterialRatingBar
                         android:id="@+id/detailRestaurantRating"
                         android:layout_width="wrap_content"
@@ -50,9 +65,9 @@
                         app:mrb_progressBackgroundTint="@color/emptyStarColor"
                         style="@style/Widget.MaterialRatingBar.RatingBar.Small"
                         android:layout_marginStart="16dp"
+                        android:layout_marginTop="4dp"
                         app:layout_constraintEnd_toStartOf="@id/detailMiddleGuideline"
                         app:layout_constraintTop_toTopOf="@id/detailRestaurantName"
-                        app:layout_constraintBottom_toBottomOf="@id/detailRestaurantName"
                 />
 
                 <androidx.constraintlayout.widget.Guideline
@@ -138,6 +153,7 @@
                 app:contentScrim="@color/colorPrimary"
                 android:layout_height="match_parent">
             <ImageView
+                    android:id="@+id/detailRestaurantPhoto"
                     android:layout_width="match_parent"
                     android:layout_height="225dp"
                     android:scaleType="centerCrop"

@@ -56,6 +56,8 @@
     <string name="detail_restaurant_call_button">call</string>
     <string name="detail_restaurant_like_button">Like</string>
     <string name="detail_restaurant_website_button">Website</string>
+    <string name="detail_restaurant_toast_add_to_favorite">Add to favorite</string>
+    <string name="detail_restaurant_toast_remove_from_favorite">Remove from favorite</string>
 
     <!-- PERMISSION SCREEN -->
     <string name="permission_activity_title">Let\'s activate localisation to find great restaurants !</string>

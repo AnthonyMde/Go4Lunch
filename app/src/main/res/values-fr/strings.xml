@@ -45,6 +45,8 @@
     <string name="detail_restaurant_call_button">Téléphone</string>
     <string name="detail_restaurant_like_button">Favori</string>
     <string name="detail_restaurant_website_button">Site</string>
+    <string name="detail_restaurant_toast_add_to_favorite">Ajouté aux favoris</string>
+    <string name="detail_restaurant_toast_remove_from_favorite">Retiré des favoris</string>
 
     <!-- PERMISSION SCREEN -->
     <string name="permission_activity_title">Activez la géolocalisation et ne manquez plus un repas entre amis !</string>
