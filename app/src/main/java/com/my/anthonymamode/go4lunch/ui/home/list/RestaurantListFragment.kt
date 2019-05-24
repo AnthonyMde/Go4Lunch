@@ -55,7 +55,7 @@ class RestaurantListFragment : BaseFragment() {
         return inflater.inflate(R.layout.fragment_restaurant_list, container, false)
     }
 
-    private fun configureRecyclerView(data: List<Place>, photos: Array<Bitmap?>) {
+    private fun configureRecyclerView(data: List<Place>, photos: MutableMap<Int, Bitmap?>) {
         val itemDecoration = DividerItemDecoration(
             requireContext(),
             DividerItemDecoration.VERTICAL
@@ -79,8 +79,8 @@ class RestaurantListFragment : BaseFragment() {
                 if (response.isSuccessful) {
                     response.body()?.places?.let { places ->
                         // TODO: remove this line and uncomment to get real place photo
-                        configureRecyclerView(places, arrayOfNulls(20))
-                        /*val placesPhoto = arrayOfNulls<Bitmap?>(places.size)
+                        configureRecyclerView(places, mutableMapOf())
+                        /*val placesPhoto = mutableMapOf<Int, Bitmap?>()
                         places.forEachIndexed { index, place ->
                             // Call the google photo API to get each place photo
                             viewModel?.getPlacePhoto(place.photos?.get(0)?.photo_reference, MAX_PHOTO_WIDTH)
@@ -93,7 +93,7 @@ class RestaurantListFragment : BaseFragment() {
     }
 
     private fun getCallbackForPhoto(
-        placesPhoto: Array<Bitmap?>,
+        placesPhoto: MutableMap<Int, Bitmap?>,
         places: List<Place>,
         index: Int
     ): Callback<ResponseBody> {

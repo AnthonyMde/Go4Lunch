@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 import android.location.Location
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
+import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.listitem_restaurant.view.*
 
 class RestaurantAdapter(private val onClick: (Place) -> Unit) : RecyclerView.Adapter<RestaurantViewHolder>() {
     private var restaurantList = emptyList<Place>()
-    private var restaurantPhoto: Array<Bitmap?>? = null
+    private var restaurantPhoto = mutableMapOf<Int, Bitmap?>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RestaurantViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.listitem_restaurant, parent, false)
@@ -31,12 +31,10 @@ class RestaurantAdapter(private val onClick: (Place) -> Unit) : RecyclerView.Ada
     }
 
     override fun onBindViewHolder(holder: RestaurantViewHolder, position: Int) {
-        if (position < restaurantPhoto?.size ?: position) {
-            holder.bindView(restaurantList[position], restaurantPhoto?.get(position), onClick)
-        }
+            holder.bindView(restaurantList[position], restaurantPhoto[position], onClick)
     }
 
-    fun setRestaurantList(list: List<Place>, photos: Array<Bitmap?>) {
+    fun setRestaurantList(list: List<Place>, photos: MutableMap<Int, Bitmap?>) {
         restaurantList = list
         restaurantPhoto = photos
         notifyDataSetChanged()
@@ -63,7 +61,7 @@ class RestaurantViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         val hours = itemView.restaurantItemHours
 
         if (restaurant.opening_hours?.open_now == null) {
-            hours.visibility = GONE
+            hours.visibility = INVISIBLE
             return
         }
 
@@ -80,14 +78,13 @@ class RestaurantViewHolder(v: View) : RecyclerView.ViewHolder(v) {
     }
 
     private fun setPhoto(restaurant: Place, bitmap: Bitmap?) {
-        // TODO: use this value to get real API photos
         val photo = bitmap ?: restaurant.icon
         val options = RequestOptions().apply {
             diskCacheStrategy(DiskCacheStrategy.ALL)
             skipMemoryCache(false)
         }
         Glide.with(itemView)
-            .load("https://picsum.photos/id/237/200/300")
+            .load(photo)
             .apply(options)
             .into(itemView.restaurantItemImage)
     }
@@ -98,7 +95,7 @@ class RestaurantViewHolder(v: View) : RecyclerView.ViewHolder(v) {
             itemView.restaurantItemRating.visibility = VISIBLE
             itemView.restaurantItemRating.rating = rating
         } else {
-            itemView.restaurantItemRating.visibility = GONE
+            itemView.restaurantItemRating.visibility = INVISIBLE
         }
     }
 
