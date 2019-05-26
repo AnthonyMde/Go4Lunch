@@ -1,0 +1,44 @@
+package com.my.anthonymamode.go4lunch.data.api
+
+import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.ktx.Firebase
+import com.my.anthonymamode.go4lunch.domain.User
+
+private const val USERS_COLLECTION_NAME = "users"
+
+private fun getUsersCollection(): CollectionReference {
+    return Firebase.firestore.collection(USERS_COLLECTION_NAME)
+}
+
+fun getCurrentUser(uid: String): Task<DocumentSnapshot?> {
+    return getUsersCollection().document(uid).get()
+}
+
+fun getCurrentUserData(uid: String): Task<User?> {
+    return getUsersCollection().document(uid).get().continueWith {
+        it.result?.toObject<User>()
+    }
+}
+
+fun createUser(uid: String, displayName: String?, email: String?, photoPath: String?, hasLunch: Boolean = false): Task<Void> {
+    val userToCreate = User(uid, displayName, email, photoPath, hasLunch)
+    return getUsersCollection().document(uid).set(userToCreate)
+}
+
+fun deleteUser(uid: String): Task<Void> {
+    // TODO: should trigger a firebase function instead of deleting it directly from the app
+    return getUsersCollection().document(uid).delete()
+}
+
+fun getUsersOrderedByLunch(): Query {
+    return getUsersCollection().orderBy("hasLunch", Query.Direction.DESCENDING)
+}
+
+fun getUsersByRestaurantId() {
+    // TODO: retrieve user who have chosen a specific restaurant for today
+}

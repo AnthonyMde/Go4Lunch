@@ -14,6 +14,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.data.api.createUser
+import com.my.anthonymamode.go4lunch.data.api.getCurrentUser
 import com.my.anthonymamode.go4lunch.ui.home.HomeActivity
 import com.my.anthonymamode.go4lunch.utils.BaseActivity
 import com.my.anthonymamode.go4lunch.utils.setStatusBarTransparent
@@ -31,7 +32,8 @@ class LoginActivity : BaseActivity() {
         AuthUI.IdpConfig.FacebookBuilder().build()
     )
     private val hasLocationPermission: Boolean by lazy {
-        val locationPermission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+        val locationPermission =
+            ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
         locationPermission == PackageManager.PERMISSION_GRANTED
     }
 
@@ -74,7 +76,7 @@ class LoginActivity : BaseActivity() {
 
     /**
      * Method called when firebase authentication is done.
-     * If result is OK, we create (or update) the user account in the Firestore cloud.
+     * If result is OK, we create (if it doesn't exist) the user account in the Firestore cloud.
      * Then we redirect the user to our home activity.
      * If result is CANCELED, we show an error message to the user according to its error type.
      * */
@@ -82,15 +84,18 @@ class LoginActivity : BaseActivity() {
         if (requestCode == RC_SIGN_IN) {
             when (resultCode) {
                 Activity.RESULT_OK -> {
-                    FirebaseAuth.getInstance().currentUser?.let {
-                        createUser(
-                            it.uid,
-                            it.displayName,
-                            it.email,
-                            it.photoUrl.toString()
-                        ).addOnFailureListener(super.onFailureListener())
+                    val user = FirebaseAuth.getInstance().currentUser ?: return showToastError(getString(R.string.login_no_account_found_error))
+                    getCurrentUser(user.uid).addOnSuccessListener {
+                        if (it == null) {
+                            createUser(
+                                user.uid,
+                                user.displayName,
+                                user.email,
+                                user.photoUrl.toString()
+                            ).addOnFailureListener(super.onFailureListener())
+                        }
+                        checkLocationPermissionAndRedirect()
                     }
-                    checkLocationPermissionAndRedirect()
                 }
                 Activity.RESULT_CANCELED -> {
                     val response = IdpResponse.fromResultIntent(data)

@@ -17,6 +17,7 @@
     <string name="login_canceled">Connection failed</string>
     <string name="login_no_network">No internet connection</string>
     <string name="login_unknown_error">An unknown error has occurred</string>
+    <string name="login_no_account_found_error">Impossible to retrieve your account</string>
 
     <!-- HOME -->
     <string name="home_map_view_title">Map View</string>
@@ -58,6 +59,7 @@
     <string name="detail_restaurant_website_button">Website</string>
     <string name="detail_restaurant_toast_add_to_favorite">Add to favorite</string>
     <string name="detail_restaurant_toast_remove_from_favorite">Remove from favorite</string>
+    <string name="detail_restaurant_cannot_fetch_favorite_error">Impossible to retrieve your favorites restaurants</string>
 
     <!-- PERMISSION SCREEN -->
     <string name="permission_activity_title">Let\'s activate localisation to find great restaurants !</string>

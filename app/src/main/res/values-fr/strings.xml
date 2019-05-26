@@ -8,6 +8,7 @@
     <string name="login_canceled">La connexion a échoué</string>
     <string name="login_no_network">Pas de connexion internet</string>
     <string name="login_unknown_error">Une erreur inconnue est survenue</string>
+    <string name="login_no_account_found_error">Impossible de retrouver votre compte</string>
 
     <!-- HOME -->
     <string name="home_map_view_title">Carte</string>
@@ -47,6 +48,7 @@
     <string name="detail_restaurant_website_button">Site</string>
     <string name="detail_restaurant_toast_add_to_favorite">Ajouté aux favoris</string>
     <string name="detail_restaurant_toast_remove_from_favorite">Retiré des favoris</string>
+    <string name="detail_restaurant_cannot_fetch_favorite_error">Impossible de retrouver vos restaurants favoris</string>
 
     <!-- PERMISSION SCREEN -->
     <string name="permission_activity_title">Activez la géolocalisation et ne manquez plus un repas entre amis !</string>

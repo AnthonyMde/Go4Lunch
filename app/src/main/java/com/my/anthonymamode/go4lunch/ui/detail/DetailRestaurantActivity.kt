@@ -8,10 +8,13 @@ import android.util.Log
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import androidx.lifecycle.ViewModelProviders
+import com.google.firebase.auth.FirebaseAuth
 import com.my.anthonymamode.go4lunch.R
+import com.my.anthonymamode.go4lunch.data.api.deleteFavoriteRestaurant
+import com.my.anthonymamode.go4lunch.data.api.getFavoriteRestaurant
+import com.my.anthonymamode.go4lunch.data.api.setFavoriteRestaurant
 import com.my.anthonymamode.go4lunch.domain.Place
 import com.my.anthonymamode.go4lunch.utils.BaseActivity
-import com.my.anthonymamode.go4lunch.utils.setStatusBarTransparent
 import com.my.anthonymamode.go4lunch.utils.toStarsFormat
 import kotlinx.android.synthetic.main.activity_detail_restaurant.*
 import okhttp3.ResponseBody
@@ -23,17 +26,19 @@ private const val MAX_PHOTO_WIDTH = 1280
 
 class DetailRestaurantActivity : BaseActivity() {
     private lateinit var place: Place
-    private var isFavorite: Boolean = false
+    private var isFavorite = false
+    private var hasChangedFavoriteStatus = false
     private val viewModel by lazy {
         ViewModelProviders.of(this).get(DetailRestaurantViewModel::class.java)
+    }
+    private val user by lazy {
+        FirebaseAuth.getInstance().currentUser
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_restaurant)
-        window.setStatusBarTransparent()
         place = intent.getSerializableExtra("place") as Place
-        // TODO: retrieve from firebase if it is favorite or not
         setRestaurantUI()
         setCallToAction()
         // TODO: set coworkers
@@ -41,15 +46,30 @@ class DetailRestaurantActivity : BaseActivity() {
 
     override fun onPause() {
         super.onPause()
-        // todo : store to firebase only in the onPause : to avoid multiple useless calls
+        if (hasChangedFavoriteStatus)
+            updateFavorite()
+    }
+
+    private fun updateFavorite() {
+        val user = FirebaseAuth.getInstance().currentUser
+            ?: return showToastError(getString(R.string.login_no_account_found_error))
+        if (isFavorite) {
+            setFavoriteRestaurant(user.uid, place.id)
+        } else {
+            deleteFavoriteRestaurant(user.uid, place.id)
+        }
     }
 
     private fun setCallToAction() {
+        // PHONE CALL
         detailRestaurantCallButton.setOnClickListener {
             // todo: add real phone number
             startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:0601020305")))
         }
+
+        // LIKE BUTTON
         detailRestaurantLikeButton.setOnClickListener {
+            hasChangedFavoriteStatus = !hasChangedFavoriteStatus
             isFavorite = !isFavorite
             if (isFavorite) {
                 setStarColor(R.drawable.ic_star_color_yellow, R.color.yellowStar)
@@ -59,7 +79,10 @@ class DetailRestaurantActivity : BaseActivity() {
                 toast(getString(R.string.detail_restaurant_toast_remove_from_favorite))
             }
         }
+
+        // WEB SITE BUTTON
         detailRestaurantWebButton.setOnClickListener {
+            // TODO: add website feature
             toast("Should launch the website")
         }
     }
@@ -74,8 +97,24 @@ class DetailRestaurantActivity : BaseActivity() {
         detailRestaurantName.text = place.name
         detailRestaurantAddress.text = place.address ?: ""
         setRating()
+        setFavorite()
         // TODO: uncomment to get real photo data (remind to add a placeholder if no photo found)
         // setRestaurantPhoto()
+    }
+
+    private fun setFavorite() {
+        val uid = user?.uid
+        if (uid == null) {
+            showToastError(getString(R.string.detail_restaurant_cannot_fetch_favorite_error))
+        } else {
+            getFavoriteRestaurant(uid, place.id).addOnSuccessListener {
+                if (it.data?.get("userId") != null) {
+                    setStarColor(R.drawable.ic_star_color_yellow, R.color.yellowStar)
+                    isFavorite = true
+                }
+            }
+                .addOnFailureListener { super.onFailureListener() }
+        }
     }
 
     private fun setRating() {

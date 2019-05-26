@@ -6,7 +6,7 @@ import java.io.Serializable
 data class Place(
     val geometry: Geometry,
     val icon: String?,
-    val id: String?,
+    val id: String,
     val name: String,
     val opening_hours: Hours?,
     val photos: List<PlacePhoto>?,
