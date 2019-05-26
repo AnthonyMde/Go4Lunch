@@ -8,12 +8,17 @@ import android.util.Log
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.data.api.deleteFavoriteRestaurant
 import com.my.anthonymamode.go4lunch.data.api.getFavoriteRestaurant
+import com.my.anthonymamode.go4lunch.data.api.getUsersOrderedByLunch
 import com.my.anthonymamode.go4lunch.data.api.setFavoriteRestaurant
 import com.my.anthonymamode.go4lunch.domain.Place
+import com.my.anthonymamode.go4lunch.domain.User
+import com.my.anthonymamode.go4lunch.ui.home.workmates.WorkmatesAdapter
 import com.my.anthonymamode.go4lunch.utils.BaseActivity
 import com.my.anthonymamode.go4lunch.utils.toStarsFormat
 import kotlinx.android.synthetic.main.activity_detail_restaurant.*
@@ -41,7 +46,29 @@ class DetailRestaurantActivity : BaseActivity() {
         place = intent.getSerializableExtra("place") as Place
         setRestaurantUI()
         setCallToAction()
+        configureRecyclerView()
         // TODO: set coworkers
+    }
+
+    /**
+     * Set the adapter for the recycler and pass the data through it here
+     */
+    private fun configureRecyclerView() {
+        detailRestaurantRecyclerView.adapter =
+            WorkmatesAdapter(generateOptionForAdapter(), user?.uid)
+        detailRestaurantRecyclerView.layoutManager = LinearLayoutManager(this)
+    }
+
+    /**
+     * @return FirestoreRecyclerOptions of User which can be
+     * directly used into a recycler view.
+     */
+    private fun generateOptionForAdapter(): FirestoreRecyclerOptions<User> {
+        val query = getUsersOrderedByLunch()
+        return FirestoreRecyclerOptions.Builder<User>()
+            .setQuery(query, User::class.java)
+            .setLifecycleOwner(this)
+            .build()
     }
 
     override fun onPause() {

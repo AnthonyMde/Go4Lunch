@@ -21,9 +21,9 @@ class WorkmatesAdapter(
      */
     private val currentUser: String?,
     /**
-     * The listener needed by the ViewHolder to handle the click on each item
+     * The lambda needed by the ViewHolder to handle the click on each item
      */
-    private val listener: WorkmatesViewHolder.OnWorkmateClickListener
+    private val onClick: () -> Unit = {}
 ) :
     FirestoreRecyclerAdapter<User, WorkmatesViewHolder>(options) {
 
@@ -37,7 +37,7 @@ class WorkmatesAdapter(
                 parent,
                 false
             ),
-            listener
+            onClick
         )
     }
 
@@ -57,15 +57,8 @@ class WorkmatesAdapter(
  * WorkmatesFragment ViewHolder which manage everything relative to
  * a single item of the recycler view.
  */
-class WorkmatesViewHolder(private val view: View, private val listener: OnWorkmateClickListener) :
+class WorkmatesViewHolder(private val view: View, private val onClick: () -> Unit) :
     RecyclerView.ViewHolder(view) {
-    /**
-     * This must be implemented by each activity or fragment which wants
-     * to handle a specific behavior on recycler view item click.
-     */
-    interface OnWorkmateClickListener {
-        fun onClick()
-    }
 
     /**
      * We bind all the data to the item view here.
@@ -76,7 +69,7 @@ class WorkmatesViewHolder(private val view: View, private val listener: OnWorkma
             view.workmatesItemText.text = context.getString(R.string.workmates_has_lunch, data.displayName)
             view.workmatesItemText.setTypeface(null, Typeface.NORMAL)
             view.workmatesItemText.setTextColor(context.resources.getColor(android.R.color.black))
-            view.setOnClickListener { onItemClicked(listener) }
+            view.setOnClickListener { onClick.invoke() }
         } else {
             view.workmatesItemText.text = context.getString(R.string.workmates_has_no_lunch, data.displayName)
             view.workmatesItemText.setTypeface(null, Typeface.ITALIC)
@@ -96,12 +89,5 @@ class WorkmatesViewHolder(private val view: View, private val listener: OnWorkma
     fun viewGone() {
         view.visibility = GONE
         view.layoutParams = RecyclerView.LayoutParams(0, 0)
-    }
-
-    /**
-     * What happened if an item is clicked is set here.
-     */
-    private fun onItemClicked(listener: OnWorkmateClickListener) {
-        listener.onClick()
     }
 }

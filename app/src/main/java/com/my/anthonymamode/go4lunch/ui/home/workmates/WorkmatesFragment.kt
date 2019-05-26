@@ -8,25 +8,14 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.google.firebase.firestore.Query
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.data.api.getUsersOrderedByLunch
 import com.my.anthonymamode.go4lunch.domain.User
-import com.my.anthonymamode.go4lunch.ui.detail.DetailRestaurantActivity
 import com.my.anthonymamode.go4lunch.ui.home.HomeViewModel
 import com.my.anthonymamode.go4lunch.utils.BaseFragment
 import kotlinx.android.synthetic.main.fragment_workmates.*
-import org.jetbrains.anko.support.v4.startActivity
 
-class WorkmatesFragment : BaseFragment(), WorkmatesViewHolder.OnWorkmateClickListener {
-
-    companion object {
-        fun newInstance(): WorkmatesFragment {
-            return WorkmatesFragment()
-        }
-    }
-
-    private val workmatesQuery by lazy { getUsersOrderedByLunch() }
+class WorkmatesFragment : BaseFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,25 +38,19 @@ class WorkmatesFragment : BaseFragment(), WorkmatesViewHolder.OnWorkmateClickLis
         val viewModel = ViewModelProviders.of(activity).get(HomeViewModel::class.java)
         val current = viewModel.currentUser
         workmatesRecyclerView.adapter =
-            WorkmatesAdapter(generateOptionForAdapter(workmatesQuery), current, this)
+            WorkmatesAdapter(generateOptionForAdapter(), current)
         workmatesRecyclerView.layoutManager = LinearLayoutManager(context)
     }
 
     /**
      * @return FirestoreRecyclerOptions of User which can be
-     * directly used to in a recycler view to fill it with those data.
+     * directly used into a recycler view.
      */
-    private fun generateOptionForAdapter(query: Query): FirestoreRecyclerOptions<User> {
+    private fun generateOptionForAdapter(): FirestoreRecyclerOptions<User> {
+        val query = getUsersOrderedByLunch()
         return FirestoreRecyclerOptions.Builder<User>()
             .setQuery(query, User::class.java)
             .setLifecycleOwner(this)
             .build()
-    }
-
-    /**
-     * Method called when an workmates list item is clicked
-     */
-    override fun onClick() {
-        startActivity<DetailRestaurantActivity>()
     }
 }

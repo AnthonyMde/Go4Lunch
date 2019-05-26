@@ -56,15 +56,16 @@ class RestaurantListFragment : BaseFragment() {
     }
 
     private fun configureRecyclerView(data: List<Place>, photos: MutableMap<Int, Bitmap?>) {
+        val context = context ?: return
         val itemDecoration = DividerItemDecoration(
-            requireContext(),
+            context,
             DividerItemDecoration.VERTICAL
         )
-        itemDecoration.setDrawable(requireContext().resources.getDrawable(R.drawable.rv_divider_no_padding))
+        itemDecoration.setDrawable(context.resources.getDrawable(R.drawable.rv_divider_no_padding))
 
         restaurantRV.addItemDecoration(itemDecoration)
         restaurantRV.adapter = restaurantAdapter
-        restaurantRV.layoutManager = LinearLayoutManager(requireContext())
+        restaurantRV.layoutManager = LinearLayoutManager(context)
         restaurantAdapter.setRestaurantList(data, photos)
     }
 
