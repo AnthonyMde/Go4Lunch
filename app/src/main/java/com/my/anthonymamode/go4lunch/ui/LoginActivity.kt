@@ -13,8 +13,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.my.anthonymamode.go4lunch.R
-import com.my.anthonymamode.go4lunch.data.api.createUser
 import com.my.anthonymamode.go4lunch.data.api.getCurrentUser
+import com.my.anthonymamode.go4lunch.data.api.updateUser
 import com.my.anthonymamode.go4lunch.ui.home.HomeActivity
 import com.my.anthonymamode.go4lunch.utils.BaseActivity
 import com.my.anthonymamode.go4lunch.utils.setStatusBarTransparent
@@ -87,7 +87,7 @@ class LoginActivity : BaseActivity() {
                     val user = FirebaseAuth.getInstance().currentUser ?: return showToastError(getString(R.string.login_no_account_found_error))
                     getCurrentUser(user.uid).addOnSuccessListener {
                         if (it == null) {
-                            createUser(
+                            updateUser(
                                 user.uid,
                                 user.displayName,
                                 user.email,

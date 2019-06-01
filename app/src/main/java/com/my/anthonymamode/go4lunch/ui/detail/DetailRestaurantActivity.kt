@@ -14,12 +14,16 @@ import com.google.firebase.auth.FirebaseAuth
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.data.api.deleteFavoriteRestaurant
 import com.my.anthonymamode.go4lunch.data.api.getFavoriteRestaurant
-import com.my.anthonymamode.go4lunch.data.api.getUsersOrderedByLunch
 import com.my.anthonymamode.go4lunch.data.api.setFavoriteRestaurant
+import com.my.anthonymamode.go4lunch.data.api.getUsersByLunchId
+import com.my.anthonymamode.go4lunch.data.api.getCurrentUserData
 import com.my.anthonymamode.go4lunch.domain.Place
 import com.my.anthonymamode.go4lunch.domain.User
+import com.my.anthonymamode.go4lunch.ui.home.workmates.WorkmateListType
 import com.my.anthonymamode.go4lunch.ui.home.workmates.WorkmatesAdapter
 import com.my.anthonymamode.go4lunch.utils.BaseActivity
+import com.my.anthonymamode.go4lunch.utils.scaleDown
+import com.my.anthonymamode.go4lunch.utils.scaleUp
 import com.my.anthonymamode.go4lunch.utils.toStarsFormat
 import kotlinx.android.synthetic.main.activity_detail_restaurant.*
 import okhttp3.ResponseBody
@@ -30,24 +34,55 @@ import retrofit2.Response
 private const val MAX_PHOTO_WIDTH = 1280
 
 class DetailRestaurantActivity : BaseActivity() {
-    private lateinit var place: Place
+    private var place: Place? = null
     private var isFavorite = false
+    private var isLunchOfTheDay = false
     private var hasChangedFavoriteStatus = false
+    private var hasChangedLunchOfDay = false
     private val viewModel by lazy {
         ViewModelProviders.of(this).get(DetailRestaurantViewModel::class.java)
     }
-    private val user by lazy {
-        FirebaseAuth.getInstance().currentUser
+    private val userId by lazy {
+        FirebaseAuth.getInstance().currentUser?.uid
     }
+    private var user: User? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_restaurant)
-        place = intent.getSerializableExtra("place") as Place
+        place = intent.getSerializableExtra("place") as? Place
         setRestaurantUI()
         setCallToAction()
         configureRecyclerView()
-        // TODO: set coworkers
+        setCurrentUser()
+        detailRestaurantFabDisable.setOnClickListener { animateFab(FabAction.ENABLE) }
+        detailRestaurantFabEnable.setOnClickListener { animateFab(FabAction.DISABLE) }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (hasChangedFavoriteStatus)
+            updateFavorite()
+        if (hasChangedLunchOfDay) {
+            // todo : update restaurant of the day
+        }
+    }
+
+    private fun setCurrentUser() {
+        userId?.let { uid ->
+            getCurrentUserData(uid).addOnSuccessListener { userData ->
+                user = userData
+            }
+        }
+    }
+
+    private fun setRestaurantUI() {
+        detailRestaurantName.text = place?.name ?: ""
+        detailRestaurantAddress.text = place?.address ?: ""
+        setRating()
+        setFavorite()
+        // TODO: uncomment to get real photo data (remind to add a placeholder if no photo found)
+        // setRestaurantPhoto()
     }
 
     /**
@@ -55,7 +90,7 @@ class DetailRestaurantActivity : BaseActivity() {
      */
     private fun configureRecyclerView() {
         detailRestaurantRecyclerView.adapter =
-            WorkmatesAdapter(generateOptionForAdapter(), user?.uid)
+            WorkmatesAdapter(generateOptionForAdapter(), user?.uid, WorkmateListType.DETAIL)
         detailRestaurantRecyclerView.layoutManager = LinearLayoutManager(this)
     }
 
@@ -64,27 +99,11 @@ class DetailRestaurantActivity : BaseActivity() {
      * directly used into a recycler view.
      */
     private fun generateOptionForAdapter(): FirestoreRecyclerOptions<User> {
-        val query = getUsersOrderedByLunch()
+        val query = getUsersByLunchId(place?.place_id ?: "")
         return FirestoreRecyclerOptions.Builder<User>()
             .setQuery(query, User::class.java)
             .setLifecycleOwner(this)
             .build()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        if (hasChangedFavoriteStatus)
-            updateFavorite()
-    }
-
-    private fun updateFavorite() {
-        val user = FirebaseAuth.getInstance().currentUser
-            ?: return showToastError(getString(R.string.login_no_account_found_error))
-        if (isFavorite) {
-            setFavoriteRestaurant(user.uid, place.id)
-        } else {
-            deleteFavoriteRestaurant(user.uid, place.id)
-        }
     }
 
     private fun setCallToAction() {
@@ -114,27 +133,27 @@ class DetailRestaurantActivity : BaseActivity() {
         }
     }
 
-    private fun setStarColor(drawableId: Int, colorId: Int) {
-        detailRestaurantLikeButton.setTextColor(resources.getColor(colorId))
-        val yellowStar = resources.getDrawable(drawableId)
-        detailRestaurantLikeButton.setCompoundDrawablesRelativeWithIntrinsicBounds(null, yellowStar, null, null)
-    }
-
-    private fun setRestaurantUI() {
-        detailRestaurantName.text = place.name
-        detailRestaurantAddress.text = place.address ?: ""
-        setRating()
-        setFavorite()
-        // TODO: uncomment to get real photo data (remind to add a placeholder if no photo found)
-        // setRestaurantPhoto()
+    private fun animateFab(action: FabAction) {
+        isLunchOfTheDay = !isLunchOfTheDay
+        hasChangedLunchOfDay = !hasChangedLunchOfDay
+        when (action) {
+            FabAction.ENABLE -> {
+                detailRestaurantFabDisable.scaleDown()
+                detailRestaurantFabEnable.scaleUp()
+            }
+            FabAction.DISABLE -> {
+                detailRestaurantFabEnable.scaleDown()
+                detailRestaurantFabDisable.scaleUp()
+            }
+        }
     }
 
     private fun setFavorite() {
-        val uid = user?.uid
+        val uid = userId
         if (uid == null) {
             showToastError(getString(R.string.detail_restaurant_cannot_fetch_favorite_error))
         } else {
-            getFavoriteRestaurant(uid, place.id).addOnSuccessListener {
+            getFavoriteRestaurant(uid, place?.id ?: "").addOnSuccessListener {
                 if (it.data?.get("userId") != null) {
                     setStarColor(R.drawable.ic_star_color_yellow, R.color.yellowStar)
                     isFavorite = true
@@ -144,8 +163,24 @@ class DetailRestaurantActivity : BaseActivity() {
         }
     }
 
+    private fun updateFavorite() {
+        val user = FirebaseAuth.getInstance().currentUser
+            ?: return showToastError(getString(R.string.login_no_account_found_error))
+        if (isFavorite) {
+            setFavoriteRestaurant(user.uid, place?.id ?: "")
+        } else {
+            deleteFavoriteRestaurant(user.uid, place?.id ?: "")
+        }
+    }
+
+    private fun setStarColor(drawableId: Int, colorId: Int) {
+        detailRestaurantLikeButton.setTextColor(resources.getColor(colorId))
+        val yellowStar = resources.getDrawable(drawableId)
+        detailRestaurantLikeButton.setCompoundDrawablesRelativeWithIntrinsicBounds(null, yellowStar, null, null)
+    }
+
     private fun setRating() {
-        val rating = toStarsFormat(place.rating)
+        val rating = toStarsFormat(place?.rating)
         if (rating > 0) {
             detailRestaurantRating.visibility = VISIBLE
             detailRestaurantRating.rating = rating
@@ -155,7 +190,7 @@ class DetailRestaurantActivity : BaseActivity() {
     }
 
     private fun setRestaurantPhoto() {
-        viewModel.getPlacePhoto(place.photos?.get(0)?.photo_reference, MAX_PHOTO_WIDTH)
+        viewModel.getPlacePhoto(place?.photos?.get(0)?.photo_reference, MAX_PHOTO_WIDTH)
             .enqueue(object : retrofit2.Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     Log.e("NETWORK", "Fail to get detail restaurant photo : ${t.message}")

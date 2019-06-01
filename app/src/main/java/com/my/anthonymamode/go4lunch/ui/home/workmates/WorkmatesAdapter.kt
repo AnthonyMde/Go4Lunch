@@ -1,5 +1,6 @@
 package com.my.anthonymamode.go4lunch.ui.home.workmates
 
+import android.content.Context
 import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
@@ -20,12 +21,13 @@ class WorkmatesAdapter(
      * Connected user represented by its uid property
      */
     private val currentUser: String?,
+    private val type: WorkmateListType,
     /**
      * The lambda needed by the ViewHolder to handle the click on each item
      */
     private val onClick: () -> Unit = {}
 ) :
-    FirestoreRecyclerAdapter<User, WorkmatesViewHolder>(options) {
+    FirestoreRecyclerAdapter<User, WorkmatesAdapter.WorkmatesViewHolder>(options) {
 
     /**
      * Setup the layout for each item here.
@@ -36,8 +38,7 @@ class WorkmatesAdapter(
                 R.layout.workmates_list_item,
                 parent,
                 false
-            ),
-            onClick
+            )
         )
     }
 
@@ -51,43 +52,67 @@ class WorkmatesAdapter(
         else
             holder.viewGone()
     }
-}
-
-/**
- * WorkmatesFragment ViewHolder which manage everything relative to
- * a single item of the recycler view.
- */
-class WorkmatesViewHolder(private val view: View, private val onClick: () -> Unit) :
-    RecyclerView.ViewHolder(view) {
 
     /**
-     * We bind all the data to the item view here.
+     * WorkmatesFragment ViewHolder which manage everything relative to
+     * a single item of the recycler view.
      */
-    fun bindDataToItemView(data: User) {
-        val context = view.context
-        if (data.hasLunch) {
-            view.workmatesItemText.text = context.getString(R.string.workmates_has_lunch, data.displayName)
-            view.workmatesItemText.setTypeface(null, Typeface.NORMAL)
-            view.workmatesItemText.setTextColor(context.resources.getColor(android.R.color.black))
-            view.setOnClickListener { onClick.invoke() }
-        } else {
-            view.workmatesItemText.text = context.getString(R.string.workmates_has_no_lunch, data.displayName)
-            view.workmatesItemText.setTypeface(null, Typeface.ITALIC)
-            view.workmatesItemText.setTextColor(context.resources.getColor(R.color.lightGray))
+    inner class WorkmatesViewHolder(private val view: View) :
+        RecyclerView.ViewHolder(view) {
+
+        private var context: Context = view.context
+        private lateinit var data: User
+
+        /**
+         * We bind all the data to the item view here.
+         */
+        fun bindDataToItemView(data: User) {
+            this.data = data
+            when (type) {
+                WorkmateListType.ALL -> {
+                    setDefaultStyle()
+                }
+                WorkmateListType.DETAIL -> {
+                    setDetailStyle()
+                }
+            }
+            setPhoto()
         }
 
-        Glide.with(context)
-            .load(data.photoPath)
-            .placeholder(R.drawable.profil_placeholder)
-            .apply(RequestOptions.circleCropTransform())
-            .into(view.workmatesItemPhoto)
-    }
+        private fun setDetailStyle() {
+            view.workmatesItemText.text =
+                context.getString(R.string.detail_restaurant_workamtes_eating_there, data.displayName)
+            view.workmatesItemText.setTypeface(null, Typeface.NORMAL)
+            view.workmatesItemText.setTextColor(context.resources.getColor(android.R.color.black))
+        }
 
-    /**
-     * Used to remove the current user cell.
-     */
-    fun viewGone() {
-        view.visibility = GONE
-        view.layoutParams = RecyclerView.LayoutParams(0, 0)
+        private fun setDefaultStyle() {
+            if (data.hasLunch) {
+                view.workmatesItemText.text = context.getString(R.string.workmates_has_lunch, data.displayName)
+                view.workmatesItemText.setTypeface(null, Typeface.NORMAL)
+                view.workmatesItemText.setTextColor(context.resources.getColor(android.R.color.black))
+                view.setOnClickListener { onClick.invoke() }
+            } else {
+                view.workmatesItemText.text = context.getString(R.string.workmates_has_no_lunch, data.displayName)
+                view.workmatesItemText.setTypeface(null, Typeface.ITALIC)
+                view.workmatesItemText.setTextColor(context.resources.getColor(R.color.lightGray))
+            }
+        }
+
+        private fun setPhoto() {
+            Glide.with(context)
+                .load(data.photoPath)
+                .placeholder(R.drawable.profil_placeholder)
+                .apply(RequestOptions.circleCropTransform())
+                .into(view.workmatesItemPhoto)
+        }
+
+        /**
+         * Used to remove the current user cell.
+         */
+        fun viewGone() {
+            view.visibility = GONE
+            view.layoutParams = RecyclerView.LayoutParams(0, 0)
+        }
     }
 }

@@ -36,9 +36,9 @@ class WorkmatesFragment : BaseFragment() {
      */
     private fun configureRecyclerView(activity: FragmentActivity) {
         val viewModel = ViewModelProviders.of(activity).get(HomeViewModel::class.java)
-        val current = viewModel.currentUser
+        val user = viewModel.currentUser
         workmatesRecyclerView.adapter =
-            WorkmatesAdapter(generateOptionForAdapter(), current)
+            WorkmatesAdapter(generateOptionForAdapter(), user, WorkmateListType.ALL)
         workmatesRecyclerView.layoutManager = LinearLayoutManager(context)
     }
 

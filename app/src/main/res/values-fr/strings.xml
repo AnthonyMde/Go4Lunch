@@ -48,6 +48,7 @@
     <string name="detail_restaurant_website_button">Site</string>
     <string name="detail_restaurant_toast_add_to_favorite">Ajouté aux favoris</string>
     <string name="detail_restaurant_toast_remove_from_favorite">Retiré des favoris</string>
+    <string name="detail_restaurant_workamtes_eating_there">%1$s compte manger là-bas !</string>
     <string name="detail_restaurant_cannot_fetch_favorite_error">Impossible de retrouver vos restaurants favoris</string>
 
     <!-- PERMISSION SCREEN -->

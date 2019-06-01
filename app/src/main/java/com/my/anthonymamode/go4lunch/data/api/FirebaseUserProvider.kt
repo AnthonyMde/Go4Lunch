@@ -7,6 +7,7 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
+import com.my.anthonymamode.go4lunch.domain.Lunch
 import com.my.anthonymamode.go4lunch.domain.User
 
 private const val USERS_COLLECTION_NAME = "users"
@@ -25,8 +26,15 @@ fun getCurrentUserData(uid: String): Task<User?> {
     }
 }
 
-fun createUser(uid: String, displayName: String?, email: String?, photoPath: String?, hasLunch: Boolean = false): Task<Void> {
-    val userToCreate = User(uid, displayName, email, photoPath, hasLunch)
+fun updateUser(
+    uid: String,
+    displayName: String?,
+    email: String?,
+    photoPath: String?,
+    hasLunch: Boolean = false,
+    lunch: Lunch? = null
+): Task<Void> {
+    val userToCreate = User(uid, displayName, email, photoPath, hasLunch, lunch)
     return getUsersCollection().document(uid).set(userToCreate)
 }
 
@@ -39,6 +47,6 @@ fun getUsersOrderedByLunch(): Query {
     return getUsersCollection().orderBy("hasLunch", Query.Direction.DESCENDING)
 }
 
-fun getUsersByRestaurantId() {
-    // TODO: retrieve user who have chosen a specific restaurant for today
+fun getUsersByLunchId(placeId: String): Query {
+    return getUsersCollection().whereEqualTo("lunch.lunchOfTheDay", placeId)
 }

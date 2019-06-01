@@ -59,6 +59,7 @@
     <string name="detail_restaurant_website_button">Website</string>
     <string name="detail_restaurant_toast_add_to_favorite">Add to favorite</string>
     <string name="detail_restaurant_toast_remove_from_favorite">Remove from favorite</string>
+    <string name="detail_restaurant_workamtes_eating_there">%1$s is joining !</string>
     <string name="detail_restaurant_cannot_fetch_favorite_error">Impossible to retrieve your favorites restaurants</string>
 
     <!-- PERMISSION SCREEN -->

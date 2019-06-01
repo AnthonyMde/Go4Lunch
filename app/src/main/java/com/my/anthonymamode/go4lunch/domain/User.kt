@@ -5,7 +5,6 @@ data class User(
     var displayName: String? = "",
     var email: String? = "",
     var photoPath: String? = "",
-    var hasLunch: Boolean = false
-    // TODO: Add current user restaurant
-    // var workmateRestaurantChoice: String? = ""
+    var hasLunch: Boolean = false,
+    var lunch: Lunch? = null
 )
