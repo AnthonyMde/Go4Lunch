@@ -38,6 +38,10 @@ fun updateUser(
     return getUsersCollection().document(uid).set(userToCreate)
 }
 
+fun updateUser(user: User): Task<Void> {
+    return getUsersCollection().document(user.uid).set(user)
+}
+
 fun deleteUser(uid: String): Task<Void> {
     // TODO: should trigger a firebase function instead of deleting it directly from the app
     return getUsersCollection().document(uid).delete()

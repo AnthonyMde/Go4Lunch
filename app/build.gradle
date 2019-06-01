@@ -14,7 +14,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField "String", "API_KEY_GOOGLE_PLACES", "\"AIzaSyCZoUYvAoEDANJpxSmwt0XtObBQyzXrVM4\""
+        buildConfigField "String", "API_KEY_GOOGLE_PLACES", "\"AIzaSyD5KD4gSG3CTA80mwlBq9ylg6_HkwGsEj4\""
     }
     buildTypes {
         release {

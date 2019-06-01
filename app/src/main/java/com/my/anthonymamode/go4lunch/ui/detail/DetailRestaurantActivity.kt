@@ -12,11 +12,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.my.anthonymamode.go4lunch.R
+import com.my.anthonymamode.go4lunch.data.api.updateUser
 import com.my.anthonymamode.go4lunch.data.api.deleteFavoriteRestaurant
 import com.my.anthonymamode.go4lunch.data.api.getFavoriteRestaurant
 import com.my.anthonymamode.go4lunch.data.api.setFavoriteRestaurant
 import com.my.anthonymamode.go4lunch.data.api.getUsersByLunchId
 import com.my.anthonymamode.go4lunch.data.api.getCurrentUserData
+import com.my.anthonymamode.go4lunch.domain.Lunch
 import com.my.anthonymamode.go4lunch.domain.Place
 import com.my.anthonymamode.go4lunch.domain.User
 import com.my.anthonymamode.go4lunch.ui.home.workmates.WorkmateListType
@@ -55,8 +57,8 @@ class DetailRestaurantActivity : BaseActivity() {
         setCallToAction()
         configureRecyclerView()
         setCurrentUser()
-        detailRestaurantFabDisable.setOnClickListener { animateFab(FabAction.ENABLE) }
-        detailRestaurantFabEnable.setOnClickListener { animateFab(FabAction.DISABLE) }
+        detailRestaurantFabDisable.setOnClickListener { setLunchOfTheDay() }
+        detailRestaurantFabEnable.setOnClickListener { removeLunchOfTheDay() }
     }
 
     override fun onPause() {
@@ -64,7 +66,7 @@ class DetailRestaurantActivity : BaseActivity() {
         if (hasChangedFavoriteStatus)
             updateFavorite()
         if (hasChangedLunchOfDay) {
-            // todo : update restaurant of the day
+            user?.let { updateUser(it) }
         }
     }
 
@@ -72,7 +74,16 @@ class DetailRestaurantActivity : BaseActivity() {
         userId?.let { uid ->
             getCurrentUserData(uid).addOnSuccessListener { userData ->
                 user = userData
+                retrieveLunchChoice()
             }
+        }
+    }
+
+    private fun retrieveLunchChoice() {
+        if (user?.lunch?.lunchOfTheDay == place?.place_id ?: "") {
+            isLunchOfTheDay = true
+            detailRestaurantFabDisable.scaleDown()
+            detailRestaurantFabEnable.scaleUp()
         }
     }
 
@@ -133,18 +144,25 @@ class DetailRestaurantActivity : BaseActivity() {
         }
     }
 
-    private fun animateFab(action: FabAction) {
-        isLunchOfTheDay = !isLunchOfTheDay
+    private fun setLunchOfTheDay() {
+        isLunchOfTheDay = true
         hasChangedLunchOfDay = !hasChangedLunchOfDay
-        when (action) {
-            FabAction.ENABLE -> {
-                detailRestaurantFabDisable.scaleDown()
-                detailRestaurantFabEnable.scaleUp()
-            }
-            FabAction.DISABLE -> {
-                detailRestaurantFabEnable.scaleDown()
-                detailRestaurantFabDisable.scaleUp()
-            }
+        detailRestaurantFabDisable.scaleDown()
+        detailRestaurantFabEnable.scaleUp()
+        user?.apply {
+            hasLunch = true
+            lunch = Lunch(place?.place_id, place?.name)
+        }
+    }
+
+    private fun removeLunchOfTheDay() {
+        isLunchOfTheDay = false
+        hasChangedLunchOfDay = !hasChangedLunchOfDay
+        detailRestaurantFabEnable.scaleDown()
+        detailRestaurantFabDisable.scaleUp()
+        user?.apply {
+            hasLunch = false
+            lunch = null
         }
     }
 
