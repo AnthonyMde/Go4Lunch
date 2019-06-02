@@ -36,7 +36,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     val lastLocation: LiveData<LatLng>
         get() = _lastLocation
 
-    var currentUser: String? = null
+    var userId: String? = null
 
     /**
      * @return the FirebaseUser object which contains his data.
@@ -45,7 +45,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         val infoUser = FirebaseAuth.getInstance().currentUser
         if (infoUser != null) {
             _userInfo.postValue(Resource.Success(infoUser))
-            currentUser = infoUser.uid
+            userId = infoUser.uid
         }
     }
 

@@ -17,7 +17,7 @@
     <string name="home_toolbar_title">Une petite faim ?</string>
 
     <!-- WORKMATES -->
-    <string name="workmates_has_lunch">%1$s y mange</string>
+    <string name="workmates_has_lunch">%1$s mange chez %2$s</string>
     <string name="workmates_has_no_lunch">%1$s n\'a pas encore choisi</string>
 
     <!-- DRAWER -->
@@ -41,6 +41,7 @@
     <!-- RESTAURANT LIST -->
     <string name="restaurant_item_is_opened">Actuellement ouvert</string>
     <string name="restaurant_item_is_closed">Actuellement fermé</string>
+    <string name="restaurant_list_no_place_id_error">Désolé, nous ne pouvons afficher ce restaurant pour le moment</string>
 
     <!-- RESTAURANT DETAILS -->
     <string name="detail_restaurant_call_button">Téléphone</string>

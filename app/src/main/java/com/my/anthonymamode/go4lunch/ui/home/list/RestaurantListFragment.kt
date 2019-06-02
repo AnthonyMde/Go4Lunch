@@ -35,7 +35,7 @@ class RestaurantListFragment : BaseFragment() {
 
     private val restaurantAdapter = RestaurantAdapter(onClick = {
         val intent = Intent(context, DetailRestaurantActivity::class.java)
-        intent.putExtra("place", it)
+        intent.putExtra("placeId", it)
         startActivity(intent)
     })
 

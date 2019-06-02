@@ -25,7 +25,7 @@ class WorkmatesAdapter(
     /**
      * The lambda needed by the ViewHolder to handle the click on each item
      */
-    private val onClick: () -> Unit = {}
+    private val onClick: (String) -> Unit = {}
 ) :
     FirestoreRecyclerAdapter<User, WorkmatesAdapter.WorkmatesViewHolder>(options) {
 
@@ -88,10 +88,12 @@ class WorkmatesAdapter(
 
         private fun setDefaultStyle() {
             if (data.hasLunch) {
-                view.workmatesItemText.text = context.getString(R.string.workmates_has_lunch, data.displayName)
+                val lunchId = data.lunch?.lunchOfTheDay ?: return
+                val lunchName = data.lunch?.lunchName ?: ""
+                view.workmatesItemText.text = context.getString(R.string.workmates_has_lunch, data.displayName, lunchName)
                 view.workmatesItemText.setTypeface(null, Typeface.NORMAL)
                 view.workmatesItemText.setTextColor(context.resources.getColor(android.R.color.black))
-                view.setOnClickListener { onClick.invoke() }
+                view.setOnClickListener { onClick.invoke(lunchId) }
             } else {
                 view.workmatesItemText.text = context.getString(R.string.workmates_has_no_lunch, data.displayName)
                 view.workmatesItemText.setTypeface(null, Typeface.ITALIC)

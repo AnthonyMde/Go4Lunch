@@ -26,7 +26,7 @@
     <string name="home_toolbar_title">A bit hungry ?</string>
 
     <!-- WORKMATES -->
-    <string name="workmates_has_lunch">%1$s is eating</string>
+    <string name="workmates_has_lunch">%1$s is eating at %2$s</string>
     <string name="workmates_has_no_lunch">%1$s has not decided yet</string>
 
     <!-- DRAWER -->
@@ -52,6 +52,7 @@
     <!-- RESTAURANT LIST -->
     <string name="restaurant_item_is_opened">Currently opened</string>
     <string name="restaurant_item_is_closed">Currently closed</string>
+    <string name="restaurant_list_no_place_id_error">Sorry, we can\'t retrieve this restaurant for now</string>
 
     <!-- RESTAURANT DETAILS-->
     <string name="detail_restaurant_call_button">call</string>

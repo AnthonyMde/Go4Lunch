@@ -42,6 +42,7 @@ class DetailRestaurantActivity : BaseActivity() {
     private var hasChangedLunchOfDay = false
     private var user: User? = null
     private var place: Place? = null
+    private var placeId: String? = null
     private val viewModel by lazy { ViewModelProviders.of(this).get(DetailRestaurantViewModel::class.java) }
     private val userId by lazy { FirebaseAuth.getInstance().currentUser?.uid }
 
@@ -49,7 +50,7 @@ class DetailRestaurantActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_restaurant)
 
-        place = intent.getSerializableExtra("place") as? Place
+        placeId = intent.getStringExtra("placeId")
         setRestaurantUI()
         setCallToAction()
         setCurrentUser()
@@ -171,7 +172,7 @@ class DetailRestaurantActivity : BaseActivity() {
         if (uid == null) {
             showToastError(getString(R.string.detail_restaurant_cannot_fetch_favorite_error))
         } else {
-            getFavoriteRestaurant(uid, place?.id ?: "").addOnSuccessListener {
+            getFavoriteRestaurant(uid, place?.place_id ?: "").addOnSuccessListener {
                 if (it.data?.get("userId") != null) {
                     setStarColor(R.drawable.ic_star_color_yellow, R.color.yellowStar)
                     isFavorite = true
@@ -185,9 +186,9 @@ class DetailRestaurantActivity : BaseActivity() {
         val uid = userId
             ?: return showToastError(getString(R.string.login_no_account_found_error))
         if (isFavorite) {
-            setFavoriteRestaurant(uid, place?.id ?: "")
+            setFavoriteRestaurant(uid, place?.place_id ?: "")
         } else {
-            deleteFavoriteRestaurant(uid, place?.id ?: "")
+            deleteFavoriteRestaurant(uid, place?.place_id ?: "")
         }
     }
 

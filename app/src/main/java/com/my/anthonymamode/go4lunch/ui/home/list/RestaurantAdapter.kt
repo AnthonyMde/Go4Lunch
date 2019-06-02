@@ -16,8 +16,9 @@ import com.my.anthonymamode.go4lunch.domain.Place
 import com.my.anthonymamode.go4lunch.utils.toFormatDistance
 import com.my.anthonymamode.go4lunch.utils.toStarsFormat
 import kotlinx.android.synthetic.main.listitem_restaurant.view.*
+import org.jetbrains.anko.toast
 
-class RestaurantAdapter(private val onClick: (Place) -> Unit) : RecyclerView.Adapter<RestaurantViewHolder>() {
+class RestaurantAdapter(private val onClick: (String) -> Unit) : RecyclerView.Adapter<RestaurantViewHolder>() {
     private var restaurantList = emptyList<Place>()
     private var restaurantPhoto = mutableMapOf<Int, Bitmap?>()
 
@@ -31,7 +32,7 @@ class RestaurantAdapter(private val onClick: (Place) -> Unit) : RecyclerView.Ada
     }
 
     override fun onBindViewHolder(holder: RestaurantViewHolder, position: Int) {
-            holder.bindView(restaurantList[position], restaurantPhoto[position], onClick)
+        holder.bindView(restaurantList[position], restaurantPhoto[position], onClick)
     }
 
     fun setRestaurantList(list: List<Place>, photos: MutableMap<Int, Bitmap?>) {
@@ -42,7 +43,7 @@ class RestaurantAdapter(private val onClick: (Place) -> Unit) : RecyclerView.Ada
 }
 
 class RestaurantViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-    fun bindView(restaurant: Place, restaurantPhoto: Bitmap?, onClick: (Place) -> Unit) {
+    fun bindView(restaurant: Place, restaurantPhoto: Bitmap?, onClick: (String) -> Unit) {
         itemView.restaurantItemTitle.text = restaurant.name
         itemView.restaurantItemAddress.text = restaurant.address
 
@@ -52,7 +53,10 @@ class RestaurantViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         setHours(restaurant)
 
         itemView.restaurantItemContainer.setOnClickListener {
-            onClick(restaurant)
+            if (restaurant.place_id != null)
+                onClick(restaurant.place_id)
+            else
+                it.context.toast(it.context.getString(R.string.restaurant_list_no_place_id_error))
         }
     }
 
@@ -65,6 +69,7 @@ class RestaurantViewHolder(v: View) : RecyclerView.ViewHolder(v) {
             return
         }
 
+        // TODO : should we set precise opening and closing hours ?
         restaurant.opening_hours.open_now.let { open ->
             hours.visibility = VISIBLE
             if (open) {
