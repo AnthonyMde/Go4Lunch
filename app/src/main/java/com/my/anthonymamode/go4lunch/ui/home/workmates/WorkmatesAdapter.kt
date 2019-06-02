@@ -20,7 +20,7 @@ class WorkmatesAdapter(
     /**
      * Connected user represented by its uid property
      */
-    private val currentUser: String?,
+    private val userId: String?,
     private val type: WorkmateListType,
     /**
      * The lambda needed by the ViewHolder to handle the click on each item
@@ -47,7 +47,7 @@ class WorkmatesAdapter(
      * We filter the data to hide the item which is matching the current user.
      */
     override fun onBindViewHolder(holder: WorkmatesViewHolder, position: Int, data: User) {
-        if (data.uid != currentUser)
+        if (data.uid != userId)
             holder.bindDataToItemView(data)
         else
             holder.viewGone()

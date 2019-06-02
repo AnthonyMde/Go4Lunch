@@ -36,37 +36,37 @@ import retrofit2.Response
 private const val MAX_PHOTO_WIDTH = 1280
 
 class DetailRestaurantActivity : BaseActivity() {
-    private var place: Place? = null
     private var isFavorite = false
     private var isLunchOfTheDay = false
     private var hasChangedFavoriteStatus = false
     private var hasChangedLunchOfDay = false
-    private val viewModel by lazy {
-        ViewModelProviders.of(this).get(DetailRestaurantViewModel::class.java)
-    }
-    private val userId by lazy {
-        FirebaseAuth.getInstance().currentUser?.uid
-    }
     private var user: User? = null
+    private var place: Place? = null
+    private val viewModel by lazy { ViewModelProviders.of(this).get(DetailRestaurantViewModel::class.java) }
+    private val userId by lazy { FirebaseAuth.getInstance().currentUser?.uid }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_restaurant)
+
         place = intent.getSerializableExtra("place") as? Place
         setRestaurantUI()
         setCallToAction()
-        configureRecyclerView()
         setCurrentUser()
+        configureRecyclerView()
         detailRestaurantFabDisable.setOnClickListener { setLunchOfTheDay() }
         detailRestaurantFabEnable.setOnClickListener { removeLunchOfTheDay() }
     }
 
     override fun onPause() {
         super.onPause()
-        if (hasChangedFavoriteStatus)
+        if (hasChangedFavoriteStatus) {
             updateFavorite()
+            hasChangedFavoriteStatus = false
+        }
         if (hasChangedLunchOfDay) {
             user?.let { updateUser(it) }
+            hasChangedLunchOfDay = false
         }
     }
 
@@ -101,7 +101,7 @@ class DetailRestaurantActivity : BaseActivity() {
      */
     private fun configureRecyclerView() {
         detailRestaurantRecyclerView.adapter =
-            WorkmatesAdapter(generateOptionForAdapter(), user?.uid, WorkmateListType.DETAIL)
+            WorkmatesAdapter(generateOptionForAdapter(), userId, WorkmateListType.DETAIL)
         detailRestaurantRecyclerView.layoutManager = LinearLayoutManager(this)
     }
 
@@ -182,12 +182,12 @@ class DetailRestaurantActivity : BaseActivity() {
     }
 
     private fun updateFavorite() {
-        val user = FirebaseAuth.getInstance().currentUser
+        val uid = userId
             ?: return showToastError(getString(R.string.login_no_account_found_error))
         if (isFavorite) {
-            setFavoriteRestaurant(user.uid, place?.id ?: "")
+            setFavoriteRestaurant(uid, place?.id ?: "")
         } else {
-            deleteFavoriteRestaurant(user.uid, place?.id ?: "")
+            deleteFavoriteRestaurant(uid, place?.id ?: "")
         }
     }
 

@@ -178,7 +178,9 @@
     <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/detailRestaurantFabEnable"
             android:layout_marginEnd="24dp"
-            android:src="@drawable/ic_logout_white_24dp"
+            android:src="@drawable/ic_check_white_24dp"
+            android:backgroundTint="@color/fabGreen"
+            app:backgroundTint="@color/fabGreen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"

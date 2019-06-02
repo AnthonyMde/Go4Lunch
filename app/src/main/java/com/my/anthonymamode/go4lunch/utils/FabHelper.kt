@@ -10,7 +10,7 @@ fun FloatingActionButton.scaleDown() {
     Handler().post {
         animate()
             .withEndAction { visibility = View.GONE }
-            .setDuration(200L)
+            .setDuration(100L)
             .setInterpolator(LinearInterpolator())
             .scaleX(0f)
             .scaleY(0f)
@@ -23,7 +23,7 @@ fun FloatingActionButton.scaleUp() {
         {
             animate()
                 .withStartAction { visibility = View.VISIBLE }
-                .setDuration(200L)
+                .setDuration(100L)
                 .setInterpolator(AccelerateInterpolator())
                 .scaleX(1f)
                 .scaleY(1f)
