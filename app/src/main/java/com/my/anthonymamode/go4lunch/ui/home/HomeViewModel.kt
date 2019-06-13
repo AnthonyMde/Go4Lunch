@@ -8,7 +8,7 @@ import com.firebase.ui.auth.AuthUI
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.my.anthonymamode.go4lunch.data.repository.HomeRepository
+import com.my.anthonymamode.go4lunch.data.repository.PlacesRepository
 import com.my.anthonymamode.go4lunch.domain.Places
 import com.my.anthonymamode.go4lunch.utils.Resource
 import okhttp3.ResponseBody
@@ -19,7 +19,7 @@ import retrofit2.Call
  * ViewModel are shared by the HomeActivity and its child fragments.
  */
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
-    private val repository = HomeRepository()
+    private val repository = PlacesRepository()
     /**
      * For each value that we want to expose, we have two variables : a private MutableLiveData,
      * only modifiable by this ViewModel and a public LiveData, readable by the observer.

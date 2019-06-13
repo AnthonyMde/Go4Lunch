@@ -16,7 +16,6 @@ import com.my.anthonymamode.go4lunch.domain.Place
 import com.my.anthonymamode.go4lunch.utils.toFormatDistance
 import com.my.anthonymamode.go4lunch.utils.toStarsFormat
 import kotlinx.android.synthetic.main.listitem_restaurant.view.*
-import org.jetbrains.anko.toast
 
 class RestaurantAdapter(private val onClick: (String) -> Unit) : RecyclerView.Adapter<RestaurantViewHolder>() {
     private var restaurantList = emptyList<Place>()
@@ -53,10 +52,7 @@ class RestaurantViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         setHours(restaurant)
 
         itemView.restaurantItemContainer.setOnClickListener {
-            if (restaurant.place_id != null)
-                onClick(restaurant.place_id)
-            else
-                it.context.toast(it.context.getString(R.string.restaurant_list_no_place_id_error))
+            onClick(restaurant.place_id)
         }
     }
 

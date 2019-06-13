@@ -20,6 +20,7 @@ import com.my.anthonymamode.go4lunch.data.api.getUsersByLunchId
 import com.my.anthonymamode.go4lunch.data.api.getCurrentUserData
 import com.my.anthonymamode.go4lunch.domain.Lunch
 import com.my.anthonymamode.go4lunch.domain.Place
+import com.my.anthonymamode.go4lunch.domain.PlaceDetail
 import com.my.anthonymamode.go4lunch.domain.User
 import com.my.anthonymamode.go4lunch.ui.home.workmates.WorkmateListType
 import com.my.anthonymamode.go4lunch.ui.home.workmates.WorkmatesAdapter
@@ -31,6 +32,7 @@ import kotlinx.android.synthetic.main.activity_detail_restaurant.*
 import okhttp3.ResponseBody
 import org.jetbrains.anko.toast
 import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
 
 private const val MAX_PHOTO_WIDTH = 1280
@@ -42,7 +44,6 @@ class DetailRestaurantActivity : BaseActivity() {
     private var hasChangedLunchOfDay = false
     private var user: User? = null
     private var place: Place? = null
-    private var placeId: String? = null
     private val viewModel by lazy { ViewModelProviders.of(this).get(DetailRestaurantViewModel::class.java) }
     private val userId by lazy { FirebaseAuth.getInstance().currentUser?.uid }
 
@@ -50,13 +51,12 @@ class DetailRestaurantActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_restaurant)
 
-        placeId = intent.getStringExtra("placeId")
-        setRestaurantUI()
-        setCallToAction()
-        setCurrentUser()
-        configureRecyclerView()
-        detailRestaurantFabDisable.setOnClickListener { setLunchOfTheDay() }
-        detailRestaurantFabEnable.setOnClickListener { removeLunchOfTheDay() }
+        val placeId = intent.getStringExtra("placeId")
+        if (placeId == null) {
+            toast("Sorry we can't retrieve these restaurant data for the moment")
+            return
+        }
+        getPlaceDetail(placeId)
     }
 
     override fun onPause() {
@@ -206,6 +206,30 @@ class DetailRestaurantActivity : BaseActivity() {
         } else {
             detailRestaurantRating.visibility = INVISIBLE
         }
+    }
+
+    private fun getPlaceDetail(placeId: String) {
+        viewModel.getPlaceDetail(placeId).enqueue(object : Callback<PlaceDetail> {
+            override fun onFailure(call: Call<PlaceDetail>, t: Throwable) {
+                toast("Sorry we can't retrieve these restaurant data for the moment")
+                Log.e("Places", "can't get place details with error : ${t.message}")
+            }
+
+            override fun onResponse(call: Call<PlaceDetail>, response: Response<PlaceDetail>) {
+                val data = response.body()?.place
+                if (data != null) {
+                    place = data
+                    setRestaurantUI()
+                    setCallToAction()
+                    setCurrentUser()
+                    configureRecyclerView()
+                    detailRestaurantFabDisable.setOnClickListener { setLunchOfTheDay() }
+                    detailRestaurantFabEnable.setOnClickListener { removeLunchOfTheDay() }
+                } else {
+                    toast("Sorry we can't retrieve these restaurant data for the moment")
+                }
+            }
+        })
     }
 
     private fun setRestaurantPhoto() {

@@ -7,9 +7,6 @@
     <string name="facebook_login_protocol_scheme" translatable="false" tools:ignore="UnusedResources">fb281477675880579
     </string>
 
-    <!-- GOOGLE -->
-    <string name="google_maps_key" translatable="false">AIzaSyD1ZbtAG1VRM2PMIRJm6TmEYHOXaW3fJhg</string>
-
     <!-- LOGIN -->
     <string name="login_subtitle">Find a nice restaurant and invite co-workers for lunch!</string>
     <string name="login_facebook_button">Sign in with Facebook</string>

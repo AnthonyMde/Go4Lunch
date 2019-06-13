@@ -9,9 +9,9 @@ import java.util.concurrent.TimeUnit
 
 class NetworkModule {
     companion object {
-        fun getRetrofit(): Retrofit {
+        fun getRetrofitPlaces(): Retrofit {
             return Retrofit.Builder()
-                .baseUrl("https://maps.googleapis.com/maps/api/")
+                .baseUrl("https://maps.googleapis.com/maps/api/place/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(getOkHttpClient())
                 .build()
