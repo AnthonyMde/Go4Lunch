@@ -91,12 +91,12 @@ class RestaurantViewHolder(v: View) : RecyclerView.ViewHolder(v) {
     }
 
     private fun setRating(restaurant: Place) {
-        val rating = toStarsFormat(restaurant.rating)
-        if (rating > 0) {
+        val rating = restaurant.rating?.toStarsFormat()
+        if (rating == null || rating < 0) {
+            itemView.restaurantItemRating.visibility = INVISIBLE
+        } else {
             itemView.restaurantItemRating.visibility = VISIBLE
             itemView.restaurantItemRating.rating = rating
-        } else {
-            itemView.restaurantItemRating.visibility = INVISIBLE
         }
     }
 

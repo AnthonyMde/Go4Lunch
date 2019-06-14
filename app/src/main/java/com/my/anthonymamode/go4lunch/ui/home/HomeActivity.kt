@@ -31,6 +31,7 @@ import com.my.anthonymamode.go4lunch.utils.BaseActivity
 import com.my.anthonymamode.go4lunch.utils.Resource
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.nav_drawer_header.view.*
+import org.jetbrains.anko.contentView
 import org.jetbrains.anko.startActivity
 
 private const val TLSE_LAT = 43.6043
@@ -79,30 +80,13 @@ class HomeActivity : BaseActivity() {
      */
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
-            R.id.navigation_map -> {
-                supportFragmentManager.beginTransaction()
-                    .replace(
-                        R.id.contentView,
-                        MapsFragment()
-                    ).commit()
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_list -> {
-                supportFragmentManager.beginTransaction()
-                    .replace(
-                        R.id.contentView,
-                        RestaurantListFragment()
-                    ).commit()
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_workmates -> {
-                supportFragmentManager.beginTransaction()
-                    .replace(
-                        R.id.contentView,
-                        WorkmatesFragment()
-                    ).commit()
-                return@OnNavigationItemSelectedListener true
-            }
+            R.id.navigation_map -> MapsFragment()
+            R.id.navigation_list -> RestaurantListFragment()
+            R.id.navigation_workmates -> WorkmatesFragment()
+            else -> null
+        }?.let {
+            supportFragmentManager.beginTransaction().replace(R.id.contentView, it).commit()
+            return@OnNavigationItemSelectedListener true
         }
         false
     }

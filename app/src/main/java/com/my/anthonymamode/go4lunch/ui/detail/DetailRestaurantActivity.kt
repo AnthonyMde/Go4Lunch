@@ -89,8 +89,10 @@ class DetailRestaurantActivity : BaseActivity() {
     }
 
     private fun setRestaurantUI() {
-        detailRestaurantName.text = place?.name ?: ""
-        detailRestaurantAddress.text = place?.address ?: ""
+        place?.let {
+            detailRestaurantName.text = it.name
+            detailRestaurantAddress.text = it.address
+        }
         setRating()
         setFavorite()
         // TODO: uncomment to get real photo data (remind to add a placeholder if no photo found)
@@ -101,9 +103,10 @@ class DetailRestaurantActivity : BaseActivity() {
      * Set the adapter for the recycler and pass the data through it here
      */
     private fun configureRecyclerView() {
-        detailRestaurantRecyclerView.adapter =
-            WorkmatesAdapter(generateOptionForAdapter(), userId, WorkmateListType.DETAIL)
-        detailRestaurantRecyclerView.layoutManager = LinearLayoutManager(this)
+        detailRestaurantRecyclerView.apply {
+            adapter = WorkmatesAdapter(generateOptionForAdapter(), userId, WorkmateListType.DETAIL)
+            layoutManager = LinearLayoutManager(this@DetailRestaurantActivity)
+        }
     }
 
     /**
@@ -199,12 +202,12 @@ class DetailRestaurantActivity : BaseActivity() {
     }
 
     private fun setRating() {
-        val rating = toStarsFormat(place?.rating)
-        if (rating > 0) {
+        val rating = place?.rating?.toStarsFormat()
+        if (rating == null || rating < 0) {
+            detailRestaurantRating.visibility = INVISIBLE
+        } else {
             detailRestaurantRating.visibility = VISIBLE
             detailRestaurantRating.rating = rating
-        } else {
-            detailRestaurantRating.visibility = INVISIBLE
         }
     }
 

@@ -43,7 +43,6 @@ fun updateUser(user: User): Task<Void> {
 }
 
 fun deleteUser(uid: String): Task<Void> {
-    // TODO: should trigger a firebase function instead of deleting it directly from the app
     return getUsersCollection().document(uid).delete()
 }
 
