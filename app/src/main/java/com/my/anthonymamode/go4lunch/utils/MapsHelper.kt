@@ -40,13 +40,3 @@ class MapsHelper(private val googleMap: GoogleMap?) {
         }
     }
 }
-
-fun GoogleMap.setRestaurantMarkers(restaurants: List<Place>) {
-    this.clear()
-    for (restaurant in restaurants) {
-        val latLng = LatLng(restaurant.geometry.location.lat, restaurant.geometry.location.lng)
-        val markerOptions = MarkerOptions()
-        markerOptions.position(latLng)
-        this.addMarker(markerOptions)
-    }
-}

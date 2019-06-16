@@ -10,7 +10,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.my.anthonymamode.go4lunch.R
-import com.my.anthonymamode.go4lunch.domain.Places
+import com.my.anthonymamode.go4lunch.data.api.entity.PlaceResponseWrapper
 import com.my.anthonymamode.go4lunch.utils.BaseFragment
 import com.my.anthonymamode.go4lunch.utils.MapsHelper
 import com.my.anthonymamode.go4lunch.utils.debounceThatFunction
@@ -83,13 +83,13 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
     }
 
     private fun displayNearbyRestaurant() {
-        val callback = object : Callback<Places> {
-            override fun onFailure(call: Call<Places>, t: Throwable) {
+        val callback = object : Callback<PlaceResponseWrapper> {
+            override fun onFailure(call: Call<PlaceResponseWrapper>, t: Throwable) {
                 // TODO: set better error
                 longToast("Impossible to get nearby restaurants : ${t.message}")
             }
 
-            override fun onResponse(call: Call<Places>, response: Response<Places>) {
+            override fun onResponse(call: Call<PlaceResponseWrapper>, response: Response<PlaceResponseWrapper>) {
                 if (response.isSuccessful) {
                     response.body()?.places?.let { mapsHelper.setRestaurantMarkers(it) }
                 }

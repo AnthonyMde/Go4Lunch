@@ -12,8 +12,8 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.my.anthonymamode.go4lunch.R
+import com.my.anthonymamode.go4lunch.data.api.entity.PlaceResponseWrapper
 import com.my.anthonymamode.go4lunch.domain.Place
-import com.my.anthonymamode.go4lunch.domain.Places
 import com.my.anthonymamode.go4lunch.ui.detail.DetailRestaurantActivity
 import com.my.anthonymamode.go4lunch.ui.home.HomeViewModel
 import com.my.anthonymamode.go4lunch.utils.BaseFragment
@@ -69,22 +69,22 @@ class RestaurantListFragment : BaseFragment() {
         restaurantAdapter.setRestaurantList(data, photos)
     }
 
-    private fun getCallbackForPlaces(): Callback<Places> {
-        return object : Callback<Places> {
-            override fun onFailure(call: Call<Places>, t: Throwable) {
+    private fun getCallbackForPlaces(): Callback<PlaceResponseWrapper> {
+        return object : Callback<PlaceResponseWrapper> {
+            override fun onFailure(call: Call<PlaceResponseWrapper>, t: Throwable) {
                 // TODO: set better error
                 longToast("Impossible to get nearby restaurants : ${t.message}")
             }
 
-            override fun onResponse(call: Call<Places>, response: Response<Places>) {
+            override fun onResponse(call: Call<PlaceResponseWrapper>, response: Response<PlaceResponseWrapper>) {
                 if (response.isSuccessful) {
                     response.body()?.places?.let { places ->
-                        // TODO: remove this line and uncomment to get real place photo
+                        // TODO: remove this line and uncomment to get real placeDetail photo
                         configureRecyclerView(places, mutableMapOf())
                         /*val placesPhoto = mutableMapOf<Int, Bitmap?>()
-                        places.forEachIndexed { index, place ->
-                            // Call the google photo API to get each place photo
-                            viewModel?.getPlacePhoto(place.photos?.get(0)?.photo_reference, MAX_PHOTO_WIDTH)
+                        places.forEachIndexed { index, placeDetail ->
+                            // Call the google photo API to get each placeDetail photo
+                            viewModel?.getPlacePhoto(placeDetail.photos?.get(0)?.photo_reference, MAX_PHOTO_WIDTH)
                                 ?.enqueue(getCallbackForPhoto(placesPhoto, places, index))
                         }*/
                     }
