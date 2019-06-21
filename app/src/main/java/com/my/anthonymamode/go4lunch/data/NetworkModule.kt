@@ -12,7 +12,7 @@ class NetworkModule {
     companion object {
         fun getRetrofitPlaces(): Retrofit {
             return Retrofit.Builder()
-                .baseUrl("https://maps.googleapis.com/maps/api/place/")
+                .baseUrl(BuildConfig.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(getOkHttpClient())

@@ -80,8 +80,8 @@ class DetailRestaurantActivity : BaseActivity() {
                     detailRestaurantFabEnable.setOnClickListener { removeLunchOfTheDay() }
                 }
                 is Resource.Error -> {
-                    toast("something wrong happened")
-                    Log.d("RXJAVA", "error : ${it.error}")
+                    toast("Sorry, we can't load this restaurant")
+                    Log.e("NETWORK", "error : ${it.error}")
                 }
             }
         })

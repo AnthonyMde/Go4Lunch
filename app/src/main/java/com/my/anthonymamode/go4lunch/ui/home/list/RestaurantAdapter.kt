@@ -1,6 +1,5 @@
 package com.my.anthonymamode.go4lunch.ui.home.list
 
-import android.graphics.Bitmap
 import android.location.Location
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
+import com.my.anthonymamode.go4lunch.BuildConfig
 import com.my.anthonymamode.go4lunch.R
+import com.my.anthonymamode.go4lunch.data.api.API_KEY_GOOGLE_PLACES
 import com.my.anthonymamode.go4lunch.domain.Place
 import com.my.anthonymamode.go4lunch.utils.toFormatDistance
 import com.my.anthonymamode.go4lunch.utils.toStarsFormat
@@ -19,7 +20,6 @@ import kotlinx.android.synthetic.main.listitem_restaurant.view.*
 
 class RestaurantAdapter(private val onClick: (String) -> Unit) : RecyclerView.Adapter<RestaurantViewHolder>() {
     private var restaurantList = emptyList<Place>()
-    private var restaurantPhoto = mutableMapOf<Int, Bitmap?>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RestaurantViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.listitem_restaurant, parent, false)
@@ -31,22 +31,23 @@ class RestaurantAdapter(private val onClick: (String) -> Unit) : RecyclerView.Ad
     }
 
     override fun onBindViewHolder(holder: RestaurantViewHolder, position: Int) {
-        holder.bindView(restaurantList[position], restaurantPhoto[position], onClick)
+        holder.bindView(restaurantList[position], onClick)
     }
 
-    fun setRestaurantList(list: List<Place>, photos: MutableMap<Int, Bitmap?>) {
+    fun setRestaurantList(list: List<Place>) {
         restaurantList = list
-        restaurantPhoto = photos
         notifyDataSetChanged()
     }
 }
 
 class RestaurantViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-    fun bindView(restaurant: Place, restaurantPhoto: Bitmap?, onClick: (String) -> Unit) {
+    private val maxPhotoWidth = 1280
+
+    fun bindView(restaurant: Place, onClick: (String) -> Unit) {
         itemView.restaurantItemTitle.text = restaurant.name
         itemView.restaurantItemAddress.text = restaurant.address
 
-        setPhoto(restaurant, restaurantPhoto)
+        setPhoto(restaurant)
         setRating(restaurant)
         setHowFarItIs(restaurant)
         setHours(restaurant)
@@ -78,12 +79,18 @@ class RestaurantViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         }
     }
 
-    private fun setPhoto(restaurant: Place, bitmap: Bitmap?) {
-        val photo = bitmap ?: restaurant.icon
+    private fun setPhoto(restaurant: Place) {
+
+        val photo: String? = restaurant.photos?.get(0)?.photo_reference?.let {
+            val query = "?key=$API_KEY_GOOGLE_PLACES&photoreference=$it&maxwidth=$maxPhotoWidth"
+            "${BuildConfig.BASE_URL}photo$query"
+        } ?: restaurant.icon
+
         val options = RequestOptions().apply {
             diskCacheStrategy(DiskCacheStrategy.ALL)
             skipMemoryCache(false)
         }
+
         Glide.with(itemView)
             .load(photo)
             .apply(options)

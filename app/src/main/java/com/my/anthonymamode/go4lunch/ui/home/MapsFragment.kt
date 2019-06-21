@@ -1,6 +1,7 @@
 package com.my.anthonymamode.go4lunch.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,15 +11,12 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.my.anthonymamode.go4lunch.R
-import com.my.anthonymamode.go4lunch.data.api.entity.PlaceResponseWrapper
 import com.my.anthonymamode.go4lunch.utils.BaseFragment
 import com.my.anthonymamode.go4lunch.utils.MapsHelper
+import com.my.anthonymamode.go4lunch.utils.Resource
 import com.my.anthonymamode.go4lunch.utils.debounceThatFunction
 import kotlinx.android.synthetic.main.fragment_maps.*
-import org.jetbrains.anko.support.v4.longToast
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import org.jetbrains.anko.support.v4.toast
 
 private const val ZOOM_LEVEL = 16f
 private const val MIN_ZOOM = 6f
@@ -34,6 +32,27 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
     private lateinit var mapsView: MapView
     private lateinit var mapsHelper: MapsHelper
     private var lastTimePositionChanged = 0L
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewModel?.lastLocation?.observe(this, Observer { position ->
+            viewModel?.placeList?.observe(this, Observer {
+                when (it) {
+                    is Resource.Loading -> toast("loading")
+                    is Resource.Success -> {
+                        mapsHelper.setRestaurantMarkers(it.data)
+                    }
+                    is Resource.Error -> {
+                        toast("We can't retrieve nearby restaurants")
+                        Log.e("NETWORK", "error: ${it.error}")
+                    }
+                }
+            })
+            // TODO: uncomment to get nearby restaurants
+            // viewModel?.getRestaurantPlaces(position)
+        })
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -66,38 +85,27 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
             setOnCameraIdleListener {
                 mapsHelper.setMapsCenter(cameraPosition.target)
                 lastTimePositionChanged =
-                    // TODO: Delete this line and uncomment to displayRestaurant
+                        // TODO: Delete this line and uncomment to displayRestaurant
                     debounceThatFunction({}, 600L, lastTimePositionChanged)
-                    // debounceThatFunction({ displayNearbyRestaurant() }, 600L, lastTimePositionChanged)
+                // debounceThatFunction({ displayNearbyRestaurants() }, 600L, lastTimePositionChanged)
             }
         }
         setUserLocation()
+    }
+
+    private fun displayNearbyRestaurants() {
+        val center = mapsHelper.getMapsCenter()
+        if (center != null) {
+            viewModel?.getRestaurantPlaces(center)
+        }
     }
 
     private fun setUserLocation() {
         viewModel?.lastLocation?.observe(this, Observer {
             mapsHelper.centerMap(it, ZOOM_LEVEL)
             // TODO: uncomment to displayRestaurant
-            // displayNearbyRestaurant()
+            // displayNearbyRestaurants()
         })
-    }
-
-    private fun displayNearbyRestaurant() {
-        val callback = object : Callback<PlaceResponseWrapper> {
-            override fun onFailure(call: Call<PlaceResponseWrapper>, t: Throwable) {
-                // TODO: set better error
-                longToast("Impossible to get nearby restaurants : ${t.message}")
-            }
-
-            override fun onResponse(call: Call<PlaceResponseWrapper>, response: Response<PlaceResponseWrapper>) {
-                if (response.isSuccessful) {
-                    response.body()?.places?.let { mapsHelper.setRestaurantMarkers(it) }
-                }
-            }
-        }
-        val center = mapsHelper.getMapsCenter()
-        if (center != null)
-            viewModel?.getRestaurantPlaces(center)?.enqueue(callback)
     }
 
     override fun onResume() {

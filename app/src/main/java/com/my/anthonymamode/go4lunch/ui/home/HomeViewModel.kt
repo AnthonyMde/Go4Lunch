@@ -8,16 +8,20 @@ import com.firebase.ui.auth.AuthUI
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.my.anthonymamode.go4lunch.data.api.entity.PlaceResponseWrapper
 import com.my.anthonymamode.go4lunch.data.repository.PlacesRepository
+import com.my.anthonymamode.go4lunch.domain.Place
 import com.my.anthonymamode.go4lunch.utils.Resource
-import retrofit2.Call
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.schedulers.Schedulers
 
 /**
  * ViewModel scoped to the HomeActivity lifecycle. Data hold by this
  * ViewModel are shared by the HomeActivity and its child fragments.
  */
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
+    private val compositeDisposable = CompositeDisposable()
     private val repository = PlacesRepository()
     /**
      * For each value that we want to expose, we have two variables : a private MutableLiveData,
@@ -35,7 +39,16 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     val lastLocation: LiveData<LatLng>
         get() = _lastLocation
 
+    private var _placeList = MutableLiveData<Resource<List<Place>>>()
+    val placeList: LiveData<Resource<List<Place>>>
+        get() = _placeList
+
     var userId: String? = null
+
+    override fun onCleared() {
+        super.onCleared()
+        compositeDisposable.clear()
+    }
 
     /**
      * @return the FirebaseUser object which contains his data.
@@ -48,8 +61,17 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun getRestaurantPlaces(position: LatLng): Call<PlaceResponseWrapper> {
-        return repository.getRestaurantPlaces(position)
+    fun getRestaurantPlaces(position: LatLng) {
+        repository.getRestaurantPlaces(position)
+            .doOnSubscribe { _placeList.postValue(Resource.Loading()) }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                _placeList.postValue(Resource.Success(it))
+            }, {
+                _placeList.postValue(Resource.Error(it))
+            })
+            .addTo(compositeDisposable)
     }
 
     /**
