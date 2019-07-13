@@ -10,13 +10,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
-import com.my.anthonymamode.go4lunch.BuildConfig
 import com.my.anthonymamode.go4lunch.R
-import com.my.anthonymamode.go4lunch.data.api.API_KEY_GOOGLE_PLACES
+import com.my.anthonymamode.go4lunch.domain.Hours
+import com.my.anthonymamode.go4lunch.domain.Period
 import com.my.anthonymamode.go4lunch.domain.Place
 import com.my.anthonymamode.go4lunch.utils.toFormatDistance
 import com.my.anthonymamode.go4lunch.utils.toStarsFormat
 import kotlinx.android.synthetic.main.listitem_restaurant.view.*
+import java.util.Calendar
 
 class RestaurantAdapter(private val onClick: (String) -> Unit) : RecyclerView.Adapter<RestaurantViewHolder>() {
     private var restaurantList = emptyList<Place>()
@@ -42,6 +43,10 @@ class RestaurantAdapter(private val onClick: (String) -> Unit) : RecyclerView.Ad
 
 class RestaurantViewHolder(v: View) : RecyclerView.ViewHolder(v) {
     private val maxPhotoWidth = 1280
+    // sunday == 0, saturday == 6
+    private val currentDay = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1
+    private val currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+    private val currentMinute = Calendar.getInstance().get(Calendar.MINUTE)
 
     fun bindView(restaurant: Place, onClick: (String) -> Unit) {
         itemView.restaurantItemTitle.text = restaurant.name
@@ -58,33 +63,29 @@ class RestaurantViewHolder(v: View) : RecyclerView.ViewHolder(v) {
     }
 
     private fun setHours(restaurant: Place) {
-        val res = itemView.resources
-        val hours = itemView.restaurantItemHours
+        val hoursView = itemView.restaurantItemHours
+        val open = restaurant.opening_hours?.open_now
 
-        if (restaurant.opening_hours?.open_now == null) {
-            hours.visibility = INVISIBLE
+        if (open == null) {
+            hoursView.visibility = INVISIBLE
             return
         }
 
-        // TODO : should we set precise opening and closing hours ?
-        restaurant.opening_hours.open_now.let { open ->
-            hours.visibility = VISIBLE
-            if (open) {
-                hours.text = res.getString(R.string.restaurant_item_is_opened)
-                hours.setTextColor(res.getColor(R.color.lightGray))
-            } else {
-                hours.text = res.getString(R.string.restaurant_item_is_closed)
-                hours.setTextColor(res.getColor(android.R.color.holo_red_light))
-            }
+        restaurant.opening_hours?.let {
+            val period = getTheNextRestaurantHours(it)
+            val hoursText = getRestaurantOpeningText(period, !open)
+
+            hoursView.text = hoursText
+            hoursView.visibility = VISIBLE
         }
     }
 
     private fun setPhoto(restaurant: Place) {
 
-        val photo: String? = restaurant.photos?.get(0)?.photo_reference?.let {
+        val photo: String? = null/*restaurant.photos?.get(0)?.photo_reference?.let {
             val query = "?key=$API_KEY_GOOGLE_PLACES&photoreference=$it&maxwidth=$maxPhotoWidth"
             "${BuildConfig.BASE_URL}photo$query"
-        } ?: restaurant.icon
+        } ?: restaurant.icon*/
 
         val options = RequestOptions().apply {
             diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -119,5 +120,77 @@ class RestaurantViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         }
         val distance = currentLocation.distanceTo(restaurantLocation)
         itemView.restaurantItemDistance.text = distance.toFormatDistance()
+    }
+
+    fun getTheNextRestaurantHours(hours: Hours): Period? {
+        val periods = hours.periods
+
+        // Sorted by smaller time interval from current day
+        // todo: work only when json is right formatted (period with logic sort).
+        val sortedPeriods = periods.sortedWith(
+            compareBy {
+                val targetTime = if (hours.open_now) it.open else it.close
+                getHoursInterval(
+                    currentDay,
+                    getCurrentHourWithMinutes(),
+                    targetTime.day,
+                    Integer.parseInt(targetTime.time)
+                )
+            }
+        )
+        return sortedPeriods.firstOrNull()
+    }
+
+    private fun getHoursInterval(currentDay: Int, currentHour: Int, targetDay: Int, targetHour: Int): Int {
+        val sortedDays = (currentDay..6) + (0 until currentDay)
+        val hoursInDay = 24
+        val daysInWeek = 7
+        val minutesInHour = 60
+        // specific computation if target day equal current day but is in the past
+        return if (currentDay == targetDay && currentHour > targetHour) {
+            hoursInDay * daysInWeek * minutesInHour - (currentHour - targetHour)
+            // standard computation to return the hour interval in format 'HHMM'
+        } else {
+            hoursInDay * sortedDays.indexOf(targetDay) * minutesInHour + (targetHour - currentHour)
+        }
+    }
+
+    private fun getCurrentHourWithMinutes(): Int {
+        val stringHourWithMinutes = if (currentMinute < 10) {
+            (currentHour * 10).toString() + currentMinute.toString()
+        } else {
+            currentHour.toString() + currentMinute.toString()
+        }
+
+        return Integer.parseInt(stringHourWithMinutes)
+    }
+
+    fun getRestaurantOpeningText(period: Period?, forOpening: Boolean): String {
+        if (period == null) {
+            return if (forOpening) "permanently closed" else "opened 24/7"
+        }
+
+        val targetTime = if (forOpening) period.open else period.close
+        val dayText = if (targetTime.day == currentDay) "" else getDay(targetTime.day)
+        val timeText = targetTime.time
+
+        return StringBuilder()
+            .append(if (forOpening) "opens " else "closes ")
+            .append(if (dayText.isNotEmpty()) "$dayText " else "")
+            .append("at $timeText")
+            .toString()
+    }
+
+    private fun getDay(dayNumber: Int): String {
+        return when (dayNumber) {
+            0 -> "dimanche"
+            1 -> "lundi"
+            2 -> "mardi"
+            3 -> "mercredi"
+            4 -> "jeudi"
+            5 -> "vendredi"
+            6 -> "samedi"
+            else -> "prochainement"
+        }
     }
 }

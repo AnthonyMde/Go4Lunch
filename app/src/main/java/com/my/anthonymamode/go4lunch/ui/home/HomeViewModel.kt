@@ -43,6 +43,10 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     val placeList: LiveData<Resource<List<Place>>>
         get() = _placeList
 
+    private var _placeWithHoursList = MutableLiveData<Resource<List<Place>>>()
+    val placeWithHoursList: LiveData<Resource<List<Place>>>
+        get() = _placeWithHoursList
+
     var userId: String? = null
 
     override fun onCleared() {
@@ -70,6 +74,19 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 _placeList.postValue(Resource.Success(it))
             }, {
                 _placeList.postValue(Resource.Error(it))
+            })
+            .addTo(compositeDisposable)
+    }
+
+    fun getRestaurantPlacesWithHours(position: LatLng) {
+        repository.getRestaurantPlacesWithHours(position)
+            .doOnSubscribe { _placeWithHoursList.postValue(Resource.Loading()) }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                _placeWithHoursList.postValue(Resource.Success(it))
+            }, {
+                _placeWithHoursList.postValue(Resource.Error(it))
             })
             .addTo(compositeDisposable)
     }

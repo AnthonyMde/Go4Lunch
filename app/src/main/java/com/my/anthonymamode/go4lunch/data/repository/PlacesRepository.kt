@@ -6,6 +6,7 @@ import com.my.anthonymamode.go4lunch.data.api.GooglePlacesApi
 import com.my.anthonymamode.go4lunch.domain.Place
 import com.my.anthonymamode.go4lunch.domain.PlaceDetail
 import io.reactivex.Single
+import org.jetbrains.anko.collections.forEachWithIndex
 
 class PlacesRepository {
     private val maxPhotoWidth = 1280
@@ -18,7 +19,24 @@ class PlacesRepository {
             }
     }
 
-    fun getOpeningsHours(placeId: String): Single<PlaceDetail> {
+    fun getRestaurantPlacesWithHours(position: LatLng): Single<List<Place>> {
+        return retrofit.getNearbyPlaces("${position.latitude},${position.longitude}", "restaurant")
+            .map {
+                it.places
+            }
+            .flatMap { placeList ->
+                val listObservable = placeList.map { getOpeningsHours(it.place_id) }
+                Single.zip(listObservable) {
+                    val list = it.toList() as List<PlaceDetail>
+                    list.forEachWithIndex { index, placeDetail ->
+                        placeList[index].opening_hours = placeDetail.opening_hours
+                    }
+                    return@zip placeList
+                }
+            }
+    }
+
+    private fun getOpeningsHours(placeId: String): Single<PlaceDetail> {
         return retrofit.getPlaceDetail(placeId, "opening_hours").map {
             it.placeDetail
         }

@@ -35,7 +35,7 @@ class RestaurantListFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel?.lastLocation?.observe(this, Observer { position ->
-            viewModel?.placeList?.observe(this, Observer {
+            viewModel?.placeWithHoursList?.observe(this, Observer {
                 when (it) {
                     is Resource.Loading -> toast("loading")
                     is Resource.Success -> {
@@ -47,7 +47,7 @@ class RestaurantListFragment : BaseFragment() {
                     }
                 }
             })
-            viewModel?.getRestaurantPlaces(position)
+            viewModel?.getRestaurantPlacesWithHours(position)
         })
     }
 
