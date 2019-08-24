@@ -50,7 +50,7 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
                 }
             })
             // TODO: uncomment to get nearby restaurants
-            // viewModel?.getRestaurantPlaces(position)
+            viewModel?.getRestaurantPlaces(position)
         })
     }
 
@@ -86,8 +86,8 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
                 mapsHelper.setMapsCenter(cameraPosition.target)
                 lastTimePositionChanged =
                         // TODO: Delete this line and uncomment to displayRestaurant
-                    debounceThatFunction({}, 600L, lastTimePositionChanged)
-                // debounceThatFunction({ displayNearbyRestaurants() }, 600L, lastTimePositionChanged)
+                    // debounceThatFunction({}, 600L, lastTimePositionChanged)
+                debounceThatFunction({ displayNearbyRestaurants() }, 600L, lastTimePositionChanged)
             }
         }
         setUserLocation()
@@ -104,7 +104,7 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
         viewModel?.lastLocation?.observe(this, Observer {
             mapsHelper.centerMap(it, ZOOM_LEVEL)
             // TODO: uncomment to displayRestaurant
-            // displayNearbyRestaurants()
+            displayNearbyRestaurants()
         })
     }
 
