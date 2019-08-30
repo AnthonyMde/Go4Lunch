@@ -1,5 +1,6 @@
 package com.my.anthonymamode.go4lunch.ui.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,6 +12,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.my.anthonymamode.go4lunch.R
+import com.my.anthonymamode.go4lunch.ui.detail.DetailRestaurantActivity
 import com.my.anthonymamode.go4lunch.utils.BaseFragment
 import com.my.anthonymamode.go4lunch.utils.MapsHelper
 import com.my.anthonymamode.go4lunch.utils.Resource
@@ -41,7 +43,11 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
                 when (it) {
                     is Resource.Loading -> toast("loading")
                     is Resource.Success -> {
-                        mapsHelper.setRestaurantMarkers(it.data)
+                        mapsHelper.setRestaurantMarkers(it.data) { placeId ->
+                            val intent = Intent(context, DetailRestaurantActivity::class.java)
+                            intent.putExtra("placeId", placeId)
+                            startActivity(intent)
+                        }
                     }
                     is Resource.Error -> {
                         toast("We can't retrieve nearby restaurants")

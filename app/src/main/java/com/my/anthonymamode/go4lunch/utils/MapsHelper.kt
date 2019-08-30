@@ -33,9 +33,13 @@ class MapsHelper(private val googleMap: GoogleMap?) {
         return mapsCenter
     }
 
-    fun setRestaurantMarkers(restaurants: List<Place>) {
+    fun setRestaurantMarkers(restaurants: List<Place>, markerOnClick: (String) -> Unit) {
         var icon = R.drawable.ic_maps_marker_red
         googleMap?.clear()
+        googleMap?.setOnMarkerClickListener {
+            markerOnClick.invoke(it.tag as String)
+            true
+        }
 
         for (restaurant in restaurants) {
             val latLng = LatLng(restaurant.geometry.location.lat, restaurant.geometry.location.lng)
@@ -45,21 +49,22 @@ class MapsHelper(private val googleMap: GoogleMap?) {
                     if (it.documents.size > 0) {
                         icon = R.drawable.ic_maps_marker_green
                     }
-                    setMarker(icon, latLng, restaurant.name)
+                    setMarker(icon, latLng, restaurant)
                 }
                 .addOnFailureListener {
-                    setMarker(icon, latLng, restaurant.name)
+                    setMarker(icon, latLng, restaurant)
                 }
         }
     }
 
-    private fun setMarker(icon: Int, latLng: LatLng, restaurantName: String) {
+    private fun setMarker(icon: Int, latLng: LatLng, restaurant: Place) {
         val markerOptions = MarkerOptions()
         markerOptions.apply {
             position(latLng)
-            title(restaurantName)
+            title(restaurant.name)
             icon(BitmapDescriptorFactory.fromResource(icon))
         }
-        googleMap?.addMarker(markerOptions)
+        val marker = googleMap?.addMarker(markerOptions)
+        marker?.tag = restaurant.place_id
     }
 }
