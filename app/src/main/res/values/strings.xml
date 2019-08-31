@@ -76,7 +76,7 @@
 
     <!-- MENU -->
     <string name="search_title">Search</string>
-    <string name="search_hint">ex: burger and co</string>
+    <string name="search_hint">Search restaurants</string>
     <string name="search_locale">en</string>
 
     <!-- ERRORS -->

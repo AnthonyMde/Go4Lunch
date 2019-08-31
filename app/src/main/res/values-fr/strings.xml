@@ -67,7 +67,7 @@
 
     <!-- MENU -->
     <string name="search_title">Recherche</string>
-    <string name="search_hint">ex: les trois thés</string>
+    <string name="search_hint">Rechercher des restaurants</string>
     <string name="search_locale">fr</string>
 
     <!-- ERRORS -->
