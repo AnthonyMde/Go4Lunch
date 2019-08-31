@@ -3,6 +3,7 @@ package com.my.anthonymamode.go4lunch.ui.home
 import android.Manifest
 import android.app.SearchManager
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Build
@@ -24,8 +25,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.R.id.drawer_logout
-import com.my.anthonymamode.go4lunch.R.id.drawer_settings
 import com.my.anthonymamode.go4lunch.R.id.drawer_my_food
+import com.my.anthonymamode.go4lunch.R.id.drawer_settings
 import com.my.anthonymamode.go4lunch.ui.LoginActivity
 import com.my.anthonymamode.go4lunch.ui.PermissionActivity
 import com.my.anthonymamode.go4lunch.ui.SettingsActivity
@@ -33,9 +34,15 @@ import com.my.anthonymamode.go4lunch.ui.home.list.RestaurantListFragment
 import com.my.anthonymamode.go4lunch.ui.home.workmates.WorkmatesFragment
 import com.my.anthonymamode.go4lunch.utils.BaseActivity
 import com.my.anthonymamode.go4lunch.utils.Resource
-import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.android.synthetic.main.nav_drawer_header.view.*
+import kotlinx.android.synthetic.main.activity_home.homeBottomNavBar
+import kotlinx.android.synthetic.main.activity_home.homeDrawerLayout
+import kotlinx.android.synthetic.main.activity_home.homeNavigationView
+import kotlinx.android.synthetic.main.activity_home.homeToolbar
+import kotlinx.android.synthetic.main.nav_drawer_header.view.navheaderEmail
+import kotlinx.android.synthetic.main.nav_drawer_header.view.navheaderFullName
+import kotlinx.android.synthetic.main.nav_drawer_header.view.navheaderProfileImage
 import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.toast
 
 private const val TLSE_LAT = 43.6043
 private const val TLSE_LNG = 1.4437
@@ -48,6 +55,8 @@ class HomeActivity : BaseActivity() {
     }
 
     private var isHide: Boolean = false
+
+    private var searchView: SearchView? = null
 
     /**
      * @var fusedLocationClient client which allows to use the fused location API of google.
@@ -100,16 +109,38 @@ class HomeActivity : BaseActivity() {
         menuInflater.inflate(R.menu.search_bar_menu, menu)
         // Associate searchable configuration with the SearchView
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        (menu?.findItem(R.id.search_toolbar)?.actionView as? SearchView)?.apply {
+        searchView = (menu?.findItem(R.id.search_toolbar)?.actionView as? SearchView)
+        searchView?.apply {
             setSearchableInfo(searchManager.getSearchableInfo(componentName))
         }
+        searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                toast("submit + $query")
+                return true
+            }
 
+            override fun onQueryTextChange(newText: String?): Boolean {
+                toast("$newText")
+                return true
+            }
+        })
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         menu?.findItem(R.id.search_toolbar)?.isVisible = !isHide
         return super.onPrepareOptionsMenu(menu)
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        // Verify the action and get the query from the search voice input
+        if (Intent.ACTION_SEARCH == intent?.action) {
+            intent.getStringExtra(SearchManager.QUERY)?.also { query ->
+                searchView?.setQuery(query, true)
+            }
+        }
+
+        super.onNewIntent(intent)
     }
 
     // PUBLIC FUNCTIONS
