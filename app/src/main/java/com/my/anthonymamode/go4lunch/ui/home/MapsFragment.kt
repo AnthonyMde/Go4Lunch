@@ -32,7 +32,7 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
     }
 
     private lateinit var mapsView: MapView
-    private lateinit var mapsHelper: MapsHelper
+    private var mapsHelper: MapsHelper? = null
     private var lastTimePositionChanged = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +43,7 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
                 when (it) {
                     is Resource.Loading -> toast("loading")
                     is Resource.Success -> {
-                        mapsHelper.setRestaurantMarkers(it.data) { placeId ->
+                        mapsHelper?.setRestaurantMarkers(it.data) { placeId ->
                             val intent = Intent(context, DetailRestaurantActivity::class.java)
                             intent.putExtra("placeId", placeId)
                             startActivity(intent)
@@ -77,7 +77,7 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState)
         mapsFragmentRecenterFab.setOnClickListener {
             viewModel?.lastLocation?.value?.let {
-                mapsHelper.centerMap(it, ZOOM_LEVEL)
+                mapsHelper?.centerMap(it, ZOOM_LEVEL)
             }
         }
     }
@@ -89,7 +89,7 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
             setMinZoomPreference(MIN_ZOOM)
             setMaxZoomPreference(MAX_ZOOM)
             setOnCameraIdleListener {
-                mapsHelper.setMapsCenter(cameraPosition.target)
+                mapsHelper?.setMapsCenter(cameraPosition.target)
                 lastTimePositionChanged =
                         // TODO: Delete this line and uncomment to displayRestaurant
                     // debounceThatFunction({}, 600L, lastTimePositionChanged)
@@ -100,7 +100,7 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
     }
 
     private fun displayNearbyRestaurants() {
-        val center = mapsHelper.getMapsCenter()
+        val center = mapsHelper?.getMapsCenter()
         if (center != null) {
             viewModel?.getRestaurantPlaces(center)
         }
@@ -108,7 +108,7 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
 
     private fun setUserLocation() {
         viewModel?.lastLocation?.observe(this, Observer {
-            mapsHelper.centerMap(it, ZOOM_LEVEL)
+            mapsHelper?.centerMap(it, ZOOM_LEVEL)
             // TODO: uncomment to displayRestaurant
             displayNearbyRestaurants()
         })
