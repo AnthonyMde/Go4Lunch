@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.firebase.ui.auth.AuthUI
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.my.anthonymamode.go4lunch.data.repository.PlacesRepository
@@ -46,6 +47,10 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private var _placeWithHoursList = MutableLiveData<Resource<List<Place>>>()
     val placeWithHoursList: LiveData<Resource<List<Place>>>
         get() = _placeWithHoursList
+
+    private var _searchPlaceList = MutableLiveData<List<AutocompletePrediction>>()
+    val searchPlaceList: LiveData<List<AutocompletePrediction>>
+        get() = _searchPlaceList
 
     var userId: String? = null
 
@@ -107,5 +112,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     fun setLastLocation(lastLocation: LatLng) {
         _lastLocation.postValue(lastLocation)
+    }
+
+    fun setSearchPlaces(searchPlaces: List<AutocompletePrediction>) {
+        _searchPlaceList.postValue(searchPlaces)
     }
 }

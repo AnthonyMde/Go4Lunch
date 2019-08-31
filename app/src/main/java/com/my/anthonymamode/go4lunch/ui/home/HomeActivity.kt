@@ -19,10 +19,18 @@ import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
+import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.AutocompletePrediction
+import com.google.android.libraries.places.api.model.AutocompleteSessionToken
+import com.google.android.libraries.places.api.model.RectangularBounds
+import com.google.android.libraries.places.api.model.TypeFilter
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.my.anthonymamode.go4lunch.BuildConfig
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.R.id.drawer_logout
 import com.my.anthonymamode.go4lunch.R.id.drawer_my_food
@@ -34,13 +42,9 @@ import com.my.anthonymamode.go4lunch.ui.home.list.RestaurantListFragment
 import com.my.anthonymamode.go4lunch.ui.home.workmates.WorkmatesFragment
 import com.my.anthonymamode.go4lunch.utils.BaseActivity
 import com.my.anthonymamode.go4lunch.utils.Resource
-import kotlinx.android.synthetic.main.activity_home.homeBottomNavBar
-import kotlinx.android.synthetic.main.activity_home.homeDrawerLayout
-import kotlinx.android.synthetic.main.activity_home.homeNavigationView
-import kotlinx.android.synthetic.main.activity_home.homeToolbar
-import kotlinx.android.synthetic.main.nav_drawer_header.view.navheaderEmail
-import kotlinx.android.synthetic.main.nav_drawer_header.view.navheaderFullName
-import kotlinx.android.synthetic.main.nav_drawer_header.view.navheaderProfileImage
+import com.my.anthonymamode.go4lunch.utils.debounceThatFunction
+import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.nav_drawer_header.view.*
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 
@@ -55,7 +59,7 @@ class HomeActivity : BaseActivity() {
     }
 
     private var isHide: Boolean = false
-
+    private var lastTimeSearch: Long = 0L
     private var searchView: SearchView? = null
 
     /**
@@ -116,11 +120,13 @@ class HomeActivity : BaseActivity() {
         searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 toast("submit + $query")
+                getAutocompletePlaces(query ?: "")
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 toast("$newText")
+                debounceThatFunction({ getAutocompletePlaces(newText ?: "") }, 300L, lastTimeSearch)
                 return true
             }
         })
@@ -266,5 +272,42 @@ class HomeActivity : BaseActivity() {
             homeDrawerLayout.closeDrawers()
             true
         }
+    }
+
+    private fun getAutocompletePlaces(query: String) {
+        Places.initialize(applicationContext, BuildConfig.API_KEY_GOOGLE_PLACES)
+        val placesClient = Places.createClient(this)
+        placesClient.findAutocompletePredictions(getPredictions(query))
+            .addOnSuccessListener { response ->
+                for (prediction: AutocompletePrediction in response.autocompletePredictions) {
+                    Log.i("autocompletePredictions", prediction.placeId)
+                    Log.i("autocompletePredictions", prediction.getPrimaryText(null).toString())
+                    viewModel.setSearchPlaces(response.autocompletePredictions)
+                }
+            }
+            .addOnFailureListener { exception ->
+                if (exception is ApiException) {
+                    Log.e("autocompletePredictions", "Place not found: " + exception.statusCode)
+                }
+            }
+    }
+
+    private fun getPredictions(query: String): FindAutocompletePredictionsRequest {
+        // Create a new token for the autocomplete session. Pass this to FindAutocompletePredictionsRequest,
+        // and once again when the user makes a selection (for example when calling fetchPlace()).
+        val token = AutocompleteSessionToken.newInstance()
+        // Create a RectangularBounds object.
+        val bounds = RectangularBounds.newInstance(
+            LatLng(-33.880490, 151.184363),
+            LatLng(-33.858754, 151.229596)
+        )
+
+        // Use the builder to create a FindAutocompletePredictionsRequest.
+        return FindAutocompletePredictionsRequest.builder()
+            .setSessionToken(token)
+            .setLocationBias(bounds)
+            .setTypeFilter(TypeFilter.ESTABLISHMENT)
+            .setQuery(query)
+            .build()
     }
 }
