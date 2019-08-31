@@ -67,6 +67,8 @@
 
     <!-- MENU -->
     <string name="search_title">Recherche</string>
+    <string name="search_hint">ex: les trois thés</string>
+    <string name="search_locale">fr</string>
 
     <!-- ERRORS -->
     <string name="profile_data_error">Pour une raison inconnue, nous ne pouvons récupérer vos données pour le moment.</string>

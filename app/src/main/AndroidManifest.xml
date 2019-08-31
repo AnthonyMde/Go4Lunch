@@ -28,7 +28,13 @@
         <activity
                 android:name=".ui.home.HomeActivity"
                 android:screenOrientation="portrait"
-                android:theme="@style/AppThemeTranslucent"/>
+                android:theme="@style/AppThemeTranslucent">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data android:name="android.app.searchable"
+                    android:resource="@xml/searchable" />
+        </activity>
         <activity
                 android:name=".ui.PermissionActivity"
                 android:screenOrientation="portrait"

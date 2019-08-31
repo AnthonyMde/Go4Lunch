@@ -76,6 +76,8 @@
 
     <!-- MENU -->
     <string name="search_title">Search</string>
+    <string name="search_hint">ex: burger and co</string>
+    <string name="search_locale">en</string>
 
     <!-- ERRORS -->
     <string name="profile_data_error">For some reasons, we can\'t fetch your profile data</string>
