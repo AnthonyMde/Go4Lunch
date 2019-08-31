@@ -67,6 +67,7 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_maps, container, false)
+        (activity as? HomeActivity)?.changeSearchVisibility(false)
         mapsView = view.findViewById(R.id.mapsView)
         mapsView.getMapAsync(this)
         mapsView.onCreate(savedInstanceState)

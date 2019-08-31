@@ -74,6 +74,9 @@
     <string name="login_app_logo_desc">Application logo</string>
     <string name="restaurant_item_image_desc">Photo of the restaurant</string>
 
+    <!-- MENU -->
+    <string name="search_title">Search</string>
+
     <!-- ERRORS -->
     <string name="profile_data_error">For some reasons, we can\'t fetch your profile data</string>
     <string name="session_expired_error">It seems your session has expired. Please try to reconnect.</string>

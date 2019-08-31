@@ -6,6 +6,7 @@ import android.location.Location
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
@@ -31,22 +32,27 @@ import com.my.anthonymamode.go4lunch.utils.BaseActivity
 import com.my.anthonymamode.go4lunch.utils.Resource
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.nav_drawer_header.view.*
-import org.jetbrains.anko.contentView
 import org.jetbrains.anko.startActivity
 
 private const val TLSE_LAT = 43.6043
 private const val TLSE_LNG = 1.4437
 
 class HomeActivity : BaseActivity() {
+    // VARIABLES
+
     private val viewModel: HomeViewModel by lazy {
         ViewModelProviders.of(this).get(HomeViewModel::class.java)
     }
+
+    private var isHide: Boolean = false
 
     /**
      * @var fusedLocationClient client which allows to use the fused location API of google.
      * We use it to get the last known location and to get location updates.
      */
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+    // OVERRIDE FUNCTIONS
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,21 +81,54 @@ class HomeActivity : BaseActivity() {
     }
 
     /**
+     * Set action to toolbar items.
+     */
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return when (item?.itemId) {
+            android.R.id.home -> {
+                homeDrawerLayout.openDrawer(GravityCompat.START)
+                true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.search_bar_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        menu?.findItem(R.id.search_toolbar)?.isVisible = !isHide
+        return super.onPrepareOptionsMenu(menu)
+    }
+
+    // PUBLIC FUNCTIONS
+
+    fun changeSearchVisibility(hide: Boolean) {
+        isHide = hide
+        invalidateOptionsMenu()
+    }
+
+    // PRIVATE FUNCTIONS
+
+    /**
      * Listen to click event on the BottomNavigationView items.
      * Each item redirects to a different app fragment.
      */
-    private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-        when (item.itemId) {
-            R.id.navigation_map -> MapsFragment()
-            R.id.navigation_list -> RestaurantListFragment()
-            R.id.navigation_workmates -> WorkmatesFragment()
-            else -> null
-        }?.let {
-            supportFragmentManager.beginTransaction().replace(R.id.contentView, it).commit()
-            return@OnNavigationItemSelectedListener true
+    private val mOnNavigationItemSelectedListener =
+        BottomNavigationView.OnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.navigation_map -> MapsFragment()
+                R.id.navigation_list -> RestaurantListFragment()
+                R.id.navigation_workmates -> WorkmatesFragment()
+                else -> null
+            }?.let {
+                supportFragmentManager.beginTransaction().replace(R.id.contentView, it).commit()
+                return@OnNavigationItemSelectedListener true
+            }
+            false
         }
-        false
-    }
 
     /**
      * Set observers for the view which observes the live data of
@@ -164,19 +203,6 @@ class HomeActivity : BaseActivity() {
         if (Build.VERSION.SDK_INT >= 23 && locationPermission != PackageManager.PERMISSION_GRANTED) {
             startActivity<PermissionActivity>()
             finish()
-        }
-    }
-
-    /**
-     * Set action to toolbar items.
-     */
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when (item?.itemId) {
-            android.R.id.home -> {
-                homeDrawerLayout.openDrawer(GravityCompat.START)
-                true
-            }
-            else -> return super.onOptionsItemSelected(item)
         }
     }
 
