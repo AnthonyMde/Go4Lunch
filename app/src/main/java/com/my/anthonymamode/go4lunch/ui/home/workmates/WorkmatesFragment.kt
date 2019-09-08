@@ -13,7 +13,6 @@ import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.data.api.getUsersOrderedByLunch
 import com.my.anthonymamode.go4lunch.domain.User
 import com.my.anthonymamode.go4lunch.ui.detail.DetailRestaurantActivity
-import com.my.anthonymamode.go4lunch.ui.home.HomeActivity
 import com.my.anthonymamode.go4lunch.ui.home.HomeViewModel
 import com.my.anthonymamode.go4lunch.utils.BaseFragment
 import kotlinx.android.synthetic.main.fragment_workmates.*
@@ -26,9 +25,7 @@ class WorkmatesFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_workmates, container, false)
-        (activity as? HomeActivity)?.changeSearchVisibility(true)
-        return view
+        return inflater.inflate(R.layout.fragment_workmates, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

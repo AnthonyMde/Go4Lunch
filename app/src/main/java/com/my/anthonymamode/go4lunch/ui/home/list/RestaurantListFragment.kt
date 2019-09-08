@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.domain.Place
 import com.my.anthonymamode.go4lunch.ui.detail.DetailRestaurantActivity
-import com.my.anthonymamode.go4lunch.ui.home.HomeActivity
 import com.my.anthonymamode.go4lunch.ui.home.HomeViewModel
 import com.my.anthonymamode.go4lunch.utils.BaseFragment
 import com.my.anthonymamode.go4lunch.utils.Resource
@@ -58,9 +57,7 @@ class RestaurantListFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_restaurant_list, container, false)
-        (activity as? HomeActivity)?.changeSearchVisibility(false)
-        return view
+        return inflater.inflate(R.layout.fragment_restaurant_list, container, false)
     }
 
     private fun configureRecyclerView(data: List<Place>) {

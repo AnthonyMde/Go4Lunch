@@ -35,6 +35,10 @@ import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.R.id.drawer_logout
 import com.my.anthonymamode.go4lunch.R.id.drawer_my_food
 import com.my.anthonymamode.go4lunch.R.id.drawer_settings
+import com.my.anthonymamode.go4lunch.R.id.search_toolbar
+import com.my.anthonymamode.go4lunch.R.id.navigation_list
+import com.my.anthonymamode.go4lunch.R.id.navigation_map
+import com.my.anthonymamode.go4lunch.R.id.navigation_workmates
 import com.my.anthonymamode.go4lunch.ui.LoginActivity
 import com.my.anthonymamode.go4lunch.ui.PermissionActivity
 import com.my.anthonymamode.go4lunch.ui.SettingsActivity
@@ -42,25 +46,23 @@ import com.my.anthonymamode.go4lunch.ui.home.list.RestaurantListFragment
 import com.my.anthonymamode.go4lunch.ui.home.workmates.WorkmatesFragment
 import com.my.anthonymamode.go4lunch.utils.BaseActivity
 import com.my.anthonymamode.go4lunch.utils.Resource
-import com.my.anthonymamode.go4lunch.utils.debounceThatFunction
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.nav_drawer_header.view.*
+import org.jetbrains.anko.editText
 import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.toast
 
 private const val TLSE_LAT = 43.6043
 private const val TLSE_LNG = 1.4437
 
 class HomeActivity : BaseActivity() {
     // VARIABLES
-
     private val viewModel: HomeViewModel by lazy {
         ViewModelProviders.of(this).get(HomeViewModel::class.java)
     }
-
     private var isHide: Boolean = false
     private var lastTimeSearch: Long = 0L
     private var searchView: SearchView? = null
+    private var mQuery: String = ""
 
     /**
      * @var fusedLocationClient client which allows to use the fused location API of google.
@@ -113,20 +115,20 @@ class HomeActivity : BaseActivity() {
         menuInflater.inflate(R.menu.search_bar_menu, menu)
         // Associate searchable configuration with the SearchView
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        searchView = (menu?.findItem(R.id.search_toolbar)?.actionView as? SearchView)
+        searchView = (menu?.findItem(search_toolbar)?.actionView as? SearchView)
         searchView?.apply {
             setSearchableInfo(searchManager.getSearchableInfo(componentName))
         }
         searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                toast("submit + $query")
+                mQuery = query ?: ""
                 getAutocompletePlaces(query ?: "")
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                toast("$newText")
-                debounceThatFunction({ getAutocompletePlaces(newText ?: "") }, 300L, lastTimeSearch)
+                mQuery = newText ?: ""
+                // debounceThatFunction({ getAutocompletePlaces(newText ?: "") }, 300L, lastTimeSearch)
                 return true
             }
         })
@@ -134,7 +136,9 @@ class HomeActivity : BaseActivity() {
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        menu?.findItem(R.id.search_toolbar)?.isVisible = !isHide
+        val searchBar = menu?.findItem(search_toolbar)
+        searchBar?.isVisible = !isHide
+        searchView?.editText { setText(mQuery) }
         return super.onPrepareOptionsMenu(menu)
     }
 
@@ -142,18 +146,12 @@ class HomeActivity : BaseActivity() {
         // Verify the action and get the query from the search voice input
         if (Intent.ACTION_SEARCH == intent?.action) {
             intent.getStringExtra(SearchManager.QUERY)?.also { query ->
+                mQuery = query
                 searchView?.setQuery(query, true)
             }
         }
 
         super.onNewIntent(intent)
-    }
-
-    // PUBLIC FUNCTIONS
-
-    fun changeSearchVisibility(hide: Boolean) {
-        isHide = hide
-        invalidateOptionsMenu()
     }
 
     // PRIVATE FUNCTIONS
@@ -165,9 +163,18 @@ class HomeActivity : BaseActivity() {
     private val mOnNavigationItemSelectedListener =
         BottomNavigationView.OnNavigationItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.navigation_map -> MapsFragment()
-                R.id.navigation_list -> RestaurantListFragment()
-                R.id.navigation_workmates -> WorkmatesFragment()
+                navigation_map -> {
+                    if (isHide) { changeSearchVisibility(false) }
+                    MapsFragment()
+                }
+                navigation_list -> {
+                    if (isHide) { changeSearchVisibility(false) }
+                    RestaurantListFragment()
+                }
+                navigation_workmates -> {
+                    if (!isHide) { changeSearchVisibility(true) }
+                    WorkmatesFragment()
+                }
                 else -> null
             }?.let {
                 supportFragmentManager.beginTransaction().replace(R.id.contentView, it).commit()
@@ -175,6 +182,11 @@ class HomeActivity : BaseActivity() {
             }
             false
         }
+
+    private fun changeSearchVisibility(hide: Boolean) {
+        isHide = hide
+        invalidateOptionsMenu()
+    }
 
     /**
      * Set observers for the view which observes the live data of
