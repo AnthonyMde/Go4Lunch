@@ -43,6 +43,7 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
     private lateinit var placesClient: PlacesClient
     private var mapsHelper: MapsHelper? = null
     private var placeList: List<Place>? = null
+    private var searchQuery: String = ""
     private var lastTimePositionChanged = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,17 +76,18 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
         })
 
         viewModel?.searchPlaceQuery?.observe(this, Observer { query ->
-            if (query == "") {
-                displayNearbyRestaurants()
-            } else {
-                val googleTask = getAutocompletePlaces(query)
-                showSelectedRestaurants(googleTask)
+            // if nothing change, don't send the research
+            if (searchQuery == query) {
+                return@Observer
             }
+
+            searchQuery = query
+            displayRestaurants(query)
         })
 
         viewModel?.searchPlaceList?.observe(this, Observer { searchResults ->
-            if (searchResults == null || searchResults.isEmpty()) {
-                displayNearbyRestaurants()
+            if (searchResults == null) {
+                toast("No restaurant found for this research")
             } else {
                 mapsHelper?.displaySelectedRestaurants(searchResults, placeList) { placeId ->
                     val intent = Intent(context, DetailRestaurantActivity::class.java)
@@ -128,7 +130,7 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
                 mapsHelper?.setMapsCenter(cameraPosition.target)
                 lastTimePositionChanged =
                     debounceThatFunction(
-                        { displayNearbyRestaurants() },
+                        { displayRestaurants(searchQuery) },
                         600L,
                         lastTimePositionChanged
                     )
@@ -137,7 +139,16 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
         setUserLocation()
     }
 
-    private fun displayNearbyRestaurants() {
+    private fun displayRestaurants(query: String = "") {
+        if (query == "") {
+            displayAllRestaurants()
+        } else {
+            val googleTask = getAutocompletePlaces(query)
+            showSelectedRestaurants(googleTask)
+        }
+    }
+
+    private fun displayAllRestaurants() {
         val center = mapsHelper?.getMapsCenter()
         if (center != null) {
             viewModel?.getRestaurantPlacesByRadius(center)
@@ -147,8 +158,7 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
     private fun setUserLocation() {
         viewModel?.lastLocation?.observe(this, Observer {
             mapsHelper?.centerMap(it, ZOOM_LEVEL)
-            // TODO: uncomment to displayRestaurant
-            displayNearbyRestaurants()
+            displayRestaurants(searchQuery)
         })
     }
 
