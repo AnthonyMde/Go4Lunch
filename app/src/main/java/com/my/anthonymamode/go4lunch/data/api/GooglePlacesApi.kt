@@ -12,7 +12,7 @@ interface GooglePlacesApi {
     fun getPlacesByDistance(@Query("location") location: String, @Query("type") type: String, @Query("rankby") rankby: String = "distance"): Single<PlaceResponseWrapper>
 
     @GET("nearbysearch/json?key=$API_KEY_GOOGLE_PLACES")
-    fun getPlacesbyRadius(@Query("location") location: String, @Query("type") type: String, @Query("radius") radius: Int): Single<PlaceResponseWrapper>
+    fun getPlacesbyRadius(@Query("location") location: String, @Query("type") type: String, @Query("radius") radius: Double): Single<PlaceResponseWrapper>
 
     @GET("details/json?key=$API_KEY_GOOGLE_PLACES")
     fun getPlaceDetail(@Query("placeid") placeId: String, @Query("fields") fields: String): Single<PlaceDetailResponseWrapper>

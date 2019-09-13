@@ -14,6 +14,7 @@ import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.tasks.Task
 import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.RectangularBounds
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.my.anthonymamode.go4lunch.BuildConfig
@@ -24,7 +25,6 @@ import com.my.anthonymamode.go4lunch.ui.detail.DetailRestaurantActivity
 import com.my.anthonymamode.go4lunch.utils.BaseFragment
 import com.my.anthonymamode.go4lunch.utils.MapsHelper
 import com.my.anthonymamode.go4lunch.utils.Resource
-import com.my.anthonymamode.go4lunch.utils.debounceThatFunction
 import kotlinx.android.synthetic.main.fragment_maps.*
 import org.jetbrains.anko.support.v4.toast
 
@@ -44,7 +44,7 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
     private var mapsHelper: MapsHelper? = null
     private var placeList: List<Place>? = null
     private var searchQuery: String = ""
-    private var lastTimePositionChanged = 0L
+    private var lastTimePositionChanged: Long = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,7 +72,7 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
                 }
             })
             // TODO: uncomment to get nearby restaurants
-            viewModel?.getRestaurantPlacesByRadius(position)
+            // viewModel?.getRestaurantPlacesByRadius(position)
         })
 
         viewModel?.searchPlaceQuery?.observe(this, Observer { query ->
@@ -80,9 +80,9 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
             if (searchQuery == query) {
                 return@Observer
             }
-
             searchQuery = query
-            displayRestaurants(query)
+            // TODO: uncomment to get nearby restaurants
+            // displayRestaurants(query)
         })
 
         viewModel?.searchPlaceList?.observe(this, Observer { searchResults ->
@@ -128,12 +128,12 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
             setMaxZoomPreference(MAX_ZOOM)
             setOnCameraIdleListener {
                 mapsHelper?.setMapsCenter(cameraPosition.target)
-                lastTimePositionChanged =
-                    debounceThatFunction(
-                        { displayRestaurants(searchQuery) },
-                        600L,
-                        lastTimePositionChanged
-                    )
+                // TODO: uncomment to get nearby restaurants
+                /*lastTimePositionChanged = debounceThatFunction(
+                    { displayRestaurants(searchQuery) },
+                    600L,
+                    lastTimePositionChanged
+                )*/
             }
         }
         setUserLocation()
@@ -158,7 +158,8 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
     private fun setUserLocation() {
         viewModel?.lastLocation?.observe(this, Observer {
             mapsHelper?.centerMap(it, ZOOM_LEVEL)
-            displayRestaurants(searchQuery)
+            // TODO: uncomment to get nearby restaurants
+            // displayRestaurants(searchQuery)
         })
     }
 
@@ -170,11 +171,12 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
             return null
         }
 
+        val bounds = RectangularBounds.newInstance(southWestBounds, northEastBounds)
+
         return placesClient.findAutocompletePredictions(
             getPredictions(
                 query,
-                southWestBounds,
-                northEastBounds
+                bounds
             )
         )
     }

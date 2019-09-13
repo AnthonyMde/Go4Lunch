@@ -5,12 +5,12 @@ import com.my.anthonymamode.go4lunch.data.NetworkModule.Companion.getRetrofitPla
 import com.my.anthonymamode.go4lunch.data.api.GooglePlacesApi
 import com.my.anthonymamode.go4lunch.domain.Place
 import com.my.anthonymamode.go4lunch.domain.PlaceDetail
+import com.my.anthonymamode.go4lunch.ui.home.list.RestaurantListFragment.Companion.radiusSearch
 import io.reactivex.Single
 import org.jetbrains.anko.collections.forEachWithIndex
 
 class PlacesRepository {
     private val maxPhotoWidth = 1280
-    private val radiusSearch = 1000
     private val retrofit = getRetrofitPlaces().create(GooglePlacesApi::class.java)
 
     fun getRestaurantPlacesByRadius(position: LatLng): Single<List<Place>> {

@@ -10,7 +10,16 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.tasks.Task
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
+import com.google.android.libraries.places.api.net.PlacesClient
+import com.my.anthonymamode.go4lunch.BuildConfig
 import com.my.anthonymamode.go4lunch.R
+import com.my.anthonymamode.go4lunch.data.api.getPredictions
+import com.my.anthonymamode.go4lunch.data.api.toRectangularBounds
 import com.my.anthonymamode.go4lunch.domain.Place
 import com.my.anthonymamode.go4lunch.ui.detail.DetailRestaurantActivity
 import com.my.anthonymamode.go4lunch.ui.home.HomeViewModel
@@ -32,22 +41,64 @@ class RestaurantListFragment : BaseFragment() {
         startActivity(intent)
     })
 
+    private lateinit var placesClient: PlacesClient
+    private lateinit var currentLocation: LatLng
+    private var listRestaurants: List<Place> = emptyList()
+    private var searchQuery: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val ctx = context ?: return
+        Places.initialize(ctx.applicationContext, BuildConfig.API_KEY_GOOGLE_PLACES)
+        placesClient = Places.createClient(ctx)
+
         viewModel?.lastLocation?.observe(this, Observer { position ->
-            viewModel?.placeWithHoursList?.observe(this, Observer {
-                when (it) {
-                    is Resource.Loading -> toast("loading")
-                    is Resource.Success -> {
-                        configureRecyclerView(it.data)
-                    }
-                    is Resource.Error -> {
-                        toast("We can't retrieve nearby restaurants")
-                        Log.e("NETWORK", "error: ${it.error}")
+            currentLocation = position
+            viewModel?.getRestaurantPlacesWithHours(position)
+        })
+
+        viewModel?.placeWithHoursList?.observe(this, Observer {
+            when (it) {
+                is Resource.Loading -> toast("loading")
+                is Resource.Success -> {
+                    listRestaurants = it.data
+                    if (searchQuery == "") {
+                        configureRecyclerView(listRestaurants)
                     }
                 }
-            })
-            viewModel?.getRestaurantPlacesWithHours(position)
+                is Resource.Error -> {
+                    toast("We can't retrieve nearby restaurants")
+                    Log.e("NETWORK", "error: ${it.error}")
+                }
+            }
+        })
+
+        viewModel?.searchPlaceQuery?.observe(this, Observer { query ->
+            if (searchQuery == query) {
+                return@Observer
+            }
+
+            if (query == "") {
+                restaurantAdapter.setRestaurantList(listRestaurants)
+            } else {
+                val bounds = toRectangularBounds(currentLocation, radiusSearch)
+                val googleTask = placesClient.findAutocompletePredictions(getPredictions(query, bounds))
+                showSelectedRestaurants(googleTask)
+            }
+
+            searchQuery = query
+        })
+
+        viewModel?.searchPlaceList?.observe(this, Observer { searchResults ->
+            if (searchResults == null) {
+                toast("No restaurant found for this research")
+            } else {
+                val matchingRestaurants = listRestaurants.filter { currentPlace ->
+                    searchResults.map { it.placeId }.contains(currentPlace.place_id)
+                }
+                restaurantAdapter.setRestaurantList(matchingRestaurants)
+            }
         })
     }
 
@@ -72,5 +123,30 @@ class RestaurantListFragment : BaseFragment() {
         restaurantRV.adapter = restaurantAdapter
         restaurantRV.layoutManager = LinearLayoutManager(context)
         restaurantAdapter.setRestaurantList(data)
+    }
+
+    private fun showSelectedRestaurants(search: Task<FindAutocompletePredictionsResponse>?) {
+        if (search == null) {
+            showToastError("No context or no localization found")
+            return
+        }
+
+        search.addOnSuccessListener { response ->
+            if (searchQuery == "") {
+                return@addOnSuccessListener
+            }
+            viewModel?.setSearchPlaces(response.autocompletePredictions)
+        }
+            .addOnFailureListener { exception ->
+                if (exception is ApiException) {
+                    Log.e("autocompletePredictions", "Place not found: " + exception.statusCode)
+                } else {
+                    Log.e("autocompletePredictions", "OtherError: " + exception.localizedMessage)
+                }
+            }
+    }
+
+    companion object {
+        const val radiusSearch = 1000.0
     }
 }
