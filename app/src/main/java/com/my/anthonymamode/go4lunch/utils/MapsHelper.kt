@@ -5,6 +5,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.data.api.getUsersByLunchId
 import com.my.anthonymamode.go4lunch.domain.Place
@@ -55,6 +56,26 @@ class MapsHelper(private val googleMap: GoogleMap?) {
                     setMarker(icon, latLng, restaurant)
                 }
         }
+    }
+
+    fun displaySelectedRestaurants(searchedPlaces: List<AutocompletePrediction>, currentRestaurantList: List<Place>?, markerOnClick: (String) -> Unit) {
+        if (currentRestaurantList == null) {
+            return
+        }
+
+        val matchingRestaurants = currentRestaurantList.filter { currentPlace ->
+            searchedPlaces.map { it.placeId }.contains(currentPlace.place_id)
+        }
+
+        setRestaurantMarkers(matchingRestaurants, markerOnClick)
+    }
+
+    fun getNorthEastBounds(): LatLng? {
+        return googleMap?.projection?.visibleRegion?.latLngBounds?.northeast
+    }
+
+    fun getSouthWestBounds(): LatLng? {
+        return googleMap?.projection?.visibleRegion?.latLngBounds?.southwest
     }
 
     private fun setMarker(icon: Int, latLng: LatLng, restaurant: Place) {

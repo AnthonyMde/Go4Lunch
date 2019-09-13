@@ -10,17 +10,18 @@ import org.jetbrains.anko.collections.forEachWithIndex
 
 class PlacesRepository {
     private val maxPhotoWidth = 1280
+    private val radiusSearch = 1000
     private val retrofit = getRetrofitPlaces().create(GooglePlacesApi::class.java)
 
-    fun getRestaurantPlaces(position: LatLng): Single<List<Place>> {
-        return retrofit.getNearbyPlaces("${position.latitude},${position.longitude}", "restaurant")
+    fun getRestaurantPlacesByRadius(position: LatLng): Single<List<Place>> {
+        return retrofit.getPlacesbyRadius("${position.latitude},${position.longitude}", "restaurant", radiusSearch)
             .map {
                 it.places
             }
     }
 
     fun getRestaurantPlacesWithHours(position: LatLng): Single<List<Place>> {
-        return retrofit.getNearbyPlaces("${position.latitude},${position.longitude}", "restaurant")
+        return retrofit.getPlacesByDistance("${position.latitude},${position.longitude}", "restaurant")
             .map {
                 it.places
             }

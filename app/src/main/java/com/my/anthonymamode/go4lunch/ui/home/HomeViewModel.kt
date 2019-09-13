@@ -52,6 +52,10 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     val searchPlaceList: LiveData<List<AutocompletePrediction>>
         get() = _searchPlaceList
 
+    private var _searchPlaceQuery = MutableLiveData<String>()
+    val searchPlaceQuery: LiveData<String>
+        get() = _searchPlaceQuery
+
     var userId: String? = null
 
     override fun onCleared() {
@@ -70,8 +74,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun getRestaurantPlaces(position: LatLng) {
-        repository.getRestaurantPlaces(position)
+    fun getRestaurantPlacesByRadius(position: LatLng) {
+        repository.getRestaurantPlacesByRadius(position)
             .doOnSubscribe { _placeList.postValue(Resource.Loading()) }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -116,5 +120,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     fun setSearchPlaces(searchPlaces: List<AutocompletePrediction>) {
         _searchPlaceList.postValue(searchPlaces)
+    }
+
+    fun setPlaceSearchQuery(query: String) {
+        _searchPlaceQuery.postValue(query)
     }
 }

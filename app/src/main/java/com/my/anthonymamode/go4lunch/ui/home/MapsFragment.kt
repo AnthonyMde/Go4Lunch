@@ -8,10 +8,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.tasks.Task
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
+import com.google.android.libraries.places.api.net.PlacesClient
+import com.my.anthonymamode.go4lunch.BuildConfig
 import com.my.anthonymamode.go4lunch.R
+import com.my.anthonymamode.go4lunch.data.api.getPredictions
+import com.my.anthonymamode.go4lunch.domain.Place
 import com.my.anthonymamode.go4lunch.ui.detail.DetailRestaurantActivity
 import com.my.anthonymamode.go4lunch.utils.BaseFragment
 import com.my.anthonymamode.go4lunch.utils.MapsHelper
@@ -32,17 +40,24 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
     }
 
     private lateinit var mapsView: MapView
+    private lateinit var placesClient: PlacesClient
     private var mapsHelper: MapsHelper? = null
+    private var placeList: List<Place>? = null
     private var lastTimePositionChanged = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val ctx = context ?: return
+        Places.initialize(ctx.applicationContext, BuildConfig.API_KEY_GOOGLE_PLACES)
+        placesClient = Places.createClient(ctx)
 
         viewModel?.lastLocation?.observe(this, Observer { position ->
             viewModel?.placeList?.observe(this, Observer {
                 when (it) {
                     is Resource.Loading -> toast("loading")
                     is Resource.Success -> {
+                        placeList = it.data
                         mapsHelper?.setRestaurantMarkers(it.data) { placeId ->
                             val intent = Intent(context, DetailRestaurantActivity::class.java)
                             intent.putExtra("placeId", placeId)
@@ -56,7 +71,28 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
                 }
             })
             // TODO: uncomment to get nearby restaurants
-            viewModel?.getRestaurantPlaces(position)
+            viewModel?.getRestaurantPlacesByRadius(position)
+        })
+
+        viewModel?.searchPlaceQuery?.observe(this, Observer { query ->
+            if (query == "") {
+                displayNearbyRestaurants()
+            } else {
+                val googleTask = getAutocompletePlaces(query)
+                showSelectedRestaurants(googleTask)
+            }
+        })
+
+        viewModel?.searchPlaceList?.observe(this, Observer { searchResults ->
+            if (searchResults == null || searchResults.isEmpty()) {
+                displayNearbyRestaurants()
+            } else {
+                mapsHelper?.displaySelectedRestaurants(searchResults, placeList) { placeId ->
+                    val intent = Intent(context, DetailRestaurantActivity::class.java)
+                    intent.putExtra("placeId", placeId)
+                    startActivity(intent)
+                }
+            }
         })
     }
 
@@ -91,9 +127,11 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
             setOnCameraIdleListener {
                 mapsHelper?.setMapsCenter(cameraPosition.target)
                 lastTimePositionChanged =
-                        // TODO: Delete this line and uncomment to displayRestaurant
-                    // debounceThatFunction({}, 600L, lastTimePositionChanged)
-                debounceThatFunction({ displayNearbyRestaurants() }, 600L, lastTimePositionChanged)
+                    debounceThatFunction(
+                        { displayNearbyRestaurants() },
+                        600L,
+                        lastTimePositionChanged
+                    )
             }
         }
         setUserLocation()
@@ -102,7 +140,7 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
     private fun displayNearbyRestaurants() {
         val center = mapsHelper?.getMapsCenter()
         if (center != null) {
-            viewModel?.getRestaurantPlaces(center)
+            viewModel?.getRestaurantPlacesByRadius(center)
         }
     }
 
@@ -112,6 +150,41 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
             // TODO: uncomment to displayRestaurant
             displayNearbyRestaurants()
         })
+    }
+
+    private fun getAutocompletePlaces(query: String): Task<FindAutocompletePredictionsResponse>? {
+        val southWestBounds = mapsHelper?.getSouthWestBounds()
+        val northEastBounds = mapsHelper?.getNorthEastBounds()
+
+        if (southWestBounds == null || northEastBounds == null) {
+            return null
+        }
+
+        return placesClient.findAutocompletePredictions(
+            getPredictions(
+                query,
+                southWestBounds,
+                northEastBounds
+            )
+        )
+    }
+
+    private fun showSelectedRestaurants(search: Task<FindAutocompletePredictionsResponse>?) {
+        if (search == null) {
+            showToastError("No context or no localization found")
+            return
+        }
+
+        search.addOnSuccessListener { response ->
+            viewModel?.setSearchPlaces(response.autocompletePredictions)
+        }
+            .addOnFailureListener { exception ->
+                if (exception is ApiException) {
+                    Log.e("autocompletePredictions", "Place not found: " + exception.statusCode)
+                } else {
+                    Log.e("autocompletePredictions", "OtherError: " + exception.localizedMessage)
+                }
+            }
     }
 
     override fun onResume() {
