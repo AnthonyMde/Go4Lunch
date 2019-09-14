@@ -35,7 +35,6 @@ class MapsHelper(private val googleMap: GoogleMap?) {
     }
 
     fun setRestaurantMarkers(restaurants: List<Place>, markerOnClick: (String) -> Unit) {
-        var icon = R.drawable.ic_maps_marker_red
         googleMap?.clear()
         googleMap?.setOnMarkerClickListener {
             markerOnClick.invoke(it.tag as String)
@@ -43,6 +42,7 @@ class MapsHelper(private val googleMap: GoogleMap?) {
         }
 
         for (restaurant in restaurants) {
+            var icon = R.drawable.ic_maps_marker_red
             val latLng = LatLng(restaurant.geometry.location.lat, restaurant.geometry.location.lng)
 
             getUsersByLunchId(restaurant.place_id).get()

@@ -30,7 +30,7 @@ import org.jetbrains.anko.support.v4.toast
 
 private const val ZOOM_LEVEL = 16f
 private const val MIN_ZOOM = 6f
-private const val MAX_ZOOM = 20f
+private const val MAX_ZOOM = 18f
 
 class MapsFragment : BaseFragment(), OnMapReadyCallback {
     private val viewModel by lazy {
@@ -54,25 +54,26 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
         placesClient = Places.createClient(ctx)
 
         viewModel?.lastLocation?.observe(this, Observer { position ->
-            viewModel?.placeList?.observe(this, Observer {
-                when (it) {
-                    is Resource.Loading -> toast("loading")
-                    is Resource.Success -> {
-                        placeList = it.data
-                        mapsHelper?.setRestaurantMarkers(it.data) { placeId ->
-                            val intent = Intent(context, DetailRestaurantActivity::class.java)
-                            intent.putExtra("placeId", placeId)
-                            startActivity(intent)
-                        }
-                    }
-                    is Resource.Error -> {
-                        toast("We can't retrieve nearby restaurants")
-                        Log.e("NETWORK", "error: ${it.error}")
-                    }
-                }
-            })
             // TODO: uncomment to get nearby restaurants
             // viewModel?.getRestaurantPlacesByRadius(position)
+        })
+
+        viewModel?.placeList?.observe(this, Observer {
+            when (it) {
+                is Resource.Loading -> toast("loading")
+                is Resource.Success -> {
+                    placeList = it.data
+                    mapsHelper?.setRestaurantMarkers(it.data) { placeId ->
+                        val intent = Intent(context, DetailRestaurantActivity::class.java)
+                        intent.putExtra("placeId", placeId)
+                        startActivity(intent)
+                    }
+                }
+                is Resource.Error -> {
+                    toast("We can't retrieve nearby restaurants")
+                    Log.e("NETWORK", "error: ${it.error}")
+                }
+            }
         })
 
         viewModel?.searchPlaceQuery?.observe(this, Observer { query ->
