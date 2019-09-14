@@ -118,7 +118,7 @@ dependencies {
     implementation 'com.google.maps.android:android-maps-utils:0.5'
 
     // FACEBOOK
-    implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
+    implementation 'com.facebook.android:facebook-android-sdk:5.5.0'
 }
 
 apply plugin: 'com.google.gms.google-services'
