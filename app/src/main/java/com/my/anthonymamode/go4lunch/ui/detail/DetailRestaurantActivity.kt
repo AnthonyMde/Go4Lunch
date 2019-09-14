@@ -6,8 +6,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
+import androidx.activity.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
@@ -38,7 +38,7 @@ class DetailRestaurantActivity : BaseActivity() {
     private var hasChangedLunchOfDay = false
     private var user: User? = null
     private lateinit var place: PlaceDetail
-    private val viewModel by lazy { ViewModelProviders.of(this).get(DetailRestaurantViewModel::class.java) }
+    private val viewModel by viewModels<DetailRestaurantViewModel>()
     private val userId by lazy { FirebaseAuth.getInstance().currentUser?.uid }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -6,8 +6,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.common.api.ApiException
@@ -29,11 +29,7 @@ import kotlinx.android.synthetic.main.fragment_restaurant_list.*
 import org.jetbrains.anko.support.v4.toast
 
 class RestaurantListFragment : BaseFragment() {
-    private val viewModel by lazy {
-        activity?.let {
-            ViewModelProviders.of(it).get(HomeViewModel::class.java)
-        }
-    }
+    private val viewModel by activityViewModels<HomeViewModel>()
 
     private val restaurantAdapter = RestaurantAdapter(onClick = {
         val intent = Intent(context, DetailRestaurantActivity::class.java)
@@ -42,7 +38,7 @@ class RestaurantListFragment : BaseFragment() {
     })
 
     private lateinit var placesClient: PlacesClient
-    private lateinit var currentLocation: LatLng
+    private var currentLocation: LatLng? = null
     private var listRestaurants: List<Place> = emptyList()
     private var searchQuery: String = ""
 
@@ -53,12 +49,15 @@ class RestaurantListFragment : BaseFragment() {
         Places.initialize(ctx.applicationContext, BuildConfig.API_KEY_GOOGLE_PLACES)
         placesClient = Places.createClient(ctx)
 
-        viewModel?.lastLocation?.observe(this, Observer { position ->
+        viewModel.lastLocation.observe(this, Observer { position ->
+            if (currentLocation == position) {
+                return@Observer
+            }
             currentLocation = position
-            viewModel?.getRestaurantPlacesWithHours(position)
+            viewModel.getRestaurantPlacesWithHours(position)
         })
 
-        viewModel?.placeWithHoursList?.observe(this, Observer {
+        viewModel.placeWithHoursList.observe(this, Observer {
             when (it) {
                 is Resource.Loading -> toast("loading")
                 is Resource.Success -> {
@@ -74,7 +73,7 @@ class RestaurantListFragment : BaseFragment() {
             }
         })
 
-        viewModel?.searchPlaceQuery?.observe(this, Observer { query ->
+        viewModel.searchPlaceQuery.observe(this, Observer { query ->
             if (searchQuery == query) {
                 return@Observer
             }
@@ -90,7 +89,7 @@ class RestaurantListFragment : BaseFragment() {
             searchQuery = query
         })
 
-        viewModel?.searchPlaceList?.observe(this, Observer { searchResults ->
+        viewModel.searchPlaceList.observe(this, Observer { searchResults ->
             if (searchResults == null) {
                 toast("No restaurant found for this research")
             } else {
@@ -135,7 +134,7 @@ class RestaurantListFragment : BaseFragment() {
             if (searchQuery == "") {
                 return@addOnSuccessListener
             }
-            viewModel?.setSearchPlaces(response.autocompletePredictions)
+            viewModel.setSearchPlaces(response.autocompletePredictions)
         }
             .addOnFailureListener { exception ->
                 if (exception is ApiException) {

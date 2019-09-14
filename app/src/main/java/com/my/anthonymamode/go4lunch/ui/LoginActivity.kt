@@ -86,7 +86,8 @@ class LoginActivity : BaseActivity() {
                 Activity.RESULT_OK -> {
                     val user = FirebaseAuth.getInstance().currentUser ?: return showToastError(getString(R.string.login_no_account_found_error))
                     getCurrentUser(user.uid).addOnSuccessListener {
-                        if (it == null) {
+                        val dataSize = it?.data?.size
+                        if (data == null || dataSize == 0) {
                             updateUser(
                                 user.uid,
                                 user.displayName,

@@ -11,7 +11,7 @@ import kotlin.math.sqrt
 
 fun getPredictions(
     query: String,
-    bounds: RectangularBounds
+    bounds: RectangularBounds?
 ): FindAutocompletePredictionsRequest {
     // Create a new token for the autocomplete session.
     val token = AutocompleteSessionToken.newInstance()
@@ -24,7 +24,10 @@ fun getPredictions(
         .build()
 }
 
-fun toRectangularBounds(center: LatLng, radiusInMeters: Double): RectangularBounds {
+fun toRectangularBounds(center: LatLng?, radiusInMeters: Double): RectangularBounds? {
+    if (center == null) {
+        return null
+    }
     val distanceFromCenterToCorner = radiusInMeters * sqrt(2.0)
     val southWestCorner = SphericalUtil.computeOffset(center, distanceFromCenterToCorner, 225.0)
     val northEastCorner = SphericalUtil.computeOffset(center, distanceFromCenterToCorner, 45.0)

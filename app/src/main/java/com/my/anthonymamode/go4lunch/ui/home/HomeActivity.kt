@@ -11,11 +11,11 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
@@ -49,9 +49,7 @@ private const val TLSE_LNG = 1.4437
 
 class HomeActivity : BaseActivity() {
     // VARIABLES
-    private val viewModel: HomeViewModel by lazy {
-        ViewModelProviders.of(this).get(HomeViewModel::class.java)
-    }
+    val viewModel by viewModels<HomeViewModel>()
     private var isHide: Boolean = false
     private var lastTimeSearch: Long = 0L
     private var searchView: SearchView? = null
@@ -95,7 +93,9 @@ class HomeActivity : BaseActivity() {
      * Set action to toolbar items.
      */
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when (item?.itemId) {
+        if (item == null) { return false }
+
+        return when (item.itemId) {
             android.R.id.home -> {
                 homeDrawerLayout.openDrawer(GravityCompat.START)
                 true
