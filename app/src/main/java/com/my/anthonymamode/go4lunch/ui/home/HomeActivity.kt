@@ -1,6 +1,8 @@
 package com.my.anthonymamode.go4lunch.ui.home
 
 import android.Manifest
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
@@ -37,15 +39,18 @@ import com.my.anthonymamode.go4lunch.ui.SettingsActivity
 import com.my.anthonymamode.go4lunch.ui.home.list.RestaurantListFragment
 import com.my.anthonymamode.go4lunch.ui.home.workmates.WorkmatesFragment
 import com.my.anthonymamode.go4lunch.utils.BaseActivity
+import com.my.anthonymamode.go4lunch.utils.NotificationBroadcastReceiver
 import com.my.anthonymamode.go4lunch.utils.Resource
 import com.my.anthonymamode.go4lunch.utils.debounceThatFunction
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.nav_drawer_header.view.*
 import org.jetbrains.anko.editText
 import org.jetbrains.anko.startActivity
+import java.util.Calendar
 
 private const val TLSE_LAT = 43.6043
 private const val TLSE_LNG = 1.4437
+private const val NOTIFICATION_REQUEST_CODE = 101
 
 class HomeActivity : BaseActivity() {
     // VARIABLES
@@ -54,6 +59,8 @@ class HomeActivity : BaseActivity() {
     private var lastTimeSearch: Long = 0L
     private var searchView: SearchView? = null
     private var mQuery: String = ""
+    private var alarmManager: AlarmManager? = null
+    private lateinit var pendingIntent: PendingIntent
 
     /**
      * @var fusedLocationClient client which allows to use the fused location API of google.
@@ -77,6 +84,22 @@ class HomeActivity : BaseActivity() {
             R.id.contentView,
             MapsFragment()
         ).commit()
+
+        Log.d("NOTIFICATIONALARM", "Before call")
+        createNotificationAlarm()
+    }
+
+    private fun createNotificationAlarm() {
+        Log.d("NOTIFICATIONALARM", "In call")
+        alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(this, NotificationBroadcastReceiver::class.java)
+        pendingIntent = PendingIntent.getBroadcast(this, NOTIFICATION_REQUEST_CODE, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+        val timeToFire = Calendar.getInstance().apply {
+            timeInMillis = System.currentTimeMillis()
+            set(Calendar.HOUR_OF_DAY, 13)
+        }
+        alarmManager?.setRepeating(AlarmManager.RTC_WAKEUP, timeToFire.timeInMillis, AlarmManager.INTERVAL_DAY, pendingIntent)
+        Log.d("NOTIFICATIONALARM", "Alarm Setup")
     }
 
     override fun onStart() {
