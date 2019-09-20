@@ -13,9 +13,11 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ImageView
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
@@ -45,7 +47,9 @@ import com.my.anthonymamode.go4lunch.utils.debounceThatFunction
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.nav_drawer_header.view.*
 import org.jetbrains.anko.editText
+import org.jetbrains.anko.hintTextColor
 import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.textColor
 import java.util.Calendar
 
 private const val TLSE_LAT = 43.6043
@@ -129,25 +133,9 @@ class HomeActivity : BaseActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.search_bar_menu, menu)
-        // Associate searchable configuration with the SearchView
-        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        searchView = (menu?.findItem(search_toolbar)?.actionView as? SearchView)
-        searchView?.apply {
-            setSearchableInfo(searchManager.getSearchableInfo(componentName))
-        }
-        searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                mQuery = query ?: ""
-                viewModel.setPlaceSearchQuery(query ?: "")
-                return true
-            }
+        setupSearchView(menu)
+        setSearchViewColors()
 
-            override fun onQueryTextChange(newText: String?): Boolean {
-                mQuery = newText ?: ""
-                lastTimeSearch = debounceThatFunction({ viewModel.setPlaceSearchQuery(newText ?: "") }, 1000L, lastTimeSearch)
-                return true
-            }
-        })
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -198,6 +186,41 @@ class HomeActivity : BaseActivity() {
             }
             false
         }
+
+    private fun setSearchViewColors() {
+        val whiteColor = ResourcesCompat.getColor(resources, android.R.color.white, null)
+        val sac = searchView?.findViewById<SearchView.SearchAutoComplete>(androidx.appcompat.R.id.search_src_text)
+        val sacCloseIcon = searchView?.findViewById<ImageView>(androidx.appcompat.R.id.search_close_btn)
+        val sacAudioIcon = searchView?.findViewById<ImageView>(androidx.appcompat.R.id.search_voice_btn)
+
+        sac?.textColor = whiteColor
+        sac?.hintTextColor = whiteColor
+        sacCloseIcon?.setColorFilter(whiteColor)
+        sacAudioIcon?.setColorFilter(whiteColor)
+    }
+
+    private fun setupSearchView(menu: Menu?) {
+        // Associate searchable configuration with the SearchView
+        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        searchView = (menu?.findItem(search_toolbar)?.actionView as? SearchView)
+
+        searchView?.apply {
+            setSearchableInfo(searchManager.getSearchableInfo(componentName))
+        }
+        searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                mQuery = query ?: ""
+                viewModel.setPlaceSearchQuery(query ?: "")
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                mQuery = newText ?: ""
+                lastTimeSearch = debounceThatFunction({ viewModel.setPlaceSearchQuery(newText ?: "") }, 1000L, lastTimeSearch)
+                return true
+            }
+        })
+    }
 
     private fun changeSearchVisibility(hide: Boolean) {
         isHide = hide
