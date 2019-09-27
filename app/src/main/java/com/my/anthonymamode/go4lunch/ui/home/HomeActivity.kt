@@ -97,11 +97,13 @@ class HomeActivity : BaseActivity() {
         Log.d("NOTIFICATIONALARM", "In call")
         alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(this, NotificationBroadcastReceiver::class.java)
-        pendingIntent = PendingIntent.getBroadcast(this, NOTIFICATION_REQUEST_CODE, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+        pendingIntent = PendingIntent.getBroadcast(this, NOTIFICATION_REQUEST_CODE, intent, 0)
         val timeToFire = Calendar.getInstance().apply {
             timeInMillis = System.currentTimeMillis()
-            set(Calendar.HOUR_OF_DAY, 13)
+            set(Calendar.HOUR_OF_DAY, 12)
+            set(Calendar.MINUTE, 0)
         }
+        alarmManager?.cancel(pendingIntent)
         alarmManager?.setRepeating(AlarmManager.RTC_WAKEUP, timeToFire.timeInMillis, AlarmManager.INTERVAL_DAY, pendingIntent)
         Log.d("NOTIFICATIONALARM", "Alarm Setup")
     }

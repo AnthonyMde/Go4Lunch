@@ -52,6 +52,11 @@
                 android:screenOrientation="portrait"
                 android:theme="@style/AppTheme"/>
 
+        <receiver
+            android:name=".utils.NotificationBroadcastReceiver"
+            android:enabled="true"
+            android:exported="false" />
+
         <meta-data
                 android:name="com.facebook.sdk.ApplicationId"
                 android:value="@string/facebook_application_id"
