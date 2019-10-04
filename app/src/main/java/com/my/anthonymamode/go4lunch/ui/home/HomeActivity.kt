@@ -27,6 +27,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.R.id.drawer_logout
 import com.my.anthonymamode.go4lunch.R.id.drawer_my_food
@@ -55,10 +56,12 @@ import java.util.Calendar
 private const val TLSE_LAT = 43.6043
 private const val TLSE_LNG = 1.4437
 private const val NOTIFICATION_REQUEST_CODE = 101
+const val INTENT_EXTRA_USER_ID = "INTENT_EXTRA_USER_ID"
 
 class HomeActivity : BaseActivity() {
     // VARIABLES
     val viewModel by viewModels<HomeViewModel>()
+    private val userId by lazy { FirebaseAuth.getInstance().currentUser?.uid }
     private var isHide: Boolean = false
     private var lastTimeSearch: Long = 0L
     private var searchView: SearchView? = null
@@ -89,23 +92,7 @@ class HomeActivity : BaseActivity() {
             MapsFragment()
         ).commit()
 
-        Log.d("NOTIFICATIONALARM", "Before call")
         createNotificationAlarm()
-    }
-
-    private fun createNotificationAlarm() {
-        Log.d("NOTIFICATIONALARM", "In call")
-        alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent(this, NotificationBroadcastReceiver::class.java)
-        pendingIntent = PendingIntent.getBroadcast(this, NOTIFICATION_REQUEST_CODE, intent, 0)
-        val timeToFire = Calendar.getInstance().apply {
-            timeInMillis = System.currentTimeMillis()
-            set(Calendar.HOUR_OF_DAY, 12)
-            set(Calendar.MINUTE, 0)
-        }
-        alarmManager?.cancel(pendingIntent)
-        alarmManager?.setRepeating(AlarmManager.RTC_WAKEUP, timeToFire.timeInMillis, AlarmManager.INTERVAL_DAY, pendingIntent)
-        Log.d("NOTIFICATIONALARM", "Alarm Setup")
     }
 
     override fun onStart() {
@@ -122,7 +109,9 @@ class HomeActivity : BaseActivity() {
      * Set action to toolbar items.
      */
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item == null) { return false }
+        if (item == null) {
+            return false
+        }
 
         return when (item.itemId) {
             android.R.id.home -> {
@@ -170,15 +159,21 @@ class HomeActivity : BaseActivity() {
         BottomNavigationView.OnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 navigation_map -> {
-                    if (isHide) { changeSearchVisibility(false) }
+                    if (isHide) {
+                        changeSearchVisibility(false)
+                    }
                     MapsFragment()
                 }
                 navigation_list -> {
-                    if (isHide) { changeSearchVisibility(false) }
+                    if (isHide) {
+                        changeSearchVisibility(false)
+                    }
                     RestaurantListFragment()
                 }
                 navigation_workmates -> {
-                    if (!isHide) { changeSearchVisibility(true) }
+                    if (!isHide) {
+                        changeSearchVisibility(true)
+                    }
                     WorkmatesFragment()
                 }
                 else -> null
@@ -189,11 +184,36 @@ class HomeActivity : BaseActivity() {
             false
         }
 
+    private fun createNotificationAlarm() {
+        alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(this, NotificationBroadcastReceiver::class.java)
+        intent.putExtra(INTENT_EXTRA_USER_ID, userId)
+        pendingIntent = PendingIntent.getBroadcast(this, NOTIFICATION_REQUEST_CODE, intent, 0)
+        val timeToFire = Calendar.getInstance().apply {
+            timeInMillis = System.currentTimeMillis()
+            set(Calendar.HOUR_OF_DAY, 12)
+        }
+        // FIXME : Even with this check, the notification is fired each time we launch the app
+        if (timeToFire.before(System.currentTimeMillis())) {
+            timeToFire.add(Calendar.DATE, 1)
+        }
+        alarmManager?.setInexactRepeating(
+            AlarmManager.RTC_WAKEUP,
+            timeToFire.timeInMillis,
+            AlarmManager.INTERVAL_DAY,
+            pendingIntent
+        )
+        // alarmManager?.setExact(AlarmManager.RTC_WAKEUP, timeToFire.timeInMillis, pendingIntent)
+    }
+
     private fun setSearchViewColors() {
         val whiteColor = ResourcesCompat.getColor(resources, android.R.color.white, null)
-        val sac = searchView?.findViewById<SearchView.SearchAutoComplete>(androidx.appcompat.R.id.search_src_text)
-        val sacCloseIcon = searchView?.findViewById<ImageView>(androidx.appcompat.R.id.search_close_btn)
-        val sacAudioIcon = searchView?.findViewById<ImageView>(androidx.appcompat.R.id.search_voice_btn)
+        val sac =
+            searchView?.findViewById<SearchView.SearchAutoComplete>(androidx.appcompat.R.id.search_src_text)
+        val sacCloseIcon =
+            searchView?.findViewById<ImageView>(androidx.appcompat.R.id.search_close_btn)
+        val sacAudioIcon =
+            searchView?.findViewById<ImageView>(androidx.appcompat.R.id.search_voice_btn)
 
         sac?.textColor = whiteColor
         sac?.hintTextColor = whiteColor
@@ -218,7 +238,11 @@ class HomeActivity : BaseActivity() {
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 mQuery = newText ?: ""
-                lastTimeSearch = debounceThatFunction({ viewModel.setPlaceSearchQuery(newText ?: "") }, 1000L, lastTimeSearch)
+                lastTimeSearch = debounceThatFunction(
+                    { viewModel.setPlaceSearchQuery(newText ?: "") },
+                    1000L,
+                    lastTimeSearch
+                )
                 return true
             }
         })

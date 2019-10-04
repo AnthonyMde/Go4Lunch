@@ -70,6 +70,13 @@
     <string name="search_hint">Rechercher des restaurants</string>
     <string name="search_locale">fr</string>
 
+    <!-- NOTIFICATION -->
+    <string name="notification_title">C\'est l\'heure du repas !</string>
+    <string name="notification_content_without_coworkers">Tu as choisi %1$s au %2$s</string>
+    <string name="notification_content_with_coworkers">Tu as choisi %1$s au %2$s avec %3$s</string>
+    <string name="notification_channel_title">Notification du repas du jour</string>
+    <string name="notification_channel_description">Vous rappelle le restaurant que vous avez choisi pour aujourd\'hui</string>
+
     <!-- ERRORS -->
     <string name="profile_data_error">Pour une raison inconnue, nous ne pouvons récupérer vos données pour le moment.</string>
     <string name="session_expired_error">Il semblerait que votre session ait expirée. Essayer de vous reconnecter.</string>

@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import androidx.activity.viewModels
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -142,10 +143,10 @@ class DetailRestaurantActivity : BaseActivity() {
                 startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phoneNumber")))
             }
         } else {
-            detailRestaurantCallButton.setTextColor(resources.getColor(R.color.lightGray))
+            detailRestaurantCallButton.setTextColor(ResourcesCompat.getColor(resources, R.color.lightGray, null))
             detailRestaurantCallButton.setCompoundDrawablesWithIntrinsicBounds(
                 null,
-                resources.getDrawable(R.drawable.ic_local_phone_disable_color_24_dp),
+                ResourcesCompat.getDrawable(resources, R.drawable.ic_local_phone_disable_color_24_dp, null),
                 null,
                 null
             )
@@ -172,10 +173,10 @@ class DetailRestaurantActivity : BaseActivity() {
                 startActivity(intent)
             }
         } else {
-            detailRestaurantWebButton.setTextColor(resources.getColor(R.color.lightGray))
+            detailRestaurantWebButton.setTextColor(ResourcesCompat.getColor(resources, R.color.lightGray, null))
             detailRestaurantWebButton.setCompoundDrawablesWithIntrinsicBounds(
                 null,
-                resources.getDrawable(R.drawable.ic_language_disable_color_24_dp),
+                ResourcesCompat.getDrawable(resources, R.drawable.ic_language_disable_color_24_dp, null),
                 null,
                 null
             )
@@ -189,7 +190,7 @@ class DetailRestaurantActivity : BaseActivity() {
         detailRestaurantFabEnable.scaleUp()
         user?.apply {
             hasLunch = true
-            lunch = Lunch(place.place_id, place.name)
+            lunch = Lunch(place.place_id, place.name, place.address ?: place.formatted_address)
         }
     }
 
@@ -230,8 +231,8 @@ class DetailRestaurantActivity : BaseActivity() {
     }
 
     private fun setStarColor(drawableId: Int, colorId: Int) {
-        detailRestaurantLikeButton.setTextColor(resources.getColor(colorId))
-        val yellowStar = resources.getDrawable(drawableId)
+        detailRestaurantLikeButton.setTextColor(ResourcesCompat.getColor(resources, colorId, null))
+        val yellowStar = ResourcesCompat.getDrawable(resources, drawableId, null)
         detailRestaurantLikeButton.setCompoundDrawablesRelativeWithIntrinsicBounds(null, yellowStar, null, null)
     }
 

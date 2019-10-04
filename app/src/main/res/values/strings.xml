@@ -79,6 +79,13 @@
     <string name="search_hint">Search restaurants</string>
     <string name="search_locale">en</string>
 
+    <!-- NOTIFICATION -->
+    <string name="notification_title">Lunch Time</string>
+    <string name="notification_content_without_coworkers">Let\'s go to %1$s at %2$s</string>
+    <string name="notification_content_with_coworkers">Let\'s go to %1$s at %2$s with %3$s</string>
+    <string name="notification_channel_title">Lunch notification</string>
+    <string name="notification_channel_description">Remind you the restaurant you have chosen for this day</string>
+
     <!-- ERRORS -->
     <string name="profile_data_error">For some reasons, we can\'t fetch your profile data</string>
     <string name="session_expired_error">It seems your session has expired. Please try to reconnect.</string>
