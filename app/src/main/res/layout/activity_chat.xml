@@ -21,6 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/chatBackground"
+        tools:listitem="@layout/list_item_chat"
         app:layout_constraintTop_toBottomOf="@id/chatToolbar"
         app:layout_constraintBottom_toTopOf="@id/chatInput"/>
 
