@@ -14,6 +14,7 @@ import com.my.anthonymamode.go4lunch.domain.User
 import com.my.anthonymamode.go4lunch.ui.chat.ChatActivity
 import com.my.anthonymamode.go4lunch.ui.detail.DetailRestaurantActivity
 import com.my.anthonymamode.go4lunch.ui.home.HomeViewModel
+import com.my.anthonymamode.go4lunch.utils.base.BaseActivity
 import com.my.anthonymamode.go4lunch.utils.base.BaseFragment
 import com.my.anthonymamode.go4lunch.utils.generateOptionForAdapter
 import kotlinx.android.synthetic.main.fragment_workmates.workmatesRecyclerView
@@ -65,7 +66,8 @@ class WorkmatesFragment : BaseFragment() {
                     ChatActivity.navigateToChatActivity(
                         workmateId,
                         workmateName,
-                        it
+                        it,
+                        activity as BaseActivity
                     )
                 }
             })

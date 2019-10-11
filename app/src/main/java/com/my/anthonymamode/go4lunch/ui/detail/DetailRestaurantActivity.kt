@@ -147,7 +147,7 @@ class DetailRestaurantActivity : BaseActivity() {
             userId,
             WorkmateListType.DETAIL,
             onChatIconClick = { workmateId, workmateName ->
-                ChatActivity.navigateToChatActivity(workmateId, workmateName, context)
+                ChatActivity.navigateToChatActivity(workmateId, workmateName, context, context)
             }
         )
         detailRestaurantRecyclerView.apply {

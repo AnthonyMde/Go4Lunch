@@ -1,7 +1,9 @@
 package com.my.anthonymamode.go4lunch.ui.chat
 
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.my.anthonymamode.go4lunch.R
@@ -66,12 +68,24 @@ class ChatActivity : BaseActivity() {
     companion object {
         const val WORKMATE_ID = "WORKMATE_ID"
         const val WORKMATE_NAME = "WORKMATE_NAME"
-        fun navigateToChatActivity(workmateId: String, workmateName: String?, context: Context) {
+        fun navigateToChatActivity(
+            workmateId: String,
+            workmateName: String?,
+            context: Context,
+            activity: BaseActivity
+        ) {
             val intent = Intent(context, ChatActivity::class.java).apply {
                 putExtra(WORKMATE_ID, workmateId)
                 putExtra(WORKMATE_NAME, workmateName)
             }
-            context.startActivity(intent)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                context.startActivity(
+                    intent,
+                    ActivityOptions.makeSceneTransitionAnimation(activity).toBundle()
+                )
+            } else {
+                context.startActivity(intent)
+            }
         }
     }
 }
