@@ -9,7 +9,7 @@ import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.FirebaseAuth
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.data.api.deleteUser
-import com.my.anthonymamode.go4lunch.utils.BaseActivity
+import com.my.anthonymamode.go4lunch.utils.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_settings.*
 import org.jetbrains.anko.startActivity
 

@@ -13,10 +13,10 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.data.api.getUsersOrderedByLunch
 import com.my.anthonymamode.go4lunch.domain.User
-import com.my.anthonymamode.go4lunch.ui.ChatActivity
+import com.my.anthonymamode.go4lunch.ui.chat.ChatActivity
 import com.my.anthonymamode.go4lunch.ui.detail.DetailRestaurantActivity
 import com.my.anthonymamode.go4lunch.ui.home.HomeViewModel
-import com.my.anthonymamode.go4lunch.utils.BaseFragment
+import com.my.anthonymamode.go4lunch.utils.base.BaseFragment
 import kotlinx.android.synthetic.main.fragment_workmates.*
 
 class WorkmatesFragment : BaseFragment() {

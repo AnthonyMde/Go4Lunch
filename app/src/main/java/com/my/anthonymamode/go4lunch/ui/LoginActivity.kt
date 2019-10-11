@@ -16,7 +16,7 @@ import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.data.api.getCurrentUser
 import com.my.anthonymamode.go4lunch.data.api.updateUser
 import com.my.anthonymamode.go4lunch.ui.home.HomeActivity
-import com.my.anthonymamode.go4lunch.utils.BaseActivity
+import com.my.anthonymamode.go4lunch.utils.base.BaseActivity
 import com.my.anthonymamode.go4lunch.utils.setStatusBarTransparent
 import kotlinx.android.synthetic.main.activity_login.*
 import org.jetbrains.anko.startActivity

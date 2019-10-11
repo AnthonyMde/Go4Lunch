@@ -41,8 +41,9 @@ import com.my.anthonymamode.go4lunch.ui.PermissionActivity
 import com.my.anthonymamode.go4lunch.ui.SettingsActivity
 import com.my.anthonymamode.go4lunch.ui.home.list.RestaurantListFragment
 import com.my.anthonymamode.go4lunch.ui.home.workmates.WorkmatesFragment
-import com.my.anthonymamode.go4lunch.utils.BaseActivity
-import com.my.anthonymamode.go4lunch.utils.NotificationBroadcastReceiver
+import com.my.anthonymamode.go4lunch.utils.base.BaseActivity
+import com.my.anthonymamode.go4lunch.services.NotificationBroadcastReceiver
+import com.my.anthonymamode.go4lunch.ui.home.maps.MapsFragment
 import com.my.anthonymamode.go4lunch.utils.Resource
 import com.my.anthonymamode.go4lunch.utils.debounceThatFunction
 import kotlinx.android.synthetic.main.activity_home.*

@@ -23,7 +23,7 @@ import com.my.anthonymamode.go4lunch.data.api.toRectangularBounds
 import com.my.anthonymamode.go4lunch.domain.Place
 import com.my.anthonymamode.go4lunch.ui.detail.DetailRestaurantActivity
 import com.my.anthonymamode.go4lunch.ui.home.HomeViewModel
-import com.my.anthonymamode.go4lunch.utils.BaseFragment
+import com.my.anthonymamode.go4lunch.utils.base.BaseFragment
 import com.my.anthonymamode.go4lunch.utils.Resource
 import kotlinx.android.synthetic.main.fragment_restaurant_list.*
 import org.jetbrains.anko.support.v4.toast

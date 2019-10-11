@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/ic_app_icon"
         android:supportsRtl="true">
-        <activity android:name=".ui.ChatActivity"
+        <activity android:name=".ui.chat.ChatActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize"
@@ -57,7 +57,7 @@
             android:theme="@style/AppTheme" />
 
         <receiver
-            android:name=".utils.NotificationBroadcastReceiver"
+            android:name=".services.NotificationBroadcastReceiver"
             android:enabled="true"
             android:exported="false" />
 

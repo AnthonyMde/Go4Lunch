@@ -1,10 +1,10 @@
-package com.my.anthonymamode.go4lunch.ui
+package com.my.anthonymamode.go4lunch.ui.chat
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.my.anthonymamode.go4lunch.R
-import com.my.anthonymamode.go4lunch.utils.BaseActivity
+import com.my.anthonymamode.go4lunch.utils.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_chat.*
 import org.jetbrains.anko.toast
 

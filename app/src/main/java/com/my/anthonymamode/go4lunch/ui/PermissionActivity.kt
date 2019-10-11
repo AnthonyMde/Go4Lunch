@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.ui.home.HomeActivity
 import com.my.anthonymamode.go4lunch.ui.home.HomeViewModel
-import com.my.anthonymamode.go4lunch.utils.BaseActivity
+import com.my.anthonymamode.go4lunch.utils.base.BaseActivity
 import com.my.anthonymamode.go4lunch.utils.Resource
 import com.my.anthonymamode.go4lunch.utils.setStatusBarTransparent
 import kotlinx.android.synthetic.main.activity_permission.*
