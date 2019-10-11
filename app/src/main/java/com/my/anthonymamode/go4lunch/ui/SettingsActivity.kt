@@ -1,21 +1,23 @@
 package com.my.anthonymamode.go4lunch.ui
 
+import android.content.Context
 import android.content.DialogInterface.BUTTON_NEGATIVE
 import android.content.DialogInterface.BUTTON_POSITIVE
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import com.firebase.ui.auth.AuthUI
 import com.google.android.gms.tasks.OnSuccessListener
-import com.google.firebase.auth.FirebaseAuth
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.data.api.deleteUser
 import com.my.anthonymamode.go4lunch.utils.base.BaseActivity
-import kotlinx.android.synthetic.main.activity_settings.*
+import kotlinx.android.synthetic.main.activity_settings.deleteAccountButton
+import kotlinx.android.synthetic.main.activity_settings.toolbar
 import org.jetbrains.anko.startActivity
 
 class SettingsActivity : BaseActivity() {
-    private val userInfo by lazy {
-        FirebaseAuth.getInstance().currentUser
+    private val userId by lazy {
+        getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE)
+            .getString(LOCAL_USER_ID, null)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,7 +29,7 @@ class SettingsActivity : BaseActivity() {
 
     private fun setListeners() {
         deleteAccountButton.setOnClickListener {
-            val uid = userInfo?.uid
+            val uid = userId
             if (uid != null) {
                 deleteConfirmation(uid)
             } else {

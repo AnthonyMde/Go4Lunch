@@ -95,5 +95,6 @@
     <string name="session_expired_error">It seems your session has expired. Please try to reconnect.</string>
     <string name="logout_error">Sorry, the log out has failed</string>
     <string name="firebase_crud_error">An error has occurred while updating your data</string>
+    <string name="save_user_id_failed">An error has occurred while saving your data. Please retry to login</string>
 
 </resources>
