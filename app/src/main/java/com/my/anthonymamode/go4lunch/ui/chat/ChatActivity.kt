@@ -53,6 +53,7 @@ class ChatActivity : BaseActivity() {
             val uid = userId ?: return@setOnClickListener
             val wuid = workmateId ?: return@setOnClickListener
             val content = chatInput.text.toString()
+            chatInput.text?.clear()
             postMessage(uid, wuid, content)
         }
     }
