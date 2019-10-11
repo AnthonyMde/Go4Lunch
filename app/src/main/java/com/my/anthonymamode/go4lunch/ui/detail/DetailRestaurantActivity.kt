@@ -123,8 +123,8 @@ class DetailRestaurantActivity : BaseActivity() {
                 generateOptionForAdapter(),
                 userId,
                 WorkmateListType.DETAIL,
-                onChatIconClick = { workmateId ->
-                    context?.let { ChatActivity.navigateToChatActivity(workmateId, it) }
+                onChatIconClick = { workmateId, workmateName ->
+                    context?.let { ChatActivity.navigateToChatActivity(workmateId, workmateName, it) }
                 }
             )
             layoutManager = LinearLayoutManager(this@DetailRestaurantActivity)

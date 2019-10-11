@@ -9,19 +9,33 @@ import kotlinx.android.synthetic.main.activity_chat.*
 
 class ChatActivity : BaseActivity() {
     private var workmateId: String? = null
+    private var workmateName: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
         workmateId = intent.getStringExtra(WORKMATE_ID)
+        workmateName = intent.getStringExtra(WORKMATE_NAME)
 
-        testText.text = "Bienvenue sur le chat de Monsieur ID : $workmateId"
+        setupToolbar()
+    }
+
+    private fun setupToolbar() {
+        setSupportActionBar(chatToolbar)
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            title = workmateName
+        }
     }
 
     companion object {
         const val WORKMATE_ID = "WORKMATE_ID"
-        fun navigateToChatActivity(workmateId: String, context: Context) {
-            val intent = Intent(context, ChatActivity::class.java).putExtra(WORKMATE_ID, workmateId)
+        const val WORKMATE_NAME = "WORKMATE_NAME"
+        fun navigateToChatActivity(workmateId: String, workmateName: String?, context: Context) {
+            val intent = Intent(context, ChatActivity::class.java).apply {
+                putExtra(WORKMATE_ID, workmateId)
+                putExtra(WORKMATE_NAME, workmateName)
+            }
             context.startActivity(intent)
         }
     }

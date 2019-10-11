@@ -50,8 +50,8 @@ class WorkmatesFragment : BaseFragment() {
                     intent.putExtra("placeId", placeId)
                     startActivity(intent)
                 },
-                onChatIconClick = { workmateId ->
-                    context?.let { ChatActivity.navigateToChatActivity(workmateId, it) }
+                onChatIconClick = { workmateId, workmateName ->
+                    context?.let { ChatActivity.navigateToChatActivity(workmateId, workmateName, it) }
                 })
         workmatesRecyclerView.layoutManager = LinearLayoutManager(context)
     }
