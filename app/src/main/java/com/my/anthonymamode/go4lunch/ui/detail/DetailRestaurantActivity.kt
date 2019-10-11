@@ -11,7 +11,6 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
-import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.data.api.deleteFavoriteRestaurant
@@ -26,8 +25,9 @@ import com.my.anthonymamode.go4lunch.domain.User
 import com.my.anthonymamode.go4lunch.ui.chat.ChatActivity
 import com.my.anthonymamode.go4lunch.ui.home.workmates.WorkmateListType
 import com.my.anthonymamode.go4lunch.ui.home.workmates.WorkmatesAdapter
-import com.my.anthonymamode.go4lunch.utils.base.BaseActivity
 import com.my.anthonymamode.go4lunch.utils.Resource
+import com.my.anthonymamode.go4lunch.utils.base.BaseActivity
+import com.my.anthonymamode.go4lunch.utils.generateOptionForAdapter
 import com.my.anthonymamode.go4lunch.utils.scaleDown
 import com.my.anthonymamode.go4lunch.utils.scaleUp
 import com.my.anthonymamode.go4lunch.utils.toStarsFormat
@@ -49,7 +49,8 @@ class DetailRestaurantActivity : BaseActivity() {
     private var hasChangedFavoriteStatus = false
     private var hasChangedLunchOfDay = false
     private var user: User? = null
-    private var mAdapter: FirestoreRecyclerAdapter<User, WorkmatesAdapter.WorkmatesViewHolder>? = null
+    private var mAdapter: FirestoreRecyclerAdapter<User, WorkmatesAdapter.WorkmatesViewHolder>? =
+        null
     private lateinit var place: PlaceDetail
     private val viewModel by viewModels<DetailRestaurantViewModel>()
     private val userId by lazy { FirebaseAuth.getInstance().currentUser?.uid }
@@ -137,7 +138,7 @@ class DetailRestaurantActivity : BaseActivity() {
     private fun configureRecyclerView() {
         val context = this
         mAdapter = WorkmatesAdapter(
-            generateOptionForAdapter(),
+            generateOptionForAdapter(getUsersByLunchId(place.place_id), this),
             userId,
             WorkmateListType.DETAIL,
             onChatIconClick = { workmateId, workmateName ->
@@ -148,18 +149,6 @@ class DetailRestaurantActivity : BaseActivity() {
             adapter = mAdapter
             layoutManager = LinearLayoutManager(this@DetailRestaurantActivity)
         }
-    }
-
-    /**
-     * @return FirestoreRecyclerOptions of User which can be
-     * directly used into a recycler view.
-     */
-    private fun generateOptionForAdapter(): FirestoreRecyclerOptions<User> {
-        val query = getUsersByLunchId(place.place_id)
-        return FirestoreRecyclerOptions.Builder<User>()
-            .setQuery(query, User::class.java)
-            .setLifecycleOwner(this)
-            .build()
     }
 
     private fun setCallToAction() {
