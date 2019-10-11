@@ -16,14 +16,14 @@ import com.my.anthonymamode.go4lunch.domain.Period
 import com.my.anthonymamode.go4lunch.domain.Place
 import com.my.anthonymamode.go4lunch.utils.toFormatDistance
 import com.my.anthonymamode.go4lunch.utils.toStarsFormat
-import kotlinx.android.synthetic.main.listitem_restaurant.view.*
+import kotlinx.android.synthetic.main.list_item_restaurant.view.*
 import java.util.Calendar
 
 class RestaurantAdapter(private val onClick: (String) -> Unit) : RecyclerView.Adapter<RestaurantViewHolder>() {
     private var restaurantList = emptyList<Place>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RestaurantViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.listitem_restaurant, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item_restaurant, parent, false)
         return RestaurantViewHolder(view)
     }
 

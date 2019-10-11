@@ -14,7 +14,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.domain.User
-import kotlinx.android.synthetic.main.workmates_list_item.view.*
+import kotlinx.android.synthetic.main.list_item_workmates.view.*
 
 class WorkmatesAdapter(
     options: FirestoreRecyclerOptions<User>,
@@ -42,7 +42,7 @@ class WorkmatesAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorkmatesViewHolder {
         return WorkmatesViewHolder(
             LayoutInflater.from(parent.context).inflate(
-                R.layout.workmates_list_item,
+                R.layout.list_item_workmates,
                 parent,
                 false
             )
