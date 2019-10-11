@@ -3,14 +3,24 @@ package com.my.anthonymamode.go4lunch.ui.chat
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.my.anthonymamode.go4lunch.R
+import com.my.anthonymamode.go4lunch.data.api.getChatMessages
+import com.my.anthonymamode.go4lunch.ui.LOCAL_USER_ID
+import com.my.anthonymamode.go4lunch.ui.SHARED_PREFS
 import com.my.anthonymamode.go4lunch.utils.base.BaseActivity
+import com.my.anthonymamode.go4lunch.utils.generateOptionForAdapter
 import kotlinx.android.synthetic.main.activity_chat.*
 import org.jetbrains.anko.toast
 
 class ChatActivity : BaseActivity() {
     private var workmateId: String? = null
     private var workmateName: String? = null
+    private lateinit var mAdapter: ChatAdapter
+    private val userId by lazy {
+        getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE)
+            .getString(LOCAL_USER_ID, null)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,6 +30,20 @@ class ChatActivity : BaseActivity() {
 
         setupToolbar()
         setupInputBar()
+        configureRecyclerView()
+    }
+
+    private fun configureRecyclerView() {
+        val uid = userId ?: return
+        val wuid = workmateId ?: return
+        mAdapter = ChatAdapter(
+            options = generateOptionForAdapter(getChatMessages(uid, wuid), this),
+            context = this
+        )
+        chatMessageList.apply {
+            adapter = mAdapter
+            layoutManager = LinearLayoutManager(context)
+        }
     }
 
     private fun setupInputBar() {
