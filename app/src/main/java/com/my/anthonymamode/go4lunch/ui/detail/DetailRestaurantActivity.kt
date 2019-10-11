@@ -10,15 +10,16 @@ import androidx.activity.viewModels
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.my.anthonymamode.go4lunch.R
-import com.my.anthonymamode.go4lunch.data.api.updateUser
 import com.my.anthonymamode.go4lunch.data.api.deleteFavoriteRestaurant
-import com.my.anthonymamode.go4lunch.data.api.getFavoriteRestaurant
-import com.my.anthonymamode.go4lunch.data.api.setFavoriteRestaurant
-import com.my.anthonymamode.go4lunch.data.api.getUsersByLunchId
 import com.my.anthonymamode.go4lunch.data.api.getCurrentUserData
+import com.my.anthonymamode.go4lunch.data.api.getFavoriteRestaurant
+import com.my.anthonymamode.go4lunch.data.api.getUsersByLunchId
+import com.my.anthonymamode.go4lunch.data.api.setFavoriteRestaurant
+import com.my.anthonymamode.go4lunch.data.api.updateUser
 import com.my.anthonymamode.go4lunch.domain.Lunch
 import com.my.anthonymamode.go4lunch.domain.PlaceDetail
 import com.my.anthonymamode.go4lunch.domain.User
@@ -26,11 +27,20 @@ import com.my.anthonymamode.go4lunch.ui.ChatActivity
 import com.my.anthonymamode.go4lunch.ui.home.workmates.WorkmateListType
 import com.my.anthonymamode.go4lunch.ui.home.workmates.WorkmatesAdapter
 import com.my.anthonymamode.go4lunch.utils.BaseActivity
+import com.my.anthonymamode.go4lunch.utils.Resource
 import com.my.anthonymamode.go4lunch.utils.scaleDown
 import com.my.anthonymamode.go4lunch.utils.scaleUp
 import com.my.anthonymamode.go4lunch.utils.toStarsFormat
-import com.my.anthonymamode.go4lunch.utils.Resource
-import kotlinx.android.synthetic.main.activity_detail_restaurant.*
+import kotlinx.android.synthetic.main.activity_detail_restaurant.detailRestaurantAddress
+import kotlinx.android.synthetic.main.activity_detail_restaurant.detailRestaurantCallButton
+import kotlinx.android.synthetic.main.activity_detail_restaurant.detailRestaurantFabDisable
+import kotlinx.android.synthetic.main.activity_detail_restaurant.detailRestaurantFabEnable
+import kotlinx.android.synthetic.main.activity_detail_restaurant.detailRestaurantLikeButton
+import kotlinx.android.synthetic.main.activity_detail_restaurant.detailRestaurantName
+import kotlinx.android.synthetic.main.activity_detail_restaurant.detailRestaurantPhoto
+import kotlinx.android.synthetic.main.activity_detail_restaurant.detailRestaurantRating
+import kotlinx.android.synthetic.main.activity_detail_restaurant.detailRestaurantRecyclerView
+import kotlinx.android.synthetic.main.activity_detail_restaurant.detailRestaurantWebButton
 import org.jetbrains.anko.toast
 
 class DetailRestaurantActivity : BaseActivity() {
@@ -39,6 +49,7 @@ class DetailRestaurantActivity : BaseActivity() {
     private var hasChangedFavoriteStatus = false
     private var hasChangedLunchOfDay = false
     private var user: User? = null
+    private var mAdapter: FirestoreRecyclerAdapter<User, WorkmatesAdapter.WorkmatesViewHolder>? = null
     private lateinit var place: PlaceDetail
     private val viewModel by viewModels<DetailRestaurantViewModel>()
     private val userId by lazy { FirebaseAuth.getInstance().currentUser?.uid }
@@ -58,6 +69,7 @@ class DetailRestaurantActivity : BaseActivity() {
 
     override fun onPause() {
         super.onPause()
+        mAdapter?.stopListening()
         if (hasChangedFavoriteStatus) {
             updateFavorite()
             hasChangedFavoriteStatus = false
@@ -66,6 +78,11 @@ class DetailRestaurantActivity : BaseActivity() {
             user?.let { updateUser(it) }
             hasChangedLunchOfDay = false
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mAdapter?.startListening()
     }
 
     private fun setObserver() {
@@ -118,15 +135,17 @@ class DetailRestaurantActivity : BaseActivity() {
      * Set the adapter for the recycler and pass the data through it here
      */
     private fun configureRecyclerView() {
+        val context = this
+        mAdapter = WorkmatesAdapter(
+            generateOptionForAdapter(),
+            userId,
+            WorkmateListType.DETAIL,
+            onChatIconClick = { workmateId, workmateName ->
+                ChatActivity.navigateToChatActivity(workmateId, workmateName, context)
+            }
+        )
         detailRestaurantRecyclerView.apply {
-            adapter = WorkmatesAdapter(
-                generateOptionForAdapter(),
-                userId,
-                WorkmateListType.DETAIL,
-                onChatIconClick = { workmateId, workmateName ->
-                    context?.let { ChatActivity.navigateToChatActivity(workmateId, workmateName, it) }
-                }
-            )
+            adapter = mAdapter
             layoutManager = LinearLayoutManager(this@DetailRestaurantActivity)
         }
     }
