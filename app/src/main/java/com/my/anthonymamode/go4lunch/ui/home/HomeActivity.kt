@@ -190,11 +190,9 @@ class HomeActivity : BaseActivity() {
         intent.putExtra(INTENT_EXTRA_USER_ID, userId)
         pendingIntent = PendingIntent.getBroadcast(this, NOTIFICATION_REQUEST_CODE, intent, 0)
         val timeToFire = Calendar.getInstance().apply {
-            timeInMillis = System.currentTimeMillis()
             set(Calendar.HOUR_OF_DAY, 12)
         }
-        // FIXME : Even with this check, the notification is fired each time we launch the app
-        if (timeToFire.before(System.currentTimeMillis())) {
+        if (timeToFire.before(Calendar.getInstance())) {
             timeToFire.add(Calendar.DATE, 1)
         }
         alarmManager?.setInexactRepeating(
