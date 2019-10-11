@@ -9,7 +9,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
-import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.data.api.getUsersOrderedByLunch
 import com.my.anthonymamode.go4lunch.domain.User
@@ -17,7 +16,8 @@ import com.my.anthonymamode.go4lunch.ui.chat.ChatActivity
 import com.my.anthonymamode.go4lunch.ui.detail.DetailRestaurantActivity
 import com.my.anthonymamode.go4lunch.ui.home.HomeViewModel
 import com.my.anthonymamode.go4lunch.utils.base.BaseFragment
-import kotlinx.android.synthetic.main.fragment_workmates.*
+import com.my.anthonymamode.go4lunch.utils.generateOptionForAdapter
+import kotlinx.android.synthetic.main.fragment_workmates.workmatesRecyclerView
 
 class WorkmatesFragment : BaseFragment() {
     private var mAdapter: FirestoreRecyclerAdapter<User, WorkmatesAdapter.WorkmatesViewHolder>? = null
@@ -53,7 +53,7 @@ class WorkmatesFragment : BaseFragment() {
         val viewModel = ViewModelProviders.of(activity).get(HomeViewModel::class.java)
         val userId = viewModel.userId
         mAdapter = WorkmatesAdapter(
-            generateOptionForAdapter(),
+            generateOptionForAdapter(getUsersOrderedByLunch(), this),
             userId,
             WorkmateListType.ALL,
             onItemClick = { placeId ->
@@ -74,17 +74,5 @@ class WorkmatesFragment : BaseFragment() {
             adapter = mAdapter
             layoutManager = LinearLayoutManager(context)
         }
-    }
-
-    /**
-     * @return FirestoreRecyclerOptions of User which can be
-     * directly used into a recycler view.
-     */
-    private fun generateOptionForAdapter(): FirestoreRecyclerOptions<User> {
-        val query = getUsersOrderedByLunch()
-        return FirestoreRecyclerOptions.Builder<User>()
-            .setQuery(query, User::class.java)
-            .setLifecycleOwner(this)
-            .build()
     }
 }
