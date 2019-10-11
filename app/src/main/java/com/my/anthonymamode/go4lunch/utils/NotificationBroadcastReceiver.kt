@@ -15,6 +15,7 @@ import com.google.firebase.firestore.ktx.toObject
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.data.api.getCurrentUserData
 import com.my.anthonymamode.go4lunch.data.api.getUsersByLunchId
+import com.my.anthonymamode.go4lunch.data.api.updateUser
 import com.my.anthonymamode.go4lunch.domain.User
 import com.my.anthonymamode.go4lunch.ui.home.HomeActivity
 import com.my.anthonymamode.go4lunch.ui.home.INTENT_EXTRA_USER_ID
@@ -25,21 +26,29 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
     private lateinit var context: Context
     private lateinit var user: User
     private var coworkersName = mutableListOf<String?>()
+
     override fun onReceive(context: Context?, intent: Intent?) {
         val userId = intent?.getStringExtra(INTENT_EXTRA_USER_ID)
-        if (context == null || userId == null) {
-            return
-        }
+        if (context == null || userId == null) return
         this.context = context
-        getCurrentUserData(userId).addOnSuccessListener { userData ->
-            userData ?: return@addOnSuccessListener
-            if (userData.hasLunch) {
+
+        getCurrentUserData(userId)
+            .addOnSuccessListener { userData ->
+                if (userData == null || !userData.hasLunch) return@addOnSuccessListener
+
                 user = userData
+                resetUserLunch(userData)
                 getCoworkersForThisPlace(user.lunch?.lunchOfTheDay)
             }
-        }.addOnFailureListener {
-            Log.e("NOTIFICATION", "OnFailure to get userData = ${it.message}")
-        }
+            .addOnFailureListener {
+                Log.e("NOTIFICATION", "OnFailure to get userData = ${it.message}")
+            }
+    }
+
+    private fun resetUserLunch(userData: User) {
+        userData.hasLunch = false
+        userData.lunch = null
+        updateUser(userData)
     }
 
     /**
@@ -53,9 +62,18 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
         coworkersName.remove(user.displayName)
         val contentText = if (coworkersName.isNotEmpty()) {
             val names = coworkersName.joinToString(separator = ", ", postfix = ".", limit = 3)
-            context.getString(R.string.notification_content_with_coworkers, placeName, placeAddress, names)
+            context.getString(
+                R.string.notification_content_with_coworkers,
+                placeName,
+                placeAddress,
+                names
+            )
         } else {
-            context.getString(R.string.notification_content_without_coworkers, placeName, placeAddress)
+            context.getString(
+                R.string.notification_content_without_coworkers,
+                placeName,
+                placeAddress
+            )
         }
 
         val title = context.getString(R.string.notification_title)
@@ -68,8 +86,10 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
             .setSmallIcon(R.drawable.ic_login_logo_white)
             .setContentTitle(title)
             .setContentIntent(resultPendingIntent)
-            .setStyle(NotificationCompat.BigTextStyle()
-                .bigText(contentText))
+            .setStyle(
+                NotificationCompat.BigTextStyle()
+                    .bigText(contentText)
+            )
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)
         val manager = NotificationManagerCompat.from(context)
@@ -78,17 +98,17 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
 
     private fun getCoworkersForThisPlace(lunchOfTheDay: String?) {
         lunchOfTheDay ?: return
-        // Notification is launched in this call back because we have to wait for the coworkers list
-        getUsersByLunchId(lunchOfTheDay).get().addOnSuccessListener { coworkers ->
-            if (coworkersName.isNotEmpty()) {
+
+        getUsersByLunchId(lunchOfTheDay).get()
+            .addOnSuccessListener { coworkers ->
                 coworkersName = mutableListOf()
+
+                coworkers.forEachIndexed { index, coworker ->
+                    coworkersName.add(index, coworker?.toObject<User>()?.displayName ?: "")
+                }
+                createNotificationChannel()
+                sendNotification() // Notification is launched in this call back because we have to wait for the coworkers list
             }
-            coworkers.forEachIndexed { index, coworker ->
-                coworkersName.add(index, coworker?.toObject<User>()?.displayName ?: "")
-            }
-            createNotificationChannel()
-            sendNotification()
-        }
             .addOnFailureListener {
                 Log.e("NOTIFICATION", "OnFailure to get coworkers = ${it.message}")
             }
