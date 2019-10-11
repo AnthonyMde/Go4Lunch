@@ -23,10 +23,10 @@ import com.my.anthonymamode.go4lunch.data.api.updateUser
 import com.my.anthonymamode.go4lunch.domain.Lunch
 import com.my.anthonymamode.go4lunch.domain.PlaceDetail
 import com.my.anthonymamode.go4lunch.domain.User
-import com.my.anthonymamode.go4lunch.ui.ChatActivity
+import com.my.anthonymamode.go4lunch.ui.chat.ChatActivity
 import com.my.anthonymamode.go4lunch.ui.home.workmates.WorkmateListType
 import com.my.anthonymamode.go4lunch.ui.home.workmates.WorkmatesAdapter
-import com.my.anthonymamode.go4lunch.utils.BaseActivity
+import com.my.anthonymamode.go4lunch.utils.base.BaseActivity
 import com.my.anthonymamode.go4lunch.utils.Resource
 import com.my.anthonymamode.go4lunch.utils.scaleDown
 import com.my.anthonymamode.go4lunch.utils.scaleUp

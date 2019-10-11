@@ -1,4 +1,4 @@
-package com.my.anthonymamode.go4lunch.utils
+package com.my.anthonymamode.go4lunch.services
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -82,7 +82,9 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
             addNextIntentWithParentStack(resultIntent)
             getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
         }
-        val builder = NotificationCompat.Builder(context, CHANNEL_ID)
+        val builder = NotificationCompat.Builder(context,
+            CHANNEL_ID
+        )
             .setSmallIcon(R.drawable.ic_login_logo_white)
             .setContentTitle(title)
             .setContentIntent(resultPendingIntent)
