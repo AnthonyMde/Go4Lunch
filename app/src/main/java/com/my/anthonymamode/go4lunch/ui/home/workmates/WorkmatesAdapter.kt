@@ -25,9 +25,14 @@ class WorkmatesAdapter(
     private val type: WorkmateListType,
     /**
      * The lambda needed by the ViewHolder to handle the click on each item
+     * String is the restaurant id
      */
     private val onItemClick: (String) -> Unit = {},
-    private val onChatIconClick: (String) -> Unit
+    /**
+     * First argument is the workmate id
+     * Second argument is the workmate name
+     */
+    private val onChatIconClick: (String, String?) -> Unit
 ) :
     FirestoreRecyclerAdapter<User, WorkmatesAdapter.WorkmatesViewHolder>(options) {
 
@@ -136,7 +141,12 @@ class WorkmatesAdapter(
         }
 
         private fun setChatIcon() {
-            view.workmatesChatIcon.setOnClickListener { onChatIconClick(data.uid) }
+            view.workmatesChatIcon.setOnClickListener {
+                onChatIconClick(
+                    data.uid,
+                    data.displayName
+                )
+            }
         }
 
         /**
