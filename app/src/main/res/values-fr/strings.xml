@@ -59,6 +59,9 @@
     <string name="permission_activity_granted_btn">J\'ai compris</string>
     <string name="permission_activity_log_out_btn">Me déconnecter</string>
 
+    <!-- CHAT -->
+    <string name="chat_input_hint">Envoyer message..</string>
+
     <!-- IMAGE DESCRIPTIONS -->
     <string name="nav_header_image_profile_desc">La photo de profil</string>
     <string name="nav_header_app_logo_desc">Le logo de l\'application</string>

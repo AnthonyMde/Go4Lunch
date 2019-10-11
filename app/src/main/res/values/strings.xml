@@ -65,8 +65,11 @@
     <string name="permission_activity_description">Go4Lunch is mainly based on geolocation, activate it to get fully
         access to the app.
     </string>
-    <string name="permission_activity_granted_btn">Ok got it</string>
+    <string name="permission_activity_granted_btn">OK got it</string>
     <string name="permission_activity_log_out_btn">Log me out</string>
+
+    <!-- CHAT -->
+    <string name="chat_input_hint">Send message..</string>
 
     <!-- IMAGE DESCRIPTIONS -->
     <string name="nav_header_image_profile_desc">Image profile</string>
