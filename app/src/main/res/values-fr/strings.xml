@@ -64,6 +64,7 @@
     <string name="nav_header_app_logo_desc">Le logo de l\'application</string>
     <string name="login_app_logo_desc">Le logo de l\'application</string>
     <string name="restaurant_item_image_desc">Image du restaurant</string>
+    <string name="workmates_chat_icon">Icône du chat</string>
 
     <!-- MENU -->
     <string name="search_title">Recherche</string>

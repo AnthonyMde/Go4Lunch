@@ -118,7 +118,14 @@ class DetailRestaurantActivity : BaseActivity() {
      */
     private fun configureRecyclerView() {
         detailRestaurantRecyclerView.apply {
-            adapter = WorkmatesAdapter(generateOptionForAdapter(), userId, WorkmateListType.DETAIL)
+            adapter = WorkmatesAdapter(
+                generateOptionForAdapter(),
+                userId,
+                WorkmateListType.DETAIL,
+                onChatIconClick = {
+                    toast("toast from detail -> should open chat activity")
+                }
+            )
             layoutManager = LinearLayoutManager(this@DetailRestaurantActivity)
         }
     }
@@ -143,10 +150,20 @@ class DetailRestaurantActivity : BaseActivity() {
                 startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phoneNumber")))
             }
         } else {
-            detailRestaurantCallButton.setTextColor(ResourcesCompat.getColor(resources, R.color.lightGray, null))
+            detailRestaurantCallButton.setTextColor(
+                ResourcesCompat.getColor(
+                    resources,
+                    R.color.lightGray,
+                    null
+                )
+            )
             detailRestaurantCallButton.setCompoundDrawablesWithIntrinsicBounds(
                 null,
-                ResourcesCompat.getDrawable(resources, R.drawable.ic_local_phone_disable_color_24_dp, null),
+                ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.ic_local_phone_disable_color_24_dp,
+                    null
+                ),
                 null,
                 null
             )
@@ -173,10 +190,20 @@ class DetailRestaurantActivity : BaseActivity() {
                 startActivity(intent)
             }
         } else {
-            detailRestaurantWebButton.setTextColor(ResourcesCompat.getColor(resources, R.color.lightGray, null))
+            detailRestaurantWebButton.setTextColor(
+                ResourcesCompat.getColor(
+                    resources,
+                    R.color.lightGray,
+                    null
+                )
+            )
             detailRestaurantWebButton.setCompoundDrawablesWithIntrinsicBounds(
                 null,
-                ResourcesCompat.getDrawable(resources, R.drawable.ic_language_disable_color_24_dp, null),
+                ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.ic_language_disable_color_24_dp,
+                    null
+                ),
                 null,
                 null
             )
@@ -233,7 +260,12 @@ class DetailRestaurantActivity : BaseActivity() {
     private fun setStarColor(drawableId: Int, colorId: Int) {
         detailRestaurantLikeButton.setTextColor(ResourcesCompat.getColor(resources, colorId, null))
         val yellowStar = ResourcesCompat.getDrawable(resources, drawableId, null)
-        detailRestaurantLikeButton.setCompoundDrawablesRelativeWithIntrinsicBounds(null, yellowStar, null, null)
+        detailRestaurantLikeButton.setCompoundDrawablesRelativeWithIntrinsicBounds(
+            null,
+            yellowStar,
+            null,
+            null
+        )
     }
 
     private fun setRating() {
