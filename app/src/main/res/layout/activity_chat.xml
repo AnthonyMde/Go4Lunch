@@ -16,6 +16,14 @@
         app:layout_constraintTop_toTopOf="parent"
         />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chatMessageList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/chatBackground"
+        app:layout_constraintTop_toBottomOf="@id/chatToolbar"
+        app:layout_constraintBottom_toTopOf="@id/chatInput"/>
+
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/chatInput"
         android:layout_width="0dp"
