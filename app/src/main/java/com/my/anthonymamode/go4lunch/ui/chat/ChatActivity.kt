@@ -6,12 +6,12 @@ import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.data.api.getChatMessages
+import com.my.anthonymamode.go4lunch.data.api.postMessage
 import com.my.anthonymamode.go4lunch.ui.LOCAL_USER_ID
 import com.my.anthonymamode.go4lunch.ui.SHARED_PREFS
 import com.my.anthonymamode.go4lunch.utils.base.BaseActivity
 import com.my.anthonymamode.go4lunch.utils.generateOptionForAdapter
 import kotlinx.android.synthetic.main.activity_chat.*
-import org.jetbrains.anko.toast
 
 class ChatActivity : BaseActivity() {
     private var workmateId: String? = null
@@ -47,7 +47,12 @@ class ChatActivity : BaseActivity() {
     }
 
     private fun setupInputBar() {
-        chatInputSend.setOnClickListener { toast("not implemented yet") }
+        chatInputSend.setOnClickListener {
+            val uid = userId ?: return@setOnClickListener
+            val wuid = workmateId ?: return@setOnClickListener
+            val content = chatInput.text.toString()
+            postMessage(uid, wuid, content)
+        }
     }
 
     private fun setupToolbar() {

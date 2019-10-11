@@ -7,6 +7,7 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.my.anthonymamode.go4lunch.domain.Message
+import java.util.Date
 
 private const val CHAT_COLLECTION_NAME = "chats"
 private const val MESSAGE_COLLECTION_NAME = "messages"
@@ -26,8 +27,7 @@ fun getChatMessages(uid: String, workmateUid: String): Query {
 
 fun postMessage(uid: String, workmateUid: String, content: String): Task<DocumentReference> {
     val id = getUniqueChatId(uid, workmateUid)
-    // TODO use real Date()
-    val message = Message(uid, content, "07:51")
+    val message = Message(uid, content, Date())
     return getChatCollection().document(id).collection(MESSAGE_COLLECTION_NAME).add(message)
 }
 

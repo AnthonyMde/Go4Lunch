@@ -17,6 +17,8 @@ import com.my.anthonymamode.go4lunch.ui.SHARED_PREFS
 import kotlinx.android.synthetic.main.list_item_chat.view.chatMessageContent
 import kotlinx.android.synthetic.main.list_item_chat.view.chatMessageDate
 import org.jetbrains.anko.textColor
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class ChatAdapter(
     options: FirestoreRecyclerOptions<Message>,
@@ -26,6 +28,7 @@ class ChatAdapter(
         context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE)
             .getString(LOCAL_USER_ID, null)
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder {
         return ChatViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.list_item_chat, parent, false)
@@ -42,17 +45,22 @@ class ChatAdapter(
                 setMessageGravity()
                 setMessageStyle()
             }
-            // TODO: display real Date
-            /*SimpleDateFormat("HH:mm", Locale.FRANCE).run {
-                itemView.chatMessageDate.text = format(message.dateCreated)
-            }*/
-            itemView.chatMessageDate.text = message.dateCreated
+
+            itemView.chatMessageDate.text = message.dateCreated?.let {
+                val pattern = SimpleDateFormat("HH:mm", Locale.FRANCE)
+                pattern.format(message.dateCreated)
+            } ?: "xx:xx"
+
             itemView.chatMessageContent.text = message.content
         }
 
         private fun setMessageStyle() {
             itemView.chatMessageContent.apply {
-                background = ResourcesCompat.getDrawable(context.resources, R.drawable.back_rounded_user_message, null)
+                background = ResourcesCompat.getDrawable(
+                    context.resources,
+                    R.drawable.back_rounded_user_message,
+                    null
+                )
                 textColor = ResourcesCompat.getColor(context.resources, android.R.color.white, null)
             }
         }
