@@ -39,7 +39,10 @@ class LoginActivity : BaseActivity() {
     )
     private val hasLocationPermission: Boolean by lazy {
         val locationPermission =
-            ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+            ContextCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            )
         locationPermission == PackageManager.PERMISSION_GRANTED
     }
     private var firebaseUser: FirebaseUser? = null
@@ -93,7 +96,8 @@ class LoginActivity : BaseActivity() {
             when (resultCode) {
                 Activity.RESULT_OK -> {
                     firebaseUser = FirebaseAuth.getInstance().currentUser
-                    val user = firebaseUser ?: return showToastError(getString(R.string.login_no_account_found_error))
+                    val user = firebaseUser
+                        ?: return showToastError(getString(R.string.login_no_account_found_error))
                     getCurrentUser(user.uid).addOnSuccessListener {
                         val dataSize = it?.data?.size
                         if (data == null || dataSize == 0) {
@@ -112,7 +116,9 @@ class LoginActivity : BaseActivity() {
                     when {
                         response == null -> showCanceledSnackBar(R.string.login_canceled)
                         response.error?.errorCode == ErrorCodes.NO_NETWORK -> showCanceledSnackBar(R.string.login_no_network)
-                        response.error?.errorCode == ErrorCodes.UNKNOWN_ERROR -> showCanceledSnackBar(R.string.login_unknown_error)
+                        response.error?.errorCode == ErrorCodes.UNKNOWN_ERROR -> showCanceledSnackBar(
+                            R.string.login_unknown_error
+                        )
                     }
                 }
             }
@@ -121,17 +127,20 @@ class LoginActivity : BaseActivity() {
 
     private fun checkLocationPermissionAndRedirect() {
         if (!hasLocationPermission) {
-            startActivity<PermissionActivity>()
-            this.finish()
+            ifUidHasBeenSavedLaunchActivity<PermissionActivity>()
         } else {
             launchHomeActivity()
         }
     }
 
     private fun launchHomeActivity() {
+        ifUidHasBeenSavedLaunchActivity<HomeActivity>()
+    }
+
+    private inline fun <reified T : Activity> ifUidHasBeenSavedLaunchActivity() {
         val hasBeenSaved = saveCurrentUserId(firebaseUser?.uid)
         if (hasBeenSaved) {
-            startActivity<HomeActivity>()
+            startActivity<T>()
             this.finish()
         } else {
             alert(getString(R.string.save_user_id_failed))
