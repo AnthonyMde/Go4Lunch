@@ -12,11 +12,11 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.data.api.getUsersOrderedByLunch
 import com.my.anthonymamode.go4lunch.domain.User
+import com.my.anthonymamode.go4lunch.ui.ChatActivity
 import com.my.anthonymamode.go4lunch.ui.detail.DetailRestaurantActivity
 import com.my.anthonymamode.go4lunch.ui.home.HomeViewModel
 import com.my.anthonymamode.go4lunch.utils.BaseFragment
 import kotlinx.android.synthetic.main.fragment_workmates.*
-import org.jetbrains.anko.support.v4.toast
 
 class WorkmatesFragment : BaseFragment() {
 
@@ -50,8 +50,8 @@ class WorkmatesFragment : BaseFragment() {
                     intent.putExtra("placeId", placeId)
                     startActivity(intent)
                 },
-                onChatIconClick = {
-                    toast("should start the chat activity")
+                onChatIconClick = { workmateId ->
+                    context?.let { ChatActivity.navigateToChatActivity(workmateId, it) }
                 })
         workmatesRecyclerView.layoutManager = LinearLayoutManager(context)
     }
