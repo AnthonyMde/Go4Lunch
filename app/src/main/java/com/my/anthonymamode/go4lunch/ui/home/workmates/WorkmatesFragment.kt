@@ -16,6 +16,7 @@ import com.my.anthonymamode.go4lunch.ui.detail.DetailRestaurantActivity
 import com.my.anthonymamode.go4lunch.ui.home.HomeViewModel
 import com.my.anthonymamode.go4lunch.utils.BaseFragment
 import kotlinx.android.synthetic.main.fragment_workmates.*
+import org.jetbrains.anko.support.v4.toast
 
 class WorkmatesFragment : BaseFragment() {
 
@@ -40,11 +41,18 @@ class WorkmatesFragment : BaseFragment() {
         val viewModel = ViewModelProviders.of(activity).get(HomeViewModel::class.java)
         val userId = viewModel.userId
         workmatesRecyclerView.adapter =
-            WorkmatesAdapter(generateOptionForAdapter(), userId, WorkmateListType.ALL, onClick = { placeId ->
-                val intent = Intent(context, DetailRestaurantActivity::class.java)
-                intent.putExtra("placeId", placeId)
-                startActivity(intent)
-            })
+            WorkmatesAdapter(
+                generateOptionForAdapter(),
+                userId,
+                WorkmateListType.ALL,
+                onItemClick = { placeId ->
+                    val intent = Intent(context, DetailRestaurantActivity::class.java)
+                    intent.putExtra("placeId", placeId)
+                    startActivity(intent)
+                },
+                onChatIconClick = {
+                    toast("should start the chat activity")
+                })
         workmatesRecyclerView.layoutManager = LinearLayoutManager(context)
     }
 

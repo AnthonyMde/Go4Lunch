@@ -73,6 +73,7 @@
     <string name="nav_header_app_logo_desc">Application logo</string>
     <string name="login_app_logo_desc">Application logo</string>
     <string name="restaurant_item_image_desc">Photo of the restaurant</string>
+    <string name="workmates_chat_icon">chat icon</string>
 
     <!-- MENU -->
     <string name="search_title">Search</string>
