@@ -22,6 +22,7 @@ import com.my.anthonymamode.go4lunch.data.api.getCurrentUserData
 import com.my.anthonymamode.go4lunch.domain.Lunch
 import com.my.anthonymamode.go4lunch.domain.PlaceDetail
 import com.my.anthonymamode.go4lunch.domain.User
+import com.my.anthonymamode.go4lunch.ui.ChatActivity
 import com.my.anthonymamode.go4lunch.ui.home.workmates.WorkmateListType
 import com.my.anthonymamode.go4lunch.ui.home.workmates.WorkmatesAdapter
 import com.my.anthonymamode.go4lunch.utils.BaseActivity
@@ -122,8 +123,8 @@ class DetailRestaurantActivity : BaseActivity() {
                 generateOptionForAdapter(),
                 userId,
                 WorkmateListType.DETAIL,
-                onChatIconClick = {
-                    toast("toast from detail -> should open chat activity")
+                onChatIconClick = { workmateId ->
+                    context?.let { ChatActivity.navigateToChatActivity(workmateId, it) }
                 }
             )
             layoutManager = LinearLayoutManager(this@DetailRestaurantActivity)
