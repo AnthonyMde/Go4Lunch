@@ -5,8 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.ViewModelProviders
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.my.anthonymamode.go4lunch.R
@@ -20,6 +19,7 @@ import com.my.anthonymamode.go4lunch.utils.generateOptionForAdapter
 import kotlinx.android.synthetic.main.fragment_workmates.workmatesRecyclerView
 
 class WorkmatesFragment : BaseFragment() {
+    private val viewModel by activityViewModels<HomeViewModel>()
     private var mAdapter: FirestoreRecyclerAdapter<User, WorkmatesAdapter.WorkmatesViewHolder>? = null
 
     override fun onCreateView(
@@ -33,7 +33,7 @@ class WorkmatesFragment : BaseFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        activity?.let { configureRecyclerView(it) }
+        configureRecyclerView()
     }
 
     override fun onPause() {
@@ -49,9 +49,8 @@ class WorkmatesFragment : BaseFragment() {
     /**
      * Set the adapter for the recycler and pass the data through it here
      */
-    private fun configureRecyclerView(activity: FragmentActivity) {
-        val viewModel = ViewModelProviders.of(activity).get(HomeViewModel::class.java)
-        val userId = viewModel.userId
+    private fun configureRecyclerView() {
+        val userId = viewModel.getUserId()
         mAdapter = WorkmatesAdapter(
             generateOptionForAdapter(getUsersOrderedByLunch(), this),
             userId,

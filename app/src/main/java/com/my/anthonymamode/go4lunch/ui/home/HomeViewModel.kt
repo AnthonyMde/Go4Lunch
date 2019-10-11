@@ -1,6 +1,7 @@
 package com.my.anthonymamode.go4lunch.ui.home
 
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,6 +12,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.my.anthonymamode.go4lunch.data.repository.PlacesRepository
 import com.my.anthonymamode.go4lunch.domain.Place
+import com.my.anthonymamode.go4lunch.ui.LOCAL_USER_ID
+import com.my.anthonymamode.go4lunch.ui.SHARED_PREFS
 import com.my.anthonymamode.go4lunch.utils.Resource
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -56,8 +59,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     val searchPlaceQuery: LiveData<String>
         get() = _searchPlaceQuery
 
-    var userId: String? = null
-
     override fun onCleared() {
         super.onCleared()
         compositeDisposable.clear()
@@ -70,8 +71,12 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         val infoUser = FirebaseAuth.getInstance().currentUser
         if (infoUser != null) {
             _userInfo.postValue(Resource.Success(infoUser))
-            userId = infoUser.uid
         }
+    }
+
+    fun getUserId(): String? {
+        return getApplication<Application>().getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE)
+            .getString(LOCAL_USER_ID, null)
     }
 
     fun getRestaurantPlacesByRadius(position: LatLng) {

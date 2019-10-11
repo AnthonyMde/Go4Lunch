@@ -1,5 +1,6 @@
 package com.my.anthonymamode.go4lunch.ui.detail
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -11,7 +12,6 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
-import com.google.firebase.auth.FirebaseAuth
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.data.api.deleteFavoriteRestaurant
 import com.my.anthonymamode.go4lunch.data.api.getCurrentUserData
@@ -22,6 +22,8 @@ import com.my.anthonymamode.go4lunch.data.api.updateUser
 import com.my.anthonymamode.go4lunch.domain.Lunch
 import com.my.anthonymamode.go4lunch.domain.PlaceDetail
 import com.my.anthonymamode.go4lunch.domain.User
+import com.my.anthonymamode.go4lunch.ui.LOCAL_USER_ID
+import com.my.anthonymamode.go4lunch.ui.SHARED_PREFS
 import com.my.anthonymamode.go4lunch.ui.chat.ChatActivity
 import com.my.anthonymamode.go4lunch.ui.home.workmates.WorkmateListType
 import com.my.anthonymamode.go4lunch.ui.home.workmates.WorkmatesAdapter
@@ -53,7 +55,10 @@ class DetailRestaurantActivity : BaseActivity() {
         null
     private lateinit var place: PlaceDetail
     private val viewModel by viewModels<DetailRestaurantViewModel>()
-    private val userId by lazy { FirebaseAuth.getInstance().currentUser?.uid }
+    private val userId by lazy {
+        getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE)
+            .getString(LOCAL_USER_ID, null)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
