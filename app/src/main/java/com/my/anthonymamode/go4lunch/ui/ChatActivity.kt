@@ -6,6 +6,7 @@ import android.os.Bundle
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.utils.BaseActivity
 import kotlinx.android.synthetic.main.activity_chat.*
+import org.jetbrains.anko.toast
 
 class ChatActivity : BaseActivity() {
     private var workmateId: String? = null
@@ -18,6 +19,11 @@ class ChatActivity : BaseActivity() {
         workmateName = intent.getStringExtra(WORKMATE_NAME)
 
         setupToolbar()
+        setupInputBar()
+    }
+
+    private fun setupInputBar() {
+        chatInputSend.setOnClickListener { toast("not implemented yet") }
     }
 
     private fun setupToolbar() {
