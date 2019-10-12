@@ -46,10 +46,9 @@ class ChatAdapter(
 
     inner class ChatViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bindUIElements(message: Message) {
-            if (message.authorUid == userId) {
-                setMessageGravity()
-                setMessageStyle()
-            }
+            val messageIsFromUser = message.authorUid == userId
+            setMessageGravity(messageIsFromUser)
+            setMessageStyle(messageIsFromUser)
 
             itemView.chatMessageDate.text = message.dateCreated?.let {
                 val pattern = SimpleDateFormat("HH:mm", Locale.FRANCE)
@@ -59,20 +58,34 @@ class ChatAdapter(
             itemView.chatMessageContent.text = message.content
         }
 
-        private fun setMessageStyle() {
-            itemView.chatMessageContent.apply {
-                background = ResourcesCompat.getDrawable(
-                    context.resources,
+        private fun setMessageStyle(isUserMessage: Boolean) {
+            val backgroundColor = if (isUserMessage) {
+                ResourcesCompat.getDrawable(
+                    itemView.resources,
                     R.drawable.back_rounded_user_message,
-                    null
-                )
-                textColor = ResourcesCompat.getColor(context.resources, android.R.color.white, null)
+                    null)
+            } else {
+                ResourcesCompat.getDrawable(
+                    itemView.resources,
+                    R.drawable.back_rounded_workmate_message,
+                    null)
+            }
+
+            val txtColor = if (isUserMessage) {
+                ResourcesCompat.getColor(itemView.resources, android.R.color.white, null)
+            } else {
+                ResourcesCompat.getColor(itemView.resources, android.R.color.black, null)
+            }
+
+            itemView.chatMessageContent.apply {
+                background = backgroundColor
+                textColor = txtColor
             }
         }
 
-        private fun setMessageGravity() {
+        private fun setMessageGravity(isUserMessage: Boolean) {
             val params = itemView.chatMessageContent.layoutParams as LinearLayout.LayoutParams
-            params.gravity = Gravity.END
+            params.gravity = if (isUserMessage) Gravity.END else Gravity.START
             itemView.chatMessageContent.layoutParams = params
         }
     }
