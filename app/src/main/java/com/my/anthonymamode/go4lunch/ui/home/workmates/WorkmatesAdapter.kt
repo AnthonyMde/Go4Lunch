@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -13,7 +14,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.domain.User
-import kotlinx.android.synthetic.main.workmates_list_item.view.*
+import kotlinx.android.synthetic.main.list_item_workmates.view.*
 
 class WorkmatesAdapter(
     options: FirestoreRecyclerOptions<User>,
@@ -24,8 +25,14 @@ class WorkmatesAdapter(
     private val type: WorkmateListType,
     /**
      * The lambda needed by the ViewHolder to handle the click on each item
+     * String is the restaurant id
      */
-    private val onClick: (String) -> Unit = {}
+    private val onItemClick: (String) -> Unit = {},
+    /**
+     * First argument is the workmate id
+     * Second argument is the workmate name
+     */
+    private val onChatIconClick: (String, String?) -> Unit
 ) :
     FirestoreRecyclerAdapter<User, WorkmatesAdapter.WorkmatesViewHolder>(options) {
 
@@ -35,7 +42,7 @@ class WorkmatesAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorkmatesViewHolder {
         return WorkmatesViewHolder(
             LayoutInflater.from(parent.context).inflate(
-                R.layout.workmates_list_item,
+                R.layout.list_item_workmates,
                 parent,
                 false
             )
@@ -77,27 +84,51 @@ class WorkmatesAdapter(
                 }
             }
             setPhoto()
+            setChatIcon()
         }
 
         private fun setDetailStyle() {
             view.workmatesItemText.text =
-                context.getString(R.string.detail_restaurant_workamtes_eating_there, data.displayName)
+                context.getString(
+                    R.string.detail_restaurant_workamtes_eating_there,
+                    data.displayName
+                )
             view.workmatesItemText.setTypeface(null, Typeface.NORMAL)
-            view.workmatesItemText.setTextColor(context.resources.getColor(android.R.color.black))
+            view.workmatesItemText.setTextColor(
+                ResourcesCompat.getColor(
+                    context.resources,
+                    android.R.color.black,
+                    null
+                )
+            )
         }
 
         private fun setDefaultStyle() {
             if (data.hasLunch) {
                 val lunchId = data.lunch?.lunchOfTheDay ?: return
                 val lunchName = data.lunch?.lunchName ?: ""
-                view.workmatesItemText.text = context.getString(R.string.workmates_has_lunch, data.displayName, lunchName)
+                view.workmatesItemText.text =
+                    context.getString(R.string.workmates_has_lunch, data.displayName, lunchName)
                 view.workmatesItemText.setTypeface(null, Typeface.NORMAL)
-                view.workmatesItemText.setTextColor(context.resources.getColor(android.R.color.black))
-                view.setOnClickListener { onClick.invoke(lunchId) }
+                view.workmatesItemText.setTextColor(
+                    ResourcesCompat.getColor(
+                        context.resources,
+                        android.R.color.black,
+                        null
+                    )
+                )
+                view.setOnClickListener { onItemClick.invoke(lunchId) }
             } else {
-                view.workmatesItemText.text = context.getString(R.string.workmates_has_no_lunch, data.displayName)
+                view.workmatesItemText.text =
+                    context.getString(R.string.workmates_has_no_lunch, data.displayName)
                 view.workmatesItemText.setTypeface(null, Typeface.ITALIC)
-                view.workmatesItemText.setTextColor(context.resources.getColor(R.color.lightGray))
+                view.workmatesItemText.setTextColor(
+                    ResourcesCompat.getColor(
+                        context.resources,
+                        R.color.lightGray,
+                        null
+                    )
+                )
             }
         }
 
@@ -107,6 +138,15 @@ class WorkmatesAdapter(
                 .placeholder(R.drawable.profil_placeholder)
                 .apply(RequestOptions.circleCropTransform())
                 .into(view.workmatesItemPhoto)
+        }
+
+        private fun setChatIcon() {
+            view.workmatesChatIcon.setOnClickListener {
+                onChatIconClick(
+                    data.uid,
+                    data.displayName
+                )
+            }
         }
 
         /**

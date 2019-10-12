@@ -65,14 +65,18 @@
     <string name="permission_activity_description">Go4Lunch is mainly based on geolocation, activate it to get fully
         access to the app.
     </string>
-    <string name="permission_activity_granted_btn">Ok got it</string>
+    <string name="permission_activity_granted_btn">OK got it</string>
     <string name="permission_activity_log_out_btn">Log me out</string>
+
+    <!-- CHAT -->
+    <string name="chat_input_hint">Send message..</string>
 
     <!-- IMAGE DESCRIPTIONS -->
     <string name="nav_header_image_profile_desc">Image profile</string>
     <string name="nav_header_app_logo_desc">Application logo</string>
     <string name="login_app_logo_desc">Application logo</string>
     <string name="restaurant_item_image_desc">Photo of the restaurant</string>
+    <string name="workmates_chat_icon">chat icon</string>
 
     <!-- MENU -->
     <string name="search_title">Search</string>
@@ -91,5 +95,6 @@
     <string name="session_expired_error">It seems your session has expired. Please try to reconnect.</string>
     <string name="logout_error">Sorry, the log out has failed</string>
     <string name="firebase_crud_error">An error has occurred while updating your data</string>
+    <string name="save_user_id_failed">An error has occurred while saving your data. Please retry to login</string>
 
 </resources>

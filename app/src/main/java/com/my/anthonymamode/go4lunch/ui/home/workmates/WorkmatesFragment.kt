@@ -5,19 +5,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.ViewModelProviders
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.data.api.getUsersOrderedByLunch
 import com.my.anthonymamode.go4lunch.domain.User
+import com.my.anthonymamode.go4lunch.ui.chat.ChatActivity
 import com.my.anthonymamode.go4lunch.ui.detail.DetailRestaurantActivity
 import com.my.anthonymamode.go4lunch.ui.home.HomeViewModel
-import com.my.anthonymamode.go4lunch.utils.BaseFragment
-import kotlinx.android.synthetic.main.fragment_workmates.*
+import com.my.anthonymamode.go4lunch.utils.base.BaseActivity
+import com.my.anthonymamode.go4lunch.utils.base.BaseFragment
+import com.my.anthonymamode.go4lunch.utils.generateOptionForAdapter
+import kotlinx.android.synthetic.main.fragment_workmates.workmatesRecyclerView
 
 class WorkmatesFragment : BaseFragment() {
+    private val viewModel by activityViewModels<HomeViewModel>()
+    private var mAdapter: FirestoreRecyclerAdapter<User, WorkmatesAdapter.WorkmatesViewHolder>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,33 +34,46 @@ class WorkmatesFragment : BaseFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        activity?.let { configureRecyclerView(it) }
+        configureRecyclerView()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mAdapter?.stopListening()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mAdapter?.startListening()
     }
 
     /**
      * Set the adapter for the recycler and pass the data through it here
      */
-    private fun configureRecyclerView(activity: FragmentActivity) {
-        val viewModel = ViewModelProviders.of(activity).get(HomeViewModel::class.java)
-        val userId = viewModel.userId
-        workmatesRecyclerView.adapter =
-            WorkmatesAdapter(generateOptionForAdapter(), userId, WorkmateListType.ALL, onClick = { placeId ->
+    private fun configureRecyclerView() {
+        val userId = viewModel.getUserId()
+        mAdapter = WorkmatesAdapter(
+            generateOptionForAdapter(getUsersOrderedByLunch(), this),
+            userId,
+            WorkmateListType.ALL,
+            onItemClick = { placeId ->
                 val intent = Intent(context, DetailRestaurantActivity::class.java)
                 intent.putExtra("placeId", placeId)
                 startActivity(intent)
+            },
+            onChatIconClick = { workmateId, workmateName ->
+                context?.let {
+                    ChatActivity.navigateToChatActivity(
+                        workmateId,
+                        workmateName,
+                        it,
+                        activity as BaseActivity
+                    )
+                }
             })
-        workmatesRecyclerView.layoutManager = LinearLayoutManager(context)
-    }
-
-    /**
-     * @return FirestoreRecyclerOptions of User which can be
-     * directly used into a recycler view.
-     */
-    private fun generateOptionForAdapter(): FirestoreRecyclerOptions<User> {
-        val query = getUsersOrderedByLunch()
-        return FirestoreRecyclerOptions.Builder<User>()
-            .setQuery(query, User::class.java)
-            .setLifecycleOwner(this)
-            .build()
+        workmatesRecyclerView.apply {
+            adapter = mAdapter
+            layoutManager = LinearLayoutManager(context)
+        }
     }
 }

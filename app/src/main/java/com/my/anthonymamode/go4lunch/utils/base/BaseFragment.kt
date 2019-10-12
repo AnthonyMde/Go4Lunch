@@ -1,4 +1,4 @@
-package com.my.anthonymamode.go4lunch.utils
+package com.my.anthonymamode.go4lunch.utils.base
 
 import android.util.Log
 import android.widget.Toast

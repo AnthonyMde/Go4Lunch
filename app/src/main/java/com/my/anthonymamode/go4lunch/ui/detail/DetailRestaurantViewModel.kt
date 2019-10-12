@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.my.anthonymamode.go4lunch.data.repository.PlacesRepository
 import com.my.anthonymamode.go4lunch.domain.PlaceDetail
-import com.my.anthonymamode.go4lunch.utils.BaseViewModel
+import com.my.anthonymamode.go4lunch.utils.base.BaseViewModel
 import com.my.anthonymamode.go4lunch.utils.Resource
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo

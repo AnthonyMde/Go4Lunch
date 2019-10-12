@@ -1,4 +1,4 @@
-package com.my.anthonymamode.go4lunch.utils
+package com.my.anthonymamode.go4lunch.ui.home.maps
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap

@@ -27,26 +27,31 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.auth.FirebaseAuth
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.R.id.drawer_logout
 import com.my.anthonymamode.go4lunch.R.id.drawer_my_food
 import com.my.anthonymamode.go4lunch.R.id.drawer_settings
-import com.my.anthonymamode.go4lunch.R.id.search_toolbar
 import com.my.anthonymamode.go4lunch.R.id.navigation_list
 import com.my.anthonymamode.go4lunch.R.id.navigation_map
 import com.my.anthonymamode.go4lunch.R.id.navigation_workmates
+import com.my.anthonymamode.go4lunch.R.id.search_toolbar
+import com.my.anthonymamode.go4lunch.services.NotificationBroadcastReceiver
 import com.my.anthonymamode.go4lunch.ui.LoginActivity
 import com.my.anthonymamode.go4lunch.ui.PermissionActivity
 import com.my.anthonymamode.go4lunch.ui.SettingsActivity
 import com.my.anthonymamode.go4lunch.ui.home.list.RestaurantListFragment
+import com.my.anthonymamode.go4lunch.ui.home.maps.MapsFragment
 import com.my.anthonymamode.go4lunch.ui.home.workmates.WorkmatesFragment
-import com.my.anthonymamode.go4lunch.utils.BaseActivity
-import com.my.anthonymamode.go4lunch.utils.NotificationBroadcastReceiver
 import com.my.anthonymamode.go4lunch.utils.Resource
+import com.my.anthonymamode.go4lunch.utils.base.BaseActivity
 import com.my.anthonymamode.go4lunch.utils.debounceThatFunction
-import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.android.synthetic.main.nav_drawer_header.view.*
+import kotlinx.android.synthetic.main.activity_home.homeBottomNavBar
+import kotlinx.android.synthetic.main.activity_home.homeDrawerLayout
+import kotlinx.android.synthetic.main.activity_home.homeNavigationView
+import kotlinx.android.synthetic.main.activity_home.homeToolbar
+import kotlinx.android.synthetic.main.nav_drawer_header.view.navheaderEmail
+import kotlinx.android.synthetic.main.nav_drawer_header.view.navheaderFullName
+import kotlinx.android.synthetic.main.nav_drawer_header.view.navheaderProfileImage
 import org.jetbrains.anko.editText
 import org.jetbrains.anko.hintTextColor
 import org.jetbrains.anko.startActivity
@@ -61,12 +66,12 @@ const val INTENT_EXTRA_USER_ID = "INTENT_EXTRA_USER_ID"
 class HomeActivity : BaseActivity() {
     // VARIABLES
     val viewModel by viewModels<HomeViewModel>()
-    private val userId by lazy { FirebaseAuth.getInstance().currentUser?.uid }
     private var isHide: Boolean = false
     private var lastTimeSearch: Long = 0L
     private var searchView: SearchView? = null
     private var mQuery: String = ""
     private var alarmManager: AlarmManager? = null
+    private var userId: String? = null
     private lateinit var pendingIntent: PendingIntent
 
     /**
@@ -85,6 +90,7 @@ class HomeActivity : BaseActivity() {
         homeBottomNavBar.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         configureDrawerMenu()
         viewModel.getUserInfo()
+        userId = viewModel.getUserId()
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         setLastLocation()
         supportFragmentManager.beginTransaction().add(
@@ -190,11 +196,9 @@ class HomeActivity : BaseActivity() {
         intent.putExtra(INTENT_EXTRA_USER_ID, userId)
         pendingIntent = PendingIntent.getBroadcast(this, NOTIFICATION_REQUEST_CODE, intent, 0)
         val timeToFire = Calendar.getInstance().apply {
-            timeInMillis = System.currentTimeMillis()
             set(Calendar.HOUR_OF_DAY, 12)
         }
-        // FIXME : Even with this check, the notification is fired each time we launch the app
-        if (timeToFire.before(System.currentTimeMillis())) {
+        if (timeToFire.before(Calendar.getInstance())) {
             timeToFire.add(Calendar.DATE, 1)
         }
         alarmManager?.setInexactRepeating(
