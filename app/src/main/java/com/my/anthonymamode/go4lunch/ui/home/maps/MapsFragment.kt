@@ -1,4 +1,4 @@
-package com.my.anthonymamode.go4lunch.ui.home
+package com.my.anthonymamode.go4lunch.ui.home.maps
 
 import android.content.Intent
 import android.os.Bundle
@@ -23,8 +23,8 @@ import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.data.api.getPredictions
 import com.my.anthonymamode.go4lunch.domain.Place
 import com.my.anthonymamode.go4lunch.ui.detail.DetailRestaurantActivity
-import com.my.anthonymamode.go4lunch.utils.BaseFragment
-import com.my.anthonymamode.go4lunch.utils.MapsHelper
+import com.my.anthonymamode.go4lunch.ui.home.HomeViewModel
+import com.my.anthonymamode.go4lunch.utils.base.BaseFragment
 import com.my.anthonymamode.go4lunch.utils.Resource
 import com.my.anthonymamode.go4lunch.utils.debounceThatFunction
 import kotlinx.android.synthetic.main.fragment_maps.*

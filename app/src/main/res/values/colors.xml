@@ -1,19 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <color name="whiteDivider">@color/white2</color>
+    <color name="chatBackground">@color/white2</color>
+    <color name="facebookButton">@color/blueFacebook</color>
+    <color name="googleButton">@color/redGoogle</color>
+    <color name="fabActivated">@color/green</color>
+    <color name="emptyStarColor">@android:color/transparent</color>
+    <color name="chatUserMessageColor">@color/colorPrimary</color>
+    <color name="chatWorkmateMessageColor">@color/lightGray</color>
+    <color name="yellowStar">@color/yellow</color>
+
+    <!-- Main colors -->
+    <color name="lightBlack">#394157</color>
+    <color name="green">#689f38</color>
+    <color name="yellow">#fbbc04</color>
+    <color name="lightGray">#a2a2a2</color>
+    <color name="blueFacebook">#3b5998</color>
+    <color name="redGoogle">#dd4e42</color>
+    <color name="white2">#dfdfdf</color>
+
+    <!-- Theme colors -->
     <color name="colorPrimary">#dc6851</color>
     <color name="colorPrimaryDark">#a53928</color>
     <color name="colorPrimaryLight">#ff987e</color>
     <color name="colorAccent">#4c5c73</color>
-
-    <color name="facebookButton">#3b5998</color>
-    <color name="googleButton">#dd4e42</color>
-
-    <color name="lightBlack">#394157</color>
-    <color name="fabGreen">#689f38</color>
-
-    <color name="whiteDivider">#dfdfdf</color>
-    <color name="lightGray">#a2a2a2</color>
-
-    <color name="yellowStar">#fbbc04</color>
-    <color name="emptyStarColor">@android:color/transparent</color>
 </resources>

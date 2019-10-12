@@ -1,4 +1,4 @@
-package com.my.anthonymamode.go4lunch.utils
+package com.my.anthonymamode.go4lunch.utils.base
 
 import androidx.lifecycle.ViewModel
 import io.reactivex.disposables.CompositeDisposable
