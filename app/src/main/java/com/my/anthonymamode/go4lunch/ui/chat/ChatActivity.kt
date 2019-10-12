@@ -61,9 +61,10 @@ class ChatActivity : BaseActivity() {
 
     private fun setupInputBar() {
         chatInputSend.setOnClickListener {
-            val uid = userId ?: return@setOnClickListener
-            val wuid = workmateId ?: return@setOnClickListener
+            val uid = userId
+            val wuid = workmateId
             val content = chatInput.text.toString()
+            if (uid == null || wuid == null || content.isEmpty()) return@setOnClickListener
             chatInput.text?.clear()
             postMessage(uid, wuid, content)
         }
