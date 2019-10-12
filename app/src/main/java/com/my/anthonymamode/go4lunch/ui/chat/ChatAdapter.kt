@@ -22,13 +22,18 @@ import java.util.Locale
 
 class ChatAdapter(
     options: FirestoreRecyclerOptions<Message>,
-    context: Context
+    context: Context,
+    private val scrollToLastMessage: () -> Unit
 ) : FirestoreRecyclerAdapter<Message, ChatAdapter.ChatViewHolder>(options) {
     val userId by lazy {
         context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE)
             .getString(LOCAL_USER_ID, null)
     }
 
+    override fun onDataChanged() {
+        super.onDataChanged()
+        scrollToLastMessage()
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder {
         return ChatViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.list_item_chat, parent, false)
