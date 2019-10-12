@@ -13,7 +13,10 @@ import com.my.anthonymamode.go4lunch.ui.LOCAL_USER_ID
 import com.my.anthonymamode.go4lunch.ui.SHARED_PREFS
 import com.my.anthonymamode.go4lunch.utils.base.BaseActivity
 import com.my.anthonymamode.go4lunch.utils.generateOptionForAdapter
-import kotlinx.android.synthetic.main.activity_chat.*
+import kotlinx.android.synthetic.main.activity_chat.chatInput
+import kotlinx.android.synthetic.main.activity_chat.chatInputSend
+import kotlinx.android.synthetic.main.activity_chat.chatMessageList
+import kotlinx.android.synthetic.main.activity_chat.chatToolbar
 
 class ChatActivity : BaseActivity() {
     private var workmateId: String? = null
@@ -40,12 +43,20 @@ class ChatActivity : BaseActivity() {
         val wuid = workmateId ?: return
         mAdapter = ChatAdapter(
             options = generateOptionForAdapter(getChatMessages(uid, wuid), this),
-            context = this
+            context = this,
+            scrollToLastMessage = { scrollToLastMessage() }
         )
         chatMessageList.apply {
             adapter = mAdapter
             layoutManager = LinearLayoutManager(context)
+            (layoutManager as LinearLayoutManager).stackFromEnd = true
         }
+    }
+
+    private fun scrollToLastMessage() {
+        val messageCount = chatMessageList.adapter?.itemCount
+        if (messageCount == 0 || messageCount == null) return
+        chatMessageList.scrollToPosition(messageCount - 1)
     }
 
     private fun setupInputBar() {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -13,47 +13,51 @@
         android:theme="@style/ToolbarTheme"
         android:background="@color/colorPrimary"
         app:titleTextColor="@android:color/white"
-        app:layout_constraintTop_toTopOf="parent"
         />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chatMessageList"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         android:background="@color/chatBackground"
         tools:listitem="@layout/list_item_chat"
-        app:layout_constraintTop_toBottomOf="@id/chatToolbar"
-        app:layout_constraintBottom_toTopOf="@id/chatInput"/>
+        app:stackFromEnd="true"
+        android:layout_below="@id/chatToolbar"
+        android:layout_above="@id/chatInputLayout"/>
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/chatInput"
-        android:layout_width="0dp"
-        android:layout_height="?android:attr/actionBarSize"
-        android:hint="@string/chat_input_hint"
-        android:textColorHint="@color/lightGray"
-        android:background="@android:color/transparent"
-        android:textSize="16sp"
-        android:paddingStart="24dp"
-        android:paddingEnd="24dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/chatInputSend"
-        />
+    <LinearLayout
+        android:id="@+id/chatInputLayout"
+        android:layout_width="match_parent"
+        android:fitsSystemWindows="true"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
 
-    <FrameLayout
-        android:id="@+id/chatInputSend"
-        android:layout_width="?android:attr/actionBarSize"
-        android:layout_height="?android:attr/actionBarSize"
-        app:layout_constraintTop_toTopOf="@id/chatInput"
-        app:layout_constraintBottom_toBottomOf="@id/chatInput"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:background="@color/lightGray"
-        >
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_send_white_24dp"
-            android:layout_gravity="center"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/chatInput"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="?android:attr/actionBarSize"
+            android:hint="@string/chat_input_hint"
+            android:textColorHint="@color/lightGray"
+            android:background="@android:color/transparent"
+            android:textSize="16sp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
             />
-    </FrameLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+        <FrameLayout
+            android:id="@+id/chatInputSend"
+            android:layout_width="?android:attr/actionBarSize"
+            android:layout_height="?android:attr/actionBarSize"
+            android:background="@color/lightGray"
+            >
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_send_white_24dp"
+                android:layout_gravity="center"
+                />
+        </FrameLayout>
+
+    </LinearLayout>
+</RelativeLayout>
