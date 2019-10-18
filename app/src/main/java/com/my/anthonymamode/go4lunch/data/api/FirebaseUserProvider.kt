@@ -4,9 +4,11 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
+import com.my.anthonymamode.go4lunch.domain.FirebaseUserUpdate
 import com.my.anthonymamode.go4lunch.domain.Lunch
 import com.my.anthonymamode.go4lunch.domain.User
 
@@ -36,6 +38,16 @@ fun updateUser(
 ): Task<Void> {
     val userToCreate = User(uid, displayName, email, photoPath, hasLunch, lunch)
     return getUsersCollection().document(uid).set(userToCreate)
+}
+
+fun updateFirebaseUser(
+    uid: String,
+    displayName: String?,
+    email: String?,
+    photoPath: String?
+): Task<Void> {
+    val firebaseUser = FirebaseUserUpdate(uid, displayName, email, photoPath)
+    return getUsersCollection().document(uid).set(firebaseUser, SetOptions.merge())
 }
 
 fun updateUser(user: User): Task<Void> {
