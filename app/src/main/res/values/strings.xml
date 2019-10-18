@@ -77,6 +77,7 @@
     <string name="login_app_logo_desc">Application logo</string>
     <string name="restaurant_item_image_desc">Photo of the restaurant</string>
     <string name="workmates_chat_icon">chat icon</string>
+    <string name="restaurant_item_number_of_workmates_description">Number of persons which lunch at the restaurant</string>
 
     <!-- MENU -->
     <string name="search_title">Search</string>

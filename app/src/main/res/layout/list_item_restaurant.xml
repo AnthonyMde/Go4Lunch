@@ -66,7 +66,29 @@
             app:layout_constraintTop_toTopOf="@id/restaurantItemTitle"
     />
 
-    <!-- TODO: Users eating there -->
+    <LinearLayout
+        android:id="@+id/restaurantItemWorkmatesNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:visibility="visible"
+        android:visibility="invisible"
+        app:layout_constraintStart_toEndOf="@id/middleGuideline"
+        app:layout_constraintTop_toBottomOf="@id/restaurantItemDistance"
+        app:layout_constraintBottom_toTopOf="@id/restaurantItemRating"
+        >
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/restaurant_item_number_of_workmates_description"
+            android:src="@drawable/ic_person_black_24dp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            tools:text="(3)"
+            />
+    </LinearLayout>
 
     <me.zhanghai.android.materialratingbar.MaterialRatingBar
             android:id="@+id/restaurantItemRating"
@@ -74,7 +96,6 @@
             android:layout_height="wrap_content"
             android:numStars="3"
             tools:rating="2"
-            android:scaleX="-1"
             android:clickable="false"
             app:mrb_fillBackgroundStars="true"
             app:mrb_progressTint="@color/yellowStar"
@@ -83,7 +104,7 @@
             style="@style/Widget.MaterialRatingBar.RatingBar.Small"
             android:layout_marginEnd="8dp"
             app:layout_constraintBottom_toBottomOf="@id/restaurantImageCardView"
-            app:layout_constraintEnd_toStartOf="@id/restaurantImageCardView"
+            app:layout_constraintStart_toEndOf="@id/middleGuideline"
     />
 
     <androidx.cardview.widget.CardView
@@ -101,7 +122,7 @@
                 android:scaleType="fitXY"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/restaurant_item_image_desc"
-                android:src="@drawable/profil_placeholder"
+                tools:src="@drawable/back_rounded_workmate_message"
         />
     </androidx.cardview.widget.CardView>
 
