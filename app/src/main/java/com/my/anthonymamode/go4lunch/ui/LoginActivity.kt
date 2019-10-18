@@ -16,12 +16,13 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.my.anthonymamode.go4lunch.BuildConfig
 import com.my.anthonymamode.go4lunch.R
-import com.my.anthonymamode.go4lunch.data.api.getCurrentUser
-import com.my.anthonymamode.go4lunch.data.api.updateUser
+import com.my.anthonymamode.go4lunch.data.api.updateFirebaseUser
 import com.my.anthonymamode.go4lunch.ui.home.HomeActivity
 import com.my.anthonymamode.go4lunch.utils.base.BaseActivity
 import com.my.anthonymamode.go4lunch.utils.setStatusBarTransparent
-import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.activity_login.loginActivityLayout
+import kotlinx.android.synthetic.main.activity_login.loginFacebookButton
+import kotlinx.android.synthetic.main.activity_login.loginGoogleButton
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.startActivity
 
@@ -95,34 +96,38 @@ class LoginActivity : BaseActivity() {
         if (requestCode == RC_SIGN_IN) {
             when (resultCode) {
                 Activity.RESULT_OK -> {
-                    firebaseUser = FirebaseAuth.getInstance().currentUser
-                    val user = firebaseUser
-                        ?: return showToastError(getString(R.string.login_no_account_found_error))
-                    getCurrentUser(user.uid).addOnSuccessListener {
-                        val dataSize = it?.data?.size
-                        if (data == null || dataSize == 0) {
-                            updateUser(
-                                user.uid,
-                                user.displayName,
-                                user.email,
-                                user.photoUrl.toString()
-                            ).addOnFailureListener(super.onFailureListener())
-                        }
-                        checkLocationPermissionAndRedirect()
-                    }
+                    val user = FirebaseAuth.getInstance().currentUser ?: return showToastError(
+                        getString(R.string.login_no_account_found_error)
+                    )
+                    firebaseUser = user
+                    updateCurrentUser(user)
+                    checkLocationPermissionAndRedirect()
                 }
                 Activity.RESULT_CANCELED -> {
-                    val response = IdpResponse.fromResultIntent(data)
-                    when {
-                        response == null -> showCanceledSnackBar(R.string.login_canceled)
-                        response.error?.errorCode == ErrorCodes.NO_NETWORK -> showCanceledSnackBar(R.string.login_no_network)
-                        response.error?.errorCode == ErrorCodes.UNKNOWN_ERROR -> showCanceledSnackBar(
-                            R.string.login_unknown_error
-                        )
-                    }
+                    showSigninError(data)
                 }
             }
         }
+    }
+
+    private fun showSigninError(data: Intent?) {
+        val response = IdpResponse.fromResultIntent(data)
+        when {
+            response == null -> showCanceledSnackBar(R.string.login_canceled)
+            response.error?.errorCode == ErrorCodes.NO_NETWORK -> showCanceledSnackBar(R.string.login_no_network)
+            response.error?.errorCode == ErrorCodes.UNKNOWN_ERROR -> showCanceledSnackBar(
+                R.string.login_unknown_error
+            )
+        }
+    }
+
+    private fun updateCurrentUser(user: FirebaseUser) {
+        updateFirebaseUser(
+            user.uid,
+            user.displayName,
+            user.email,
+            user.photoUrl.toString()
+        )
     }
 
     private fun checkLocationPermissionAndRedirect() {
