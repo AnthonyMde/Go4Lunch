@@ -4,7 +4,7 @@ import android.view.View
 import com.my.anthonymamode.go4lunch.domain.Hours
 import com.my.anthonymamode.go4lunch.domain.Period
 import com.my.anthonymamode.go4lunch.domain.Time
-import com.my.anthonymamode.go4lunch.ui.home.list.RestaurantViewHolder
+import com.my.anthonymamode.go4lunch.ui.home.list.RestaurantAdapter
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -18,7 +18,7 @@ import java.util.Calendar
 @PrepareForTest(Calendar::class)
 class OpeningHoursUnitTest {
 
-    private lateinit var restaurantVH: RestaurantViewHolder
+    private lateinit var restaurantVH: RestaurantAdapter.RestaurantViewHolder
     private lateinit var mock: Hours
 
     @Before
@@ -90,7 +90,7 @@ class OpeningHoursUnitTest {
         )
 
         val mockView = Mockito.mock(View::class.java)
-        restaurantVH = RestaurantViewHolder(mockView)
+        restaurantVH = RestaurantAdapter {}.RestaurantViewHolder(mockView)
     }
 
     @Test
