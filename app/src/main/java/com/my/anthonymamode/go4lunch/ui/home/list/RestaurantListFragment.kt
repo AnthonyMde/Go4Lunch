@@ -48,6 +48,7 @@ class RestaurantListFragment : BaseFragment() {
 
         restaurantAdapter = RestaurantAdapter(
             userId = viewModel.getUserId(),
+            localization = viewModel.lastLocation.value,
             onItemClick = {
                 val intent = Intent(context, DetailRestaurantActivity::class.java)
                 intent.putExtra("placeId", it)

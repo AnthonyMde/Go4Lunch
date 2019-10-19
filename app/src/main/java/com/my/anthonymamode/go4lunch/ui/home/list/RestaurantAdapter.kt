@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
+import com.google.android.gms.maps.model.LatLng
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.data.api.getUsersByLunchId
 import com.my.anthonymamode.go4lunch.domain.Hours
@@ -20,7 +21,11 @@ import com.my.anthonymamode.go4lunch.utils.toStarsFormat
 import kotlinx.android.synthetic.main.list_item_restaurant.view.*
 import java.util.Calendar
 
-class RestaurantAdapter(private val userId: String?, private val onItemClick: (String) -> Unit) :
+class RestaurantAdapter(
+    private val userId: String?,
+    private val localization: LatLng?,
+    private val onItemClick: (String) -> Unit
+) :
     RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder>() {
 
     private var restaurantList = emptyList<Place>()
@@ -151,10 +156,10 @@ class RestaurantAdapter(private val userId: String?, private val onItemClick: (S
         }
 
         private fun setHowFarItIs() {
-            // TODO: get the real current location to compute the distances
+            val userLocation = localization ?: return
             val currentLocation = Location("here").apply {
-                latitude = 43.5746099
-                longitude = 1.4524654
+                latitude = userLocation.latitude
+                longitude = userLocation.longitude
             }
             val restaurantLocation = Location("restaurant").apply {
                 latitude = restaurant.geometry.location.lat
