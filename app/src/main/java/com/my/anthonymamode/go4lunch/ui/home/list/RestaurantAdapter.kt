@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.my.anthonymamode.go4lunch.R
+import com.my.anthonymamode.go4lunch.data.api.getUsersByLunchId
 import com.my.anthonymamode.go4lunch.domain.Hours
 import com.my.anthonymamode.go4lunch.domain.Period
 import com.my.anthonymamode.go4lunch.domain.Place
@@ -19,10 +20,12 @@ import com.my.anthonymamode.go4lunch.utils.toStarsFormat
 import kotlinx.android.synthetic.main.list_item_restaurant.view.*
 import java.util.Calendar
 
-class RestaurantAdapter(private val onClick: (String) -> Unit) :
+class RestaurantAdapter(private val onItemClick: (String) -> Unit) :
     RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder>() {
 
     private var restaurantList = emptyList<Place>()
+    // key == placeId and value == number of workmates
+    private val workmateMap = mutableMapOf<String, Int>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RestaurantViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -35,6 +38,7 @@ class RestaurantAdapter(private val onClick: (String) -> Unit) :
     }
 
     override fun onBindViewHolder(holder: RestaurantViewHolder, position: Int) {
+        holder.setIsRecyclable(false)
         holder.bindView(restaurantList[position])
     }
 
@@ -60,9 +64,10 @@ class RestaurantAdapter(private val onClick: (String) -> Unit) :
             setRating()
             setHowFarItIs()
             setHours()
+            getWorkmateCounter()
 
             itemView.restaurantItemContainer.setOnClickListener {
-                onClick(restaurant.place_id)
+                onItemClick(restaurant.place_id)
             }
         }
 
@@ -110,6 +115,35 @@ class RestaurantAdapter(private val onClick: (String) -> Unit) :
                 itemView.restaurantItemRating.visibility = VISIBLE
                 itemView.restaurantItemRating.rating = rating
             }
+        }
+
+        private fun getWorkmateCounter() {
+            itemView.restaurantItemWorkmatesNumberLayout.visibility = INVISIBLE
+            val workmatesNumber = workmateMap[restaurant.place_id]
+            if (workmatesNumber == null) {
+                getWorkmatesNumber()
+            } else {
+                setCounterVisible(workmatesNumber)
+            }
+        }
+
+        private fun setCounterVisible(workmatesNumber: Int) {
+            itemView.restaurantItemWorkmatesNumber.text = itemView.context.getString(
+                R.string.restaurant_item_workmates_number,
+                workmatesNumber
+            )
+            itemView.restaurantItemWorkmatesNumberLayout.visibility = VISIBLE
+        }
+
+        private fun getWorkmatesNumber() {
+            getUsersByLunchId(restaurant.place_id).get()
+                .addOnSuccessListener {
+                    val workmatesNumber = it.documents.size
+                    if (workmatesNumber > 0) {
+                        setCounterVisible(workmatesNumber)
+                        workmateMap[restaurant.place_id] = workmatesNumber
+                    }
+                }
         }
 
         private fun setHowFarItIs() {

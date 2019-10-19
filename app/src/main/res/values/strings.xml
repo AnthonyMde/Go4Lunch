@@ -50,6 +50,7 @@
     <string name="restaurant_item_is_opened">Currently opened</string>
     <string name="restaurant_item_is_closed">Currently closed</string>
     <string name="restaurant_list_no_place_id_error">Sorry, we can\'t retrieve this restaurant for now</string>
+    <string name="restaurant_item_workmates_number">(%1$d)</string>
 
     <!-- RESTAURANT DETAILS-->
     <string name="detail_restaurant_call_button">call</string>
