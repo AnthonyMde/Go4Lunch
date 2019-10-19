@@ -20,7 +20,7 @@ import com.my.anthonymamode.go4lunch.utils.toStarsFormat
 import kotlinx.android.synthetic.main.list_item_restaurant.view.*
 import java.util.Calendar
 
-class RestaurantAdapter(private val onItemClick: (String) -> Unit) :
+class RestaurantAdapter(private val userId: String?, private val onItemClick: (String) -> Unit) :
     RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder>() {
 
     private var restaurantList = emptyList<Place>()
@@ -138,7 +138,11 @@ class RestaurantAdapter(private val onItemClick: (String) -> Unit) :
         private fun getWorkmatesNumber() {
             getUsersByLunchId(restaurant.place_id).get()
                 .addOnSuccessListener {
-                    val workmatesNumber = it.documents.size
+                    var workmatesNumber = it.documents.size
+                    val currentUser = it.documents.firstOrNull { doc ->
+                        doc.data?.get("uid") == userId
+                    }
+                    currentUser?.let { workmatesNumber-- }
                     if (workmatesNumber > 0) {
                         setCounterVisible(workmatesNumber)
                         workmateMap[restaurant.place_id] = workmatesNumber
