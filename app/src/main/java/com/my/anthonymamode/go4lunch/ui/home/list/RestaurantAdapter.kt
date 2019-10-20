@@ -63,8 +63,8 @@ class RestaurantAdapter(
     inner class RestaurantViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         private val maxPhotoWidth = 1280
         // sunday == 0, saturday == 6
-        private val currentDay = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1
-        private val currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+        private var currentDay = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1
+        private var currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
         private val currentMinute = Calendar.getInstance().get(Calendar.MINUTE)
         private lateinit var restaurant: Place
 
@@ -256,6 +256,11 @@ class RestaurantAdapter(
                 6 -> "samedi"
                 else -> "prochainement"
             }
+        }
+
+        fun setCurrentDayAndHour(day: Int, hour: Int) {
+            currentDay = day
+            currentHour = hour
         }
     }
 }
