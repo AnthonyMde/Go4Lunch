@@ -13,10 +13,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.android.gms.maps.model.LatLng
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.data.api.getUsersByLunchId
-import com.my.anthonymamode.go4lunch.domain.Hours
-import com.my.anthonymamode.go4lunch.domain.Period
 import com.my.anthonymamode.go4lunch.domain.Place
-import com.my.anthonymamode.go4lunch.utils.addChar
 import com.my.anthonymamode.go4lunch.utils.toFormatDistance
 import com.my.anthonymamode.go4lunch.utils.toStarsFormat
 import kotlinx.android.synthetic.main.list_item_restaurant.view.restaurantItemAddress
@@ -77,15 +74,15 @@ class RestaurantAdapter(
             setPhoto()
             setRating()
             setHowFarItIs()
-            setHours()
-            getWorkmateCounter()
+            setOpeningHours()
+            setWorkmateCounter()
 
             itemView.restaurantItemContainer.setOnClickListener {
                 onItemClick(restaurant.place_id)
             }
         }
 
-        private fun setHours() {
+        private fun setOpeningHours() {
             val hoursView = itemView.restaurantItemHours
             val open = restaurant.opening_hours?.open_now
 
@@ -94,9 +91,9 @@ class RestaurantAdapter(
                 return
             }
 
-            restaurant.opening_hours?.let {
-                val period = getTheNextRestaurantHours(it)
-                val hoursText = getRestaurantOpeningText(period, !open)
+            restaurant.opening_hours?.let { openingHours ->
+                val period = getTheNextRestaurantHours(openingHours, currentDay, currentHour, currentMinute)
+                val hoursText = getRestaurantOpeningText(period, !open, currentDay, itemView.context)
 
                 hoursView.text = hoursText
                 hoursView.visibility = VISIBLE
@@ -131,7 +128,21 @@ class RestaurantAdapter(
             }
         }
 
-        private fun getWorkmateCounter() {
+        private fun setHowFarItIs() {
+            val userLocation = localization ?: return
+            val currentLocation = Location("here").apply {
+                latitude = userLocation.latitude
+                longitude = userLocation.longitude
+            }
+            val restaurantLocation = Location("restaurant").apply {
+                latitude = restaurant.geometry.location.lat
+                longitude = restaurant.geometry.location.lng
+            }
+            val distance = currentLocation.distanceTo(restaurantLocation)
+            itemView.restaurantItemDistance.text = distance.toFormatDistance()
+        }
+
+        private fun setWorkmateCounter() {
             itemView.restaurantItemWorkmatesNumberLayout.visibility = INVISIBLE
             val workmatesNumber = workmateMap[restaurant.place_id]
             if (workmatesNumber == null) {
@@ -162,106 +173,6 @@ class RestaurantAdapter(
                         workmateMap[restaurant.place_id] = workmatesNumber
                     }
                 }
-        }
-
-        private fun setHowFarItIs() {
-            val userLocation = localization ?: return
-            val currentLocation = Location("here").apply {
-                latitude = userLocation.latitude
-                longitude = userLocation.longitude
-            }
-            val restaurantLocation = Location("restaurant").apply {
-                latitude = restaurant.geometry.location.lat
-                longitude = restaurant.geometry.location.lng
-            }
-            val distance = currentLocation.distanceTo(restaurantLocation)
-            itemView.restaurantItemDistance.text = distance.toFormatDistance()
-        }
-
-        fun getTheNextRestaurantHours(hours: Hours): Period? {
-            val periods = hours.periods
-
-            // Sorted by smaller time interval from current day
-            val sortedPeriods = periods.sortedWith(
-                compareBy {
-                    val targetTime = if (hours.open_now) it.closeTime else it.openTime
-                    getHoursInterval(
-                        currentDay,
-                        getTimeInMinutes(Pair(currentHour, currentMinute)),
-                        targetTime.day,
-                        getTimeInMinutes(googleTimeIntoPair(targetTime.time))
-                    )
-                }
-            )
-            return sortedPeriods.firstOrNull()
-        }
-
-        private fun googleTimeIntoPair(googleTime: String): Pair<Int, Int> {
-            val hours = googleTime.substring(0, googleTime.length - 2).toInt()
-            val minutes = googleTime.substring(googleTime.length - 2, googleTime.length).toInt()
-            return Pair(hours, minutes)
-        }
-
-        private fun getHoursInterval(
-            currentDay: Int,
-            currentTime: Int,
-            targetDay: Int,
-            targetTime: Int
-        ): Int {
-            val sortedDays = (currentDay..6) + (0 until currentDay)
-            val hoursInDay = 24
-            val daysInWeek = 7
-            val minutesInHour = 60
-            // specific computation if target day equal current day but is in the past
-            return if (currentDay == targetDay && currentTime > targetTime) {
-                daysInWeek * hoursInDay * minutesInHour - (currentTime - targetTime)
-            } else {
-                val dayInterval = sortedDays.indexOf(targetDay)
-                val dayIntervalInMinutes = dayInterval * hoursInDay * minutesInHour
-                dayIntervalInMinutes + (targetTime - currentTime)
-            }
-        }
-
-        /**
-         * time.first = hours
-         * time.second = minutes
-         */
-        private fun getTimeInMinutes(time: Pair<Int, Int>): Int {
-            return (time.first * 60) + time.second
-        }
-
-        fun getRestaurantOpeningText(period: Period?, forOpening: Boolean): String {
-            if (period == null) {
-                return if (forOpening) "permanently closed" else "opened 24/7"
-            }
-
-            val targetTime = if (forOpening) period.openTime else period.closeTime
-            val dayText = if (targetTime.day == currentDay) "" else getDay(targetTime.day)
-            val timeText = targetTime.time.addChar(':', 2)
-
-            return StringBuilder()
-                .append(if (forOpening) "opens " else "closes ")
-                .append(if (dayText.isNotEmpty()) "$dayText " else "")
-                .append("at $timeText")
-                .toString()
-        }
-
-        private fun getDay(dayNumber: Int): String {
-            return when (dayNumber) {
-                0 -> "dimanche"
-                1 -> "lundi"
-                2 -> "mardi"
-                3 -> "mercredi"
-                4 -> "jeudi"
-                5 -> "vendredi"
-                6 -> "samedi"
-                else -> "prochainement"
-            }
-        }
-
-        fun setCurrentDayAndHour(day: Int, hour: Int) {
-            currentDay = day
-            currentHour = hour
         }
     }
 }
