@@ -43,6 +43,18 @@
     <string name="restaurant_item_is_closed">Actuellement fermé</string>
     <string name="restaurant_list_no_place_id_error">Désolé, nous ne pouvons afficher ce restaurant pour le moment</string>
     <string name="restaurant_item_workmates_number">(%1$d)</string>
+    <string name="restaurant_item_permanently_closed">Fermé definitivement</string>
+    <string name="restaurant_item_permanently_opened">Ouvert 24/7</string>
+    <string name="restaurant_item_opening_start_text">Ouvre</string>
+    <string name="restaurant_item_closing_start_text">Ferme</string>
+    <string name="restaurant_item_at_text">à $s</string>
+    <string name="restaurant_item_monday">lundi</string>
+    <string name="restaurant_item_tuesday">mardi</string>
+    <string name="restaurant_item_wednesday">mercredi</string>
+    <string name="restaurant_item_thursday">jeudi</string>
+    <string name="restaurant_item_friday">vendredi</string>
+    <string name="restaurant_item_saturday">samedi</string>
+    <string name="restaurant_item_sunday">dimanche</string>
 
     <!-- RESTAURANT DETAILS -->
     <string name="detail_restaurant_call_button">Téléphone</string>
