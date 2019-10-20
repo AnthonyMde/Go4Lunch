@@ -16,6 +16,7 @@ import com.my.anthonymamode.go4lunch.data.api.getUsersByLunchId
 import com.my.anthonymamode.go4lunch.domain.Hours
 import com.my.anthonymamode.go4lunch.domain.Period
 import com.my.anthonymamode.go4lunch.domain.Place
+import com.my.anthonymamode.go4lunch.utils.addChar
 import com.my.anthonymamode.go4lunch.utils.toFormatDistance
 import com.my.anthonymamode.go4lunch.utils.toStarsFormat
 import kotlinx.android.synthetic.main.list_item_restaurant.view.restaurantItemAddress
@@ -236,7 +237,7 @@ class RestaurantAdapter(
 
             val targetTime = if (forOpening) period.openTime else period.closeTime
             val dayText = if (targetTime.day == currentDay) "" else getDay(targetTime.day)
-            val timeText = targetTime.time
+            val timeText = targetTime.time.addChar(':', 2)
 
             return StringBuilder()
                 .append(if (forOpening) "opens " else "closes ")

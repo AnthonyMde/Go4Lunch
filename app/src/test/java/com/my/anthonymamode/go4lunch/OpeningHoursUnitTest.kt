@@ -6,6 +6,7 @@ import com.my.anthonymamode.go4lunch.domain.Hours
 import com.my.anthonymamode.go4lunch.domain.Period
 import com.my.anthonymamode.go4lunch.domain.Time
 import com.my.anthonymamode.go4lunch.ui.home.list.RestaurantAdapter
+import com.my.anthonymamode.go4lunch.utils.addChar
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -211,14 +212,14 @@ class OpeningHoursUnitTest {
         restaurantVH.setCurrentDayAndHour(3, 10)
         var openingText = restaurantVH.getRestaurantOpeningText(mockForOpening.periods[0], true)
         Assert.assertEquals(
-            "opens dimanche at ${mockForOpening.periods[0].openTime.time}",
+            "opens dimanche at ${mockForOpening.periods[0].openTime.time.addChar(':', 2)}",
             openingText
         )
 
         // If current day == target day -> should not print day name, just time
         restaurantVH.setCurrentDayAndHour(0, 10)
         openingText = restaurantVH.getRestaurantOpeningText(mockForOpening.periods[0], true)
-        Assert.assertEquals("opens at ${mockForOpening.periods[0].openTime.time}", openingText)
+        Assert.assertEquals("opens at ${mockForOpening.periods[0].openTime.time.addChar(':', 2)}", openingText)
 
         // If we have no period && we search next closing -> restaurant is always open
         openingText = restaurantVH.getRestaurantOpeningText(null, false)
@@ -231,14 +232,14 @@ class OpeningHoursUnitTest {
         restaurantVH.setCurrentDayAndHour(3, 10)
         var openingText = restaurantVH.getRestaurantOpeningText(mockForOpening.periods[0], false)
         Assert.assertEquals(
-            "closes dimanche at ${mockForOpening.periods[0].closeTime.time}",
+            "closes dimanche at ${mockForOpening.periods[0].closeTime.time.addChar(':', 2)}",
             openingText
         )
 
         // If current day == target day -> should not print day name, just time
         restaurantVH.setCurrentDayAndHour(0, 10)
         openingText = restaurantVH.getRestaurantOpeningText(mockForOpening.periods[0], false)
-        Assert.assertEquals("closes at ${mockForOpening.periods[0].closeTime.time}", openingText)
+        Assert.assertEquals("closes at ${mockForOpening.periods[0].closeTime.time.addChar(':', 2)}", openingText)
 
         // If we have no period && we search next opening -> restaurant is closed permanently
         openingText = restaurantVH.getRestaurantOpeningText(null, true)
