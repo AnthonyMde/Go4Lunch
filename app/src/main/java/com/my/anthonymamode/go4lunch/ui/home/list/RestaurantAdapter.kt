@@ -18,7 +18,15 @@ import com.my.anthonymamode.go4lunch.domain.Period
 import com.my.anthonymamode.go4lunch.domain.Place
 import com.my.anthonymamode.go4lunch.utils.toFormatDistance
 import com.my.anthonymamode.go4lunch.utils.toStarsFormat
-import kotlinx.android.synthetic.main.list_item_restaurant.view.*
+import kotlinx.android.synthetic.main.list_item_restaurant.view.restaurantItemAddress
+import kotlinx.android.synthetic.main.list_item_restaurant.view.restaurantItemContainer
+import kotlinx.android.synthetic.main.list_item_restaurant.view.restaurantItemDistance
+import kotlinx.android.synthetic.main.list_item_restaurant.view.restaurantItemHours
+import kotlinx.android.synthetic.main.list_item_restaurant.view.restaurantItemImage
+import kotlinx.android.synthetic.main.list_item_restaurant.view.restaurantItemRating
+import kotlinx.android.synthetic.main.list_item_restaurant.view.restaurantItemTitle
+import kotlinx.android.synthetic.main.list_item_restaurant.view.restaurantItemWorkmatesNumber
+import kotlinx.android.synthetic.main.list_item_restaurant.view.restaurantItemWorkmatesNumberLayout
 import java.util.Calendar
 
 class RestaurantAdapter(
@@ -173,48 +181,52 @@ class RestaurantAdapter(
             val periods = hours.periods
 
             // Sorted by smaller time interval from current day
-            // todo: work only when json is right formatted (period with logic sort).
             val sortedPeriods = periods.sortedWith(
                 compareBy {
-                    val targetTime = if (hours.open_now) it.open else it.close
+                    val targetTime = if (hours.open_now) it.closeTime else it.openTime
                     getHoursInterval(
                         currentDay,
-                        getCurrentHourWithMinutes(),
+                        getTimeInMinutes(Pair(currentHour, currentMinute)),
                         targetTime.day,
-                        Integer.parseInt(targetTime.time)
+                        getTimeInMinutes(googleTimeIntoPair(targetTime.time))
                     )
                 }
             )
             return sortedPeriods.firstOrNull()
         }
 
+        private fun googleTimeIntoPair(googleTime: String): Pair<Int, Int> {
+            val hours = googleTime.substring(0, googleTime.length - 2).toInt()
+            val minutes = googleTime.substring(googleTime.length - 2, googleTime.length).toInt()
+            return Pair(hours, minutes)
+        }
+
         private fun getHoursInterval(
             currentDay: Int,
-            currentHour: Int,
+            currentTime: Int,
             targetDay: Int,
-            targetHour: Int
+            targetTime: Int
         ): Int {
             val sortedDays = (currentDay..6) + (0 until currentDay)
             val hoursInDay = 24
             val daysInWeek = 7
             val minutesInHour = 60
             // specific computation if target day equal current day but is in the past
-            return if (currentDay == targetDay && currentHour > targetHour) {
-                hoursInDay * daysInWeek * minutesInHour - (currentHour - targetHour)
-                // standard computation to return the hour interval in format 'HHMM'
+            return if (currentDay == targetDay && currentTime > targetTime) {
+                daysInWeek * hoursInDay * minutesInHour - (currentTime - targetTime)
             } else {
-                hoursInDay * sortedDays.indexOf(targetDay) * minutesInHour + (targetHour - currentHour)
+                val dayInterval = sortedDays.indexOf(targetDay)
+                val dayIntervalInMinutes = dayInterval * hoursInDay * minutesInHour
+                dayIntervalInMinutes + (targetTime - currentTime)
             }
         }
 
-        private fun getCurrentHourWithMinutes(): Int {
-            val stringHourWithMinutes = if (currentMinute < 10) {
-                (currentHour * 10).toString() + currentMinute.toString()
-            } else {
-                currentHour.toString() + currentMinute.toString()
-            }
-
-            return Integer.parseInt(stringHourWithMinutes)
+        /**
+         * time.first = hours
+         * time.second = minutes
+         */
+        private fun getTimeInMinutes(time: Pair<Int, Int>): Int {
+            return (time.first * 60) + time.second
         }
 
         fun getRestaurantOpeningText(period: Period?, forOpening: Boolean): String {
@@ -222,7 +234,7 @@ class RestaurantAdapter(
                 return if (forOpening) "permanently closed" else "opened 24/7"
             }
 
-            val targetTime = if (forOpening) period.open else period.close
+            val targetTime = if (forOpening) period.openTime else period.closeTime
             val dayText = if (targetTime.day == currentDay) "" else getDay(targetTime.day)
             val timeText = targetTime.time
 
