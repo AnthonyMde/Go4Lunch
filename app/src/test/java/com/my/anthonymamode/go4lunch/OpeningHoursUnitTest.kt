@@ -27,61 +27,61 @@ class OpeningHoursUnitTest {
             false,
             listOf(
                 Period(
-                    close = Time(
+                    closeTime = Time(
                         0,
                         "1800"
                     ),
-                    open = Time(
+                    openTime = Time(
                         0,
                         "1200"
                     )
                 ),
                 Period(
-                    close = Time(
+                    closeTime = Time(
                         0,
                         "2300"
                     ),
-                    open = Time(
+                    openTime = Time(
                         0,
                         "1900"
                     )
                 ),
                 Period(
-                    close = Time(
+                    closeTime = Time(
                         1,
                         "1700"
                     ),
-                    open = Time(
+                    openTime = Time(
                         1,
                         "1200"
                     )
                 ),
                 Period(
-                    close = Time(
+                    closeTime = Time(
                         1,
                         "2300"
                     ),
-                    open = Time(
+                    openTime = Time(
                         1,
                         "1900"
                     )
                 ),
                 Period(
-                    close = Time(
+                    closeTime = Time(
                         5,
                         "1100"
                     ),
-                    open = Time(
+                    openTime = Time(
                         5,
                         "1500"
                     )
                 ),
                 Period(
-                    close = Time(
+                    closeTime = Time(
                         5,
                         "2100"
                     ),
-                    open = Time(
+                    openTime = Time(
                         5,
                         "2300"
                     )
@@ -107,6 +107,6 @@ class OpeningHoursUnitTest {
     @Test
     fun shouldReturnNextOpeningStringTest() {
         val openingText = restaurantVH.getRestaurantOpeningText(mock.periods[0], !mock.open_now)
-        Assert.assertEquals("opens dimanche at ${mock.periods[0].open.time}", openingText)
+        Assert.assertEquals("opens dimanche at ${mock.periods[0].openTime.time}", openingText)
     }
 }
