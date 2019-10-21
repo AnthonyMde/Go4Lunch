@@ -92,8 +92,10 @@ class RestaurantAdapter(
             }
 
             restaurant.opening_hours?.let { openingHours ->
-                val period = getTheNextRestaurantHours(openingHours, currentDay, currentHour, currentMinute)
-                val hoursText = getRestaurantOpeningText(period, !open, currentDay, itemView.context)
+                val period =
+                    getTheNextRestaurantHours(openingHours, currentDay, currentHour, currentMinute)
+                val hoursText =
+                    getRestaurantOpeningText(period, !open, currentDay, itemView.context)
 
                 hoursView.text = hoursText
                 hoursView.visibility = VISIBLE
