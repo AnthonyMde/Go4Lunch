@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -31,11 +32,7 @@ import org.jetbrains.anko.support.v4.toast
 class RestaurantListFragment : BaseFragment() {
     private val viewModel by activityViewModels<HomeViewModel>()
 
-    private val restaurantAdapter = RestaurantAdapter(onClick = {
-        val intent = Intent(context, DetailRestaurantActivity::class.java)
-        intent.putExtra("placeId", it)
-        startActivity(intent)
-    })
+    private lateinit var restaurantAdapter: RestaurantAdapter
 
     private lateinit var placesClient: PlacesClient
     private var currentLocation: LatLng? = null
@@ -48,6 +45,15 @@ class RestaurantListFragment : BaseFragment() {
         val ctx = context ?: return
         Places.initialize(ctx.applicationContext, BuildConfig.API_KEY_GOOGLE_PLACES)
         placesClient = Places.createClient(ctx)
+
+        restaurantAdapter = RestaurantAdapter(
+            userId = viewModel.getUserId(),
+            localization = viewModel.lastLocation.value,
+            onItemClick = {
+                val intent = Intent(context, DetailRestaurantActivity::class.java)
+                intent.putExtra("placeId", it)
+                startActivity(intent)
+            })
 
         viewModel.lastLocation.observe(this, Observer { position ->
             if (currentLocation == position) {
@@ -82,7 +88,8 @@ class RestaurantListFragment : BaseFragment() {
                 restaurantAdapter.setRestaurantList(listRestaurants)
             } else {
                 val bounds = toRectangularBounds(currentLocation, radiusSearch)
-                val googleTask = placesClient.findAutocompletePredictions(getPredictions(query, bounds))
+                val googleTask =
+                    placesClient.findAutocompletePredictions(getPredictions(query, bounds))
                 showSelectedRestaurants(googleTask)
             }
 
@@ -116,7 +123,9 @@ class RestaurantListFragment : BaseFragment() {
             context,
             DividerItemDecoration.VERTICAL
         )
-        itemDecoration.setDrawable(context.resources.getDrawable(R.drawable.rv_divider_no_padding))
+        ResourcesCompat.getDrawable(resources, R.drawable.rv_divider_no_padding, null)?.let {
+            itemDecoration.setDrawable(it)
+        }
 
         restaurantRV.addItemDecoration(itemDecoration)
         restaurantRV.adapter = restaurantAdapter

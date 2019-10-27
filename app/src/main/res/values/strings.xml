@@ -50,6 +50,19 @@
     <string name="restaurant_item_is_opened">Currently opened</string>
     <string name="restaurant_item_is_closed">Currently closed</string>
     <string name="restaurant_list_no_place_id_error">Sorry, we can\'t retrieve this restaurant for now</string>
+    <string name="restaurant_item_workmates_number">(%1$d)</string>
+    <string name="restaurant_item_permanently_closed">Permanently closed</string>
+    <string name="restaurant_item_permanently_opened">Opened 24/7</string>
+    <string name="restaurant_item_opening_start_text">Opens</string>
+    <string name="restaurant_item_closing_start_text">Closes</string>
+    <string name="restaurant_item_at_text">at $s</string>
+    <string name="restaurant_item_monday">monday</string>
+    <string name="restaurant_item_tuesday">tuesday</string>
+    <string name="restaurant_item_wednesday">wednesday</string>
+    <string name="restaurant_item_thursday">thursday</string>
+    <string name="restaurant_item_friday">friday</string>
+    <string name="restaurant_item_saturday">saturday</string>
+    <string name="restaurant_item_sunday">sunday</string>
 
     <!-- RESTAURANT DETAILS-->
     <string name="detail_restaurant_call_button">call</string>
@@ -77,6 +90,7 @@
     <string name="login_app_logo_desc">Application logo</string>
     <string name="restaurant_item_image_desc">Photo of the restaurant</string>
     <string name="workmates_chat_icon">chat icon</string>
+    <string name="restaurant_item_number_of_workmates_description">Number of persons which lunch at the restaurant</string>
 
     <!-- MENU -->
     <string name="search_title">Search</string>

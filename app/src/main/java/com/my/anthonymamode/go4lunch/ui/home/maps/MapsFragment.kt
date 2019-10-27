@@ -30,7 +30,7 @@ import com.my.anthonymamode.go4lunch.utils.debounceThatFunction
 import kotlinx.android.synthetic.main.fragment_maps.*
 import org.jetbrains.anko.support.v4.toast
 
-private const val ZOOM_LEVEL = 14f
+private const val ZOOM_LEVEL = 16f
 private const val MIN_ZOOM = 6f
 private const val MAX_ZOOM = 20f
 
