@@ -35,10 +35,12 @@ import com.my.anthonymamode.go4lunch.R.id.navigation_list
 import com.my.anthonymamode.go4lunch.R.id.navigation_map
 import com.my.anthonymamode.go4lunch.R.id.navigation_workmates
 import com.my.anthonymamode.go4lunch.R.id.search_toolbar
+import com.my.anthonymamode.go4lunch.data.api.getCurrentUserData
 import com.my.anthonymamode.go4lunch.services.NotificationBroadcastReceiver
 import com.my.anthonymamode.go4lunch.ui.LoginActivity
 import com.my.anthonymamode.go4lunch.ui.PermissionActivity
 import com.my.anthonymamode.go4lunch.ui.SettingsActivity
+import com.my.anthonymamode.go4lunch.ui.detail.DetailRestaurantActivity
 import com.my.anthonymamode.go4lunch.ui.home.list.RestaurantListFragment
 import com.my.anthonymamode.go4lunch.ui.home.maps.MapsFragment
 import com.my.anthonymamode.go4lunch.ui.home.workmates.WorkmatesFragment
@@ -56,6 +58,7 @@ import org.jetbrains.anko.editText
 import org.jetbrains.anko.hintTextColor
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.textColor
+import org.jetbrains.anko.toast
 import java.util.Calendar
 
 private const val TLSE_LAT = 43.6043
@@ -348,10 +351,24 @@ class HomeActivity : BaseActivity() {
                     viewModel.logoutUser()
                 }
                 drawer_settings -> startActivity<SettingsActivity>()
-                drawer_my_food -> showMessage("Non implémenté")
+                drawer_my_food -> showUserLunch()
             }
             homeDrawerLayout.closeDrawers()
             true
+        }
+    }
+
+    private fun showUserLunch() {
+        val id = userId ?: return
+        getCurrentUserData(id).addOnSuccessListener {
+            val lunchId = it?.lunch?.lunchOfTheDay
+            if (lunchId != null) {
+                val intent = Intent(this, DetailRestaurantActivity::class.java)
+                intent.putExtra("placeId", lunchId)
+                startActivity(intent)
+            } else {
+                toast(R.string.my_lunch_no_lunch_selected)
+            }
         }
     }
 }

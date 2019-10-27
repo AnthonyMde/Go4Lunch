@@ -15,6 +15,7 @@
     <string name="home_list_view_title">Liste</string>
     <string name="home_workmates_title">Collègues</string>
     <string name="home_toolbar_title">Une petite faim ?</string>
+    <string name="my_lunch_no_lunch_selected">Vous n\'avez pas encore décidé où manger</string>
 
     <!-- WORKMATES -->
     <string name="workmates_has_lunch">%1$s mange chez %2$s</string>
