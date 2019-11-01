@@ -111,5 +111,6 @@
     <string name="logout_error">Sorry, the log out has failed</string>
     <string name="firebase_crud_error">An error has occurred while updating your data</string>
     <string name="save_user_id_failed">An error has occurred while saving your data. Please retry to login</string>
+    <string name="settings_notification_switch">Notifications</string>
 
 </resources>

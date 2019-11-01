@@ -6,6 +6,7 @@
     <color name="facebookButton">@color/blueFacebook</color>
     <color name="googleButton">@color/redGoogle</color>
     <color name="fabActivated">@color/green</color>
+    <color name="deleteAccountButton">@color/colorPrimaryDark</color>
     <color name="emptyStarColor">@android:color/transparent</color>
     <color name="chatUserMessageColor">@color/colorPrimary</color>
     <color name="chatWorkmateMessageColor">@color/lightGray</color>

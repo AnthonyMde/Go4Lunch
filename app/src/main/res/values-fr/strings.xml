@@ -102,5 +102,6 @@
     <string name="logout_error">Désolé, la déconnexion semble impossible pour le moment.</string>
     <string name="firebase_crud_error">Une erreur est survenue lors de la mise à jour de vos informations.</string>
     <string name="save_user_id_failed">Une erreur est survenue pendant l\'enregistrement de vos données. Reconnecter vous s\'il vous plaît.</string>
+    <string name="settings_notification_switch">Notifications</string>
 
 </resources>
