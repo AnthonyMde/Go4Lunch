@@ -124,6 +124,9 @@ class SettingsActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
+    /**
+     * @return Intent to redirect to the phone notifications settings
+     */
     private fun createNotificationSettingsIntent(context: Context?): Intent {
         val intent = Intent()
         when {

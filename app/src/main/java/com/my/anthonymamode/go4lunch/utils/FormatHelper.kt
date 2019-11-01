@@ -7,11 +7,11 @@ fun Float.toFormatDistance(): String {
     if (this < 0)
         return ""
 
-    if (this < 1000) {
-        return "${this.roundToInt()}m"
+    return if (this < 1000) {
+        "${this.roundToInt()}m"
     } else {
         val kilometers = DecimalFormat("#.#").format(this / 1000)
-        return "${kilometers}km"
+        "${kilometers}km"
     }
 }
 

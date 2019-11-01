@@ -22,6 +22,9 @@ fun getCurrentUser(uid: String): Task<DocumentSnapshot?> {
     return getUsersCollection().document(uid).get()
 }
 
+/**
+ * Returns the all User object.
+ */
 fun getCurrentUserData(uid: String): Task<User?> {
     return getUsersCollection().document(uid).get().continueWith {
         it.result?.toObject<User>()
@@ -40,6 +43,9 @@ fun updateUser(
     return getUsersCollection().document(uid).set(userToCreate)
 }
 
+/**
+ * Updates only User fields that are provided by the FirebaseUser object.
+ */
 fun updateFirebaseUser(
     uid: String,
     displayName: String?,
@@ -50,6 +56,9 @@ fun updateFirebaseUser(
     return getUsersCollection().document(uid).set(firebaseUser, SetOptions.merge())
 }
 
+/**
+ * Updates the all User object.
+ */
 fun updateUser(user: User): Task<Void> {
     return getUsersCollection().document(user.uid).set(user)
 }
@@ -58,10 +67,16 @@ fun deleteUser(uid: String): Task<Void> {
     return getUsersCollection().document(uid).delete()
 }
 
+/**
+ * Returns a list of User ordered by hasLunch (true on top of the list).
+ */
 fun getUsersOrderedByLunch(): Query {
     return getUsersCollection().orderBy("hasLunch", Query.Direction.DESCENDING)
 }
 
+/**
+ * Returns a list of User which have the target place id restaurant has favorite restaurant.
+ */
 fun getUsersByLunchId(placeId: String): Query {
     return getUsersCollection().whereEqualTo("lunch.lunchOfTheDay", placeId)
 }

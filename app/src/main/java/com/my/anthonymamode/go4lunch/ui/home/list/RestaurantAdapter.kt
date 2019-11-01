@@ -82,6 +82,9 @@ class RestaurantAdapter(
             }
         }
 
+        /**
+         * Set the next opening or closing text for the restaurant item
+         */
         private fun setOpeningHours() {
             val hoursView = itemView.restaurantItemHours
             val open = restaurant.opening_hours?.open_now
@@ -130,6 +133,9 @@ class RestaurantAdapter(
             }
         }
 
+        /**
+         * Set the distance between the user current location and the restaurant item
+         */
         private fun setHowFarItIs() {
             val userLocation = localization ?: return
             val currentLocation = Location("here").apply {
@@ -144,6 +150,9 @@ class RestaurantAdapter(
             itemView.restaurantItemDistance.text = distance.toFormatDistance()
         }
 
+        /**
+         * Set how many workmates have already chosen this restaurant item
+         */
         private fun setWorkmateCounter() {
             itemView.restaurantItemWorkmatesNumberLayout.visibility = INVISIBLE
             val workmatesNumber = workmateMap[restaurant.place_id]
@@ -154,6 +163,9 @@ class RestaurantAdapter(
             }
         }
 
+        /**
+         * If no workmate have already chosen this restaurant, we hide the counter
+         */
         private fun setCounterVisible(workmatesNumber: Int) {
             itemView.restaurantItemWorkmatesNumber.text = itemView.context.getString(
                 R.string.restaurant_item_workmates_number,

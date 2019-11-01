@@ -52,6 +52,9 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
         Places.initialize(ctx.applicationContext, BuildConfig.API_KEY_GOOGLE_PLACES)
         placesClient = Places.createClient(ctx)
 
+        /**
+         * Update the places list when the user current location changes.
+         */
         viewModel.lastLocation.observe(this, Observer { position ->
             if (currentLocation == position) {
                 return@Observer
@@ -61,6 +64,10 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
             currentLocation = position
         })
 
+        /**
+         * Launch the recyclerview configuration when gets the list of restaurant from the
+         * viewmodel.
+         */
         viewModel.placeList.observe(this, Observer {
             when (it) {
                 is Resource.Loading -> toast("loading")
@@ -125,6 +132,10 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
         }
     }
 
+    /**
+     * Setup maps configuration and center the map on the
+     * user current location.
+     */
     override fun onMapReady(googleMap: GoogleMap?) {
         mapsHelper = MapsHelper(googleMap)
         googleMap ?: return
@@ -150,7 +161,7 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
             displayAllRestaurants()
         } else {
             val googleTask = getAutocompletePlaces(query)
-            showSelectedRestaurants(googleTask)
+            setResearchedRestaurantList(googleTask)
         }
     }
 
@@ -168,6 +179,10 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
         })
     }
 
+    /**
+     * Return the task used to get the searched restaurants from the autocomplete place google
+     * api.
+     */
     private fun getAutocompletePlaces(query: String): Task<FindAutocompletePredictionsResponse>? {
         val southWestBounds = mapsHelper?.getSouthWestBounds()
         val northEastBounds = mapsHelper?.getNorthEastBounds()
@@ -186,7 +201,10 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
         )
     }
 
-    private fun showSelectedRestaurants(search: Task<FindAutocompletePredictionsResponse>?) {
+    /**
+     * Send in our viewmodel livedata the restaurant list received from the user search
+     */
+    private fun setResearchedRestaurantList(search: Task<FindAutocompletePredictionsResponse>?) {
         if (search == null) {
             showToastError("No context or no localization found")
             return

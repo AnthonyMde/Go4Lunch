@@ -9,6 +9,13 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.maps.android.SphericalUtil
 import kotlin.math.sqrt
 
+/**
+ * Configures the autocomplete places request to be restricted to a specific
+ * area and only for places of ESTABLISHMENT type.
+ * @param query the text used for the restaurant research
+ * @param bounds the restricted area for the research
+ * @return the configured autocomplete places request
+ */
 fun getPredictions(
     query: String,
     bounds: RectangularBounds?
@@ -24,6 +31,9 @@ fun getPredictions(
         .build()
 }
 
+/**
+ * Transforms circular bounds into rectangular bounds.
+ */
 fun toRectangularBounds(center: LatLng?, radiusInMeters: Double): RectangularBounds? {
     if (center == null) {
         return null

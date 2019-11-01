@@ -73,6 +73,11 @@ class DetailRestaurantActivity : BaseActivity() {
         viewModel.getPlaceDetail(placeId)
     }
 
+    /**
+     * Firestore adapter is updating automatically the data from the firestore database.
+     * We stop listening here.
+     * We only save the selected/unselected restaurant status we the user leaves the activity.
+     */
     override fun onPause() {
         super.onPause()
         mAdapter?.stopListening()
@@ -86,12 +91,20 @@ class DetailRestaurantActivity : BaseActivity() {
         }
     }
 
+    /**
+     * Firestore adapter is updating automatically the data from the firestore database.
+     * We start listening here.
+     */
     override fun onResume() {
         super.onResume()
         mAdapter?.startListening()
     }
 
     private fun setObserver() {
+        /**
+         * Configure all the activity (ui, cta, list, etc) only when we receive
+         * the placeDetail object.
+         */
         viewModel.placeDetail.observe(this, Observer {
             when (it) {
                 is Resource.Loading -> toast("loading")

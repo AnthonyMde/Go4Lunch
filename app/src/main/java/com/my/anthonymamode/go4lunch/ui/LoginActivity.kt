@@ -48,6 +48,10 @@ class LoginActivity : BaseActivity() {
     }
     private var firebaseUser: FirebaseUser? = null
 
+    /**
+     * Try to get the user object here. If no user found, the login is shown,
+     * otherwise we get access to the home activity directly.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)

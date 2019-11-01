@@ -14,6 +14,9 @@ class MapsHelper(private val googleMap: GoogleMap?) {
 
     private var mapsCenter: LatLng? = null
 
+    /**
+     * Center the map to the user current position
+     */
     fun centerMap(currentPosition: LatLng, zoom: Float) {
         googleMap?.apply {
             moveCamera(
@@ -34,6 +37,11 @@ class MapsHelper(private val googleMap: GoogleMap?) {
         return mapsCenter
     }
 
+    /**
+     * Set a marker for each restaurant on found on the map target area.
+     * Icon is red if nobody goes there and green if at least one person (including the current
+     * user) is going there.
+     */
     fun setRestaurantMarkers(restaurants: List<Place>, markerOnClick: (String) -> Unit) {
         googleMap?.clear()
         googleMap?.setOnMarkerClickListener {
@@ -58,6 +66,10 @@ class MapsHelper(private val googleMap: GoogleMap?) {
         }
     }
 
+    /**
+     * Compare searched places (from autocomplete places google api) and the full restaurant list
+     * get from the places api. Set markers only for the intersection between the two lists.
+     */
     fun displaySelectedRestaurants(searchedPlaces: List<AutocompletePrediction>, currentRestaurantList: List<Place>?, markerOnClick: (String) -> Unit) {
         if (currentRestaurantList == null) {
             return
@@ -70,10 +82,16 @@ class MapsHelper(private val googleMap: GoogleMap?) {
         setRestaurantMarkers(matchingRestaurants, markerOnClick)
     }
 
+    /**
+     * Get the north east bounds of the map displayed to the user
+     */
     fun getNorthEastBounds(): LatLng? {
         return googleMap?.projection?.visibleRegion?.latLngBounds?.northeast
     }
 
+    /**
+     * Get the south west bounds of the map displayed to the user
+     */
     fun getSouthWestBounds(): LatLng? {
         return googleMap?.projection?.visibleRegion?.latLngBounds?.southwest
     }

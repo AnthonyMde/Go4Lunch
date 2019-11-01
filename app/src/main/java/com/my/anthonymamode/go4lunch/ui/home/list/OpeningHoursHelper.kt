@@ -23,12 +23,26 @@ fun getTimeInMinutes(time: Pair<Int, Int>): Int {
     return (time.first * MINUTES_IN_HOUR) + time.second
 }
 
+/**
+ * @param googleTime is a string with format "HHMM"
+ * @return pair.fist = hour as int
+ * @return pair.second = minute as int
+ */
 fun googleTimeIntoPair(googleTime: String): Pair<Int, Int> {
     val hours = googleTime.substring(0, googleTime.length - 2).toInt()
     val minutes = googleTime.substring(googleTime.length - 2, googleTime.length).toInt()
     return Pair(hours, minutes)
 }
 
+/**
+ * Give the interval time between two times (which is a day week (int)
+ * and a the day time in minutes (int).
+ * @param currentDay actual day of week
+ * @param currentTimeInMinutes actual time of the current day
+ * @param targetDay day week to target
+ * @param targetTimeInMinutes actual time of the target day
+ * @return interval in minutes
+ */
 fun getTimeIntervalInMinutes(
     currentDay: Int,
     currentTimeInMinutes: Int,
@@ -49,6 +63,10 @@ fun getTimeIntervalInMinutes(
     }
 }
 
+/**
+ * According to the current state of the restaurant (open or close)
+ * @return the next time the restaurant is opened or closed.
+ */
 fun getTheNextRestaurantHours(
     hours: Hours,
     currentDay: Int,
@@ -72,6 +90,10 @@ fun getTheNextRestaurantHours(
     return sortedPeriods.firstOrNull()
 }
 
+/**
+ * @return the text which presents to the user the next opening
+ * or closing of the restaurant.
+ */
 fun getRestaurantOpeningText(
     period: Period?,
     forOpening: Boolean,
@@ -103,6 +125,9 @@ fun getRestaurantOpeningText(
         .toString()
 }
 
+/**
+ * @return the current day as is week name.
+ */
 fun getDay(dayNumber: Int, context: Context): String {
     return when (dayNumber) {
         0 -> context.getString(R.string.restaurant_item_sunday)

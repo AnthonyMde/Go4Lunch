@@ -45,6 +45,10 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
             }
     }
 
+    /**
+     * To avoid the user to receive a notification each day for a restaurant he might have selected
+     * just once, each time he receives a notification we clear his restaurant choice.
+     */
     private fun resetUserLunch(userData: User) {
         userData.hasLunch = false
         userData.lunch = null
@@ -116,6 +120,10 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
             }
     }
 
+    /**
+     * Android version above or egal to Oreo needs a notification channel to be configured
+     * to receive notifications properly.
+     */
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = context.getString(R.string.notification_channel_title)
