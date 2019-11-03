@@ -11,6 +11,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.gms.maps.model.LatLng
+import com.my.anthonymamode.go4lunch.BuildConfig
+import com.my.anthonymamode.go4lunch.BuildConfig.API_KEY_GOOGLE_PLACES
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.data.api.getUsersByLunchId
 import com.my.anthonymamode.go4lunch.domain.Place
@@ -107,10 +109,10 @@ class RestaurantAdapter(
 
         private fun setPhoto() {
 
-            val photo: String? = null/*restaurant.photos?.get(0)?.photo_reference?.let {
-            val query = "?key=$API_KEY_GOOGLE_PLACES&photoreference=$it&maxwidth=$maxPhotoWidth"
-            "${BuildConfig.BASE_URL}photo$query"
-        } ?: restaurant.icon*/
+            val photo = restaurant.photos?.get(0)?.photo_reference?.let {
+                val query = "?key=$API_KEY_GOOGLE_PLACES&photoreference=$it&maxwidth=$maxPhotoWidth"
+                "${BuildConfig.BASE_URL}photo$query"
+            } ?: restaurant.icon
 
             val options = RequestOptions().apply {
                 diskCacheStrategy(DiskCacheStrategy.ALL)

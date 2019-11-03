@@ -1,25 +1,24 @@
 package com.my.anthonymamode.go4lunch.utils.base
 
-import android.util.Log
-import android.widget.Toast
+import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import androidx.fragment.app.Fragment
-import com.google.android.gms.tasks.OnFailureListener
 import com.my.anthonymamode.go4lunch.R
+import org.jetbrains.anko.support.v4.find
 
 abstract class BaseFragment : Fragment() {
 
-    fun onFailureListener(): OnFailureListener {
-        return OnFailureListener {
-            showToastError(getString(R.string.firebase_crud_error))
-            Log.e("FIREBASE ERROR", "Error when updating data from fragment : ${it.message}")
-        }
+    private val loadingView: View by lazy { find<View>(R.id.base_loader) }
+    private val contentView: View by lazy { find<View>(R.id.contentView) }
+
+    fun showContent() {
+        contentView.visibility = VISIBLE
+        loadingView.visibility = GONE
     }
 
-    fun showToastError(message: String) {
-        Toast.makeText(this.context, message, Toast.LENGTH_LONG).show()
-    }
-
-    fun showMessage(message: String) {
-        Toast.makeText(this.context, message, Toast.LENGTH_SHORT).show()
+    fun showLoading() {
+        contentView.visibility = GONE
+        loadingView.visibility = VISIBLE
     }
 }

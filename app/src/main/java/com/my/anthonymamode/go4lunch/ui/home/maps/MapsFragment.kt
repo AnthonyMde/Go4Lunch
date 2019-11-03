@@ -24,10 +24,11 @@ import com.my.anthonymamode.go4lunch.data.api.getPredictions
 import com.my.anthonymamode.go4lunch.domain.Place
 import com.my.anthonymamode.go4lunch.ui.detail.DetailRestaurantActivity
 import com.my.anthonymamode.go4lunch.ui.home.HomeViewModel
-import com.my.anthonymamode.go4lunch.utils.base.BaseFragment
 import com.my.anthonymamode.go4lunch.utils.Resource
+import com.my.anthonymamode.go4lunch.utils.base.BaseFragment
 import com.my.anthonymamode.go4lunch.utils.debounceThatFunction
-import kotlinx.android.synthetic.main.fragment_maps.*
+import kotlinx.android.synthetic.main.fragment_maps.mapsFragmentRecenterFab
+import org.jetbrains.anko.support.v4.longToast
 import org.jetbrains.anko.support.v4.toast
 
 private const val ZOOM_LEVEL = 16f
@@ -70,7 +71,6 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
          */
         viewModel.placeList.observe(this, Observer {
             when (it) {
-                is Resource.Loading -> toast("loading")
                 is Resource.Success -> {
                     placeList = it.data
                     mapsHelper?.setRestaurantMarkers(it.data) { placeId ->
@@ -78,6 +78,7 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
                         intent.putExtra("placeId", placeId)
                         startActivity(intent)
                     }
+                    showContent()
                 }
                 is Resource.Error -> {
                     toast("We can't retrieve nearby restaurants")
@@ -92,8 +93,7 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
                 return@Observer
             }
             searchQuery = query
-            // TODO: uncomment to get nearby restaurants
-            // displayRestaurants(query)
+            displayRestaurants(query)
         })
 
         viewModel.searchPlaceList.observe(this, Observer { searchResults ->
@@ -116,7 +116,7 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_maps, container, false)
-        mapsView = view.findViewById(R.id.mapsView)
+        mapsView = view.findViewById(R.id.contentView)
         mapsView.getMapAsync(this)
         mapsView.onCreate(savedInstanceState)
         return view
@@ -124,6 +124,7 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        showLoading()
         mapsFragmentRecenterFab.setOnClickListener {
             viewModel.lastLocation.value?.let {
                 mapsHelper?.centerMap(it, ZOOM_LEVEL)
@@ -144,7 +145,6 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
             setMaxZoomPreference(MAX_ZOOM)
             setOnCameraIdleListener {
                 mapsHelper?.setMapsCenter(cameraPosition.target)
-                // TODO: uncomment to get nearby restaurants
                 lastTimePositionChanged = debounceThatFunction(
                     { displayRestaurants(searchQuery) },
                     600L,
@@ -206,7 +206,7 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
      */
     private fun setResearchedRestaurantList(search: Task<FindAutocompletePredictionsResponse>?) {
         if (search == null) {
-            showToastError("No context or no localization found")
+            longToast("No context or no localization found")
             return
         }
 

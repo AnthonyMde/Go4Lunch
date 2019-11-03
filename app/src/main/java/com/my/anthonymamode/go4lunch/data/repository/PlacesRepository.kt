@@ -1,5 +1,6 @@
 package com.my.anthonymamode.go4lunch.data.repository
 
+import android.graphics.BitmapFactory
 import com.google.android.gms.maps.model.LatLng
 import com.my.anthonymamode.go4lunch.data.NetworkModule.Companion.getRetrofitPlaces
 import com.my.anthonymamode.go4lunch.data.api.GooglePlacesApi
@@ -14,14 +15,21 @@ class PlacesRepository {
     private val retrofit = getRetrofitPlaces().create(GooglePlacesApi::class.java)
 
     fun getRestaurantPlacesByRadius(position: LatLng): Single<List<Place>> {
-        return retrofit.getPlacesbyRadius("${position.latitude},${position.longitude}", "restaurant", radiusSearch)
+        return retrofit.getPlacesbyRadius(
+            "${position.latitude},${position.longitude}",
+            "restaurant",
+            radiusSearch
+        )
             .map {
                 it.places
             }
     }
 
     fun getRestaurantPlacesWithHours(position: LatLng): Single<List<Place>> {
-        return retrofit.getPlacesByDistance("${position.latitude},${position.longitude}", "restaurant")
+        return retrofit.getPlacesByDistance(
+            "${position.latitude},${position.longitude}",
+            "restaurant"
+        )
             .map {
                 it.places
             }
@@ -43,15 +51,18 @@ class PlacesRepository {
         }
     }
 
-    // todo: uncomment and replace map by flatmap to get the photo in PlaceDetail object
     fun getPlaceDetail(placeId: String): Single<PlaceDetail> {
-        val fieldsNeeded = "place_id,name,formatted_address,rating,photo,formatted_phone_number,website"
-        return retrofit.getPlaceDetail(placeId, fieldsNeeded).map { placeResponse ->
-            // retrofit.getPlacePhoto(placeResponse.placeDetail.photos?.get(0)?.photo_reference, maxPhotoWidth).map {
-            val restaurant = placeResponse.placeDetail
-            // restaurant.photo = BitmapFactory.decodeStream(it.byteStream())
-            restaurant
+        val fieldsNeeded =
+            "place_id,name,formatted_address,rating,photo,formatted_phone_number,website"
+        return retrofit.getPlaceDetail(placeId, fieldsNeeded).flatMap { placeResponse ->
+            retrofit.getPlacePhoto(
+                placeResponse.placeDetail.photos?.get(0)?.photo_reference,
+                maxPhotoWidth
+            ).map {
+                val restaurant = placeResponse.placeDetail
+                restaurant.photo = BitmapFactory.decodeStream(it.byteStream())
+                restaurant
+            }
         }
-        // }
     }
 }

@@ -27,6 +27,7 @@ import com.my.anthonymamode.go4lunch.ui.home.HomeViewModel
 import com.my.anthonymamode.go4lunch.utils.base.BaseFragment
 import com.my.anthonymamode.go4lunch.utils.Resource
 import kotlinx.android.synthetic.main.fragment_restaurant_list.*
+import org.jetbrains.anko.support.v4.longToast
 import org.jetbrains.anko.support.v4.toast
 
 class RestaurantListFragment : BaseFragment() {
@@ -71,12 +72,15 @@ class RestaurantListFragment : BaseFragment() {
          */
         viewModel.placeWithHoursList.observe(this, Observer {
             when (it) {
-                is Resource.Loading -> toast("loading")
+                is Resource.Loading -> {
+                    showLoading()
+                }
                 is Resource.Success -> {
                     listRestaurants = it.data
                     if (searchQuery == "") {
                         configureRecyclerView(listRestaurants)
                     }
+                    showContent()
                 }
                 is Resource.Error -> {
                     toast("We can't retrieve nearby restaurants")
@@ -140,9 +144,9 @@ class RestaurantListFragment : BaseFragment() {
             itemDecoration.setDrawable(it)
         }
 
-        restaurantRV.addItemDecoration(itemDecoration)
-        restaurantRV.adapter = restaurantAdapter
-        restaurantRV.layoutManager = LinearLayoutManager(context)
+        contentView.addItemDecoration(itemDecoration)
+        contentView.adapter = restaurantAdapter
+        contentView.layoutManager = LinearLayoutManager(context)
         restaurantAdapter.setRestaurantList(data)
     }
 
@@ -151,7 +155,7 @@ class RestaurantListFragment : BaseFragment() {
      */
     private fun setResearchedRestaurantList(search: Task<FindAutocompletePredictionsResponse>?) {
         if (search == null) {
-            showToastError("No context or no localization found")
+            longToast("No context or no localization found")
             return
         }
 
