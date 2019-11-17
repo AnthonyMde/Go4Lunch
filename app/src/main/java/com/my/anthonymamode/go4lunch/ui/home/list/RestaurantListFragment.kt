@@ -30,6 +30,8 @@ import kotlinx.android.synthetic.main.fragment_restaurant_list.*
 import org.jetbrains.anko.support.v4.longToast
 import org.jetbrains.anko.support.v4.toast
 
+const val radiusSearch = 700.0
+
 class RestaurantListFragment : BaseFragment() {
     private val viewModel by activityViewModels<HomeViewModel>()
 
@@ -172,9 +174,5 @@ class RestaurantListFragment : BaseFragment() {
                     Log.e("autocompletePredictions", "OtherError: " + exception.localizedMessage)
                 }
             }
-    }
-
-    companion object {
-        const val radiusSearch = 1000.0
     }
 }

@@ -337,6 +337,7 @@ class HomeActivity : BaseActivity() {
             override fun onLocationChanged(location: Location?) {
                 location ?: return
                 viewModel.setLastLocation(LatLng(location.latitude, location.longitude))
+                locationManager.removeUpdates(this)
             }
 
             override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}

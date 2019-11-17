@@ -27,6 +27,7 @@ import com.my.anthonymamode.go4lunch.ui.detail.DetailRestaurantActivity
 import com.my.anthonymamode.go4lunch.ui.home.HomeViewModel
 import com.my.anthonymamode.go4lunch.utils.Resource
 import com.my.anthonymamode.go4lunch.utils.base.BaseFragment
+import com.my.anthonymamode.go4lunch.utils.distanceTo
 import kotlinx.android.synthetic.main.fragment_maps.mapsFragmentRecenterFab
 import org.jetbrains.anko.support.v4.longToast
 import org.jetbrains.anko.support.v4.toast
@@ -35,6 +36,7 @@ private const val ZOOM_LEVEL = 16f
 private const val MIN_ZOOM = 6f
 private const val MAX_ZOOM = 20f
 private const val DEBOUNCE_TIME = 600L
+private const val METERS_WITHOUT_UPDATE = 10F
 
 class MapsFragment : BaseFragment(), OnMapReadyCallback {
     private val viewModel by activityViewModels<HomeViewModel>()
@@ -61,7 +63,6 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
             if (currentLocation == position) {
                 return@Observer
             }
-            // do not comment this line because of SAM kotlin optimization it will crash with empty body
             viewModel.getRestaurantPlacesByRadius(position)
             currentLocation = position
         })
@@ -127,8 +128,12 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState)
         showLoading()
         mapsFragmentRecenterFab.setOnClickListener {
-            viewModel.lastLocation.value?.let {
-                mapsHelper?.centerMap(it, ZOOM_LEVEL)
+            viewModel.lastLocation.value?.let { location ->
+                val lastPosition = mapsHelper?.getMapsCenter()
+                if (lastPosition != null && location.distanceTo(lastPosition) < METERS_WITHOUT_UPDATE) {
+                    return@setOnClickListener
+                }
+                mapsHelper?.centerMap(location, ZOOM_LEVEL)
                 lastPositionOnMap = mapsHelper?.getMapsCenter()
             }
         }

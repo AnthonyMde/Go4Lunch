@@ -70,7 +70,11 @@ class MapsHelper(private val googleMap: GoogleMap?) {
      * Compare searched places (from autocomplete places google api) and the full restaurant list
      * get from the places api. Set markers only for the intersection between the two lists.
      */
-    fun displaySelectedRestaurants(searchedPlaces: List<AutocompletePrediction>, currentRestaurantList: List<Place>?, markerOnClick: (String) -> Unit) {
+    fun displaySelectedRestaurants(
+        searchedPlaces: List<AutocompletePrediction>,
+        currentRestaurantList: List<Place>?,
+        markerOnClick: (String) -> Unit
+    ) {
         if (currentRestaurantList == null) {
             return
         }

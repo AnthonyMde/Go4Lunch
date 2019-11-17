@@ -1,6 +1,5 @@
 package com.my.anthonymamode.go4lunch.ui.home.list
 
-import android.location.Location
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.INVISIBLE
@@ -16,8 +15,9 @@ import com.my.anthonymamode.go4lunch.BuildConfig.API_KEY_GOOGLE_PLACES
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.data.api.getUsersByLunchId
 import com.my.anthonymamode.go4lunch.domain.Place
+import com.my.anthonymamode.go4lunch.utils.distanceTo
+import com.my.anthonymamode.go4lunch.utils.setStarsFormat
 import com.my.anthonymamode.go4lunch.utils.toFormatDistance
-import com.my.anthonymamode.go4lunch.utils.toStarsFormat
 import kotlinx.android.synthetic.main.list_item_restaurant.view.restaurantItemAddress
 import kotlinx.android.synthetic.main.list_item_restaurant.view.restaurantItemContainer
 import kotlinx.android.synthetic.main.list_item_restaurant.view.restaurantItemDistance
@@ -126,8 +126,8 @@ class RestaurantAdapter(
         }
 
         private fun setRating() {
-            val rating = restaurant.rating?.toStarsFormat()
-            if (rating == null || rating < 0) {
+            val rating = setStarsFormat(googleRating = restaurant.rating)
+            if (rating < 0f) {
                 itemView.restaurantItemRating.visibility = INVISIBLE
             } else {
                 itemView.restaurantItemRating.visibility = VISIBLE
@@ -140,15 +140,8 @@ class RestaurantAdapter(
          */
         private fun setHowFarItIs() {
             val userLocation = localization ?: return
-            val currentLocation = Location("here").apply {
-                latitude = userLocation.latitude
-                longitude = userLocation.longitude
-            }
-            val restaurantLocation = Location("restaurant").apply {
-                latitude = restaurant.geometry.location.lat
-                longitude = restaurant.geometry.location.lng
-            }
-            val distance = currentLocation.distanceTo(restaurantLocation)
+            val restaurantLoc = restaurant.geometry.location
+            val distance = userLocation.distanceTo(restaurantLoc.lat, restaurantLoc.lng)
             itemView.restaurantItemDistance.text = distance.toFormatDistance()
         }
 

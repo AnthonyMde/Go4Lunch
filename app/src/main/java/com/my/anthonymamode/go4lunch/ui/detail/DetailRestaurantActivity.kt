@@ -32,7 +32,7 @@ import com.my.anthonymamode.go4lunch.utils.base.BaseActivity
 import com.my.anthonymamode.go4lunch.utils.generateOptionForAdapter
 import com.my.anthonymamode.go4lunch.utils.scaleDown
 import com.my.anthonymamode.go4lunch.utils.scaleUp
-import com.my.anthonymamode.go4lunch.utils.toStarsFormat
+import com.my.anthonymamode.go4lunch.utils.setStarsFormat
 import kotlinx.android.synthetic.main.activity_detail_restaurant.detailRestaurantAddress
 import kotlinx.android.synthetic.main.activity_detail_restaurant.detailRestaurantCallButton
 import kotlinx.android.synthetic.main.activity_detail_restaurant.detailRestaurantFabDisable
@@ -296,8 +296,8 @@ class DetailRestaurantActivity : BaseActivity() {
     }
 
     private fun setRating() {
-        val rating = place.rating?.toStarsFormat()
-        if (rating == null || rating < 0) {
+        val rating = setStarsFormat(googleRating = place.rating)
+        if (rating < 0f) {
             detailRestaurantRating.visibility = INVISIBLE
         } else {
             detailRestaurantRating.visibility = VISIBLE

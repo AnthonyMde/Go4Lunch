@@ -3,6 +3,11 @@ package com.my.anthonymamode.go4lunch.utils
 import java.text.DecimalFormat
 import kotlin.math.roundToInt
 
+/**
+ * Rounded float to int to display meters to user.
+ * If distance is greater than 1000m, we format the text
+ * to display km to the user.
+ */
 fun Float.toFormatDistance(): String {
     if (this < 0)
         return ""
@@ -15,11 +20,12 @@ fun Float.toFormatDistance(): String {
     }
 }
 
-fun Double.toStarsFormat(): Float {
-    return when ((this * 0.6).toFloat()) { // From 5 stars rating to 3 stars rating
-        in 0.5f..1f -> 1f
-        in 1f..2f -> 2f
-        in 2f..3f -> 3f
-        else -> -1f
-    }
+/**
+ * Takes the 5 range stars format from google API and turns it into
+ * a 4 range stars format. But as we do not show stars to user until we reach
+ * at least one star, we have to reduce the total by one.
+ */
+fun setStarsFormat(googleRating: Double?): Float {
+    googleRating ?: return -1f
+    return ((googleRating * 0.8).toFloat()) - 1f
 }
