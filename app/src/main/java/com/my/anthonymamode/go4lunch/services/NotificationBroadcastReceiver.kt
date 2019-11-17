@@ -15,7 +15,6 @@ import com.google.firebase.firestore.ktx.toObject
 import com.my.anthonymamode.go4lunch.R
 import com.my.anthonymamode.go4lunch.data.api.getCurrentUserData
 import com.my.anthonymamode.go4lunch.data.api.getUsersByLunchId
-import com.my.anthonymamode.go4lunch.data.api.updateUser
 import com.my.anthonymamode.go4lunch.domain.User
 import com.my.anthonymamode.go4lunch.ui.home.HomeActivity
 import com.my.anthonymamode.go4lunch.ui.home.INTENT_EXTRA_USER_ID
@@ -42,16 +41,6 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
             .addOnFailureListener {
                 Log.e("NOTIFICATION", "OnFailure to get userData = ${it.message}")
             }
-    }
-
-    /**
-     * To avoid the user to receive a notification each day for a restaurant he might have selected
-     * just once, each time he receives a notification we clear his restaurant choice.
-     */
-    private fun resetUserLunch(userData: User) {
-        userData.hasLunch = false
-        userData.lunch = null
-        updateUser(userData)
     }
 
     /**
@@ -114,7 +103,6 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
                 }
                 createNotificationChannel()
                 sendNotification() // Notification is launched in this call back because we have to wait for the coworkers list
-                resetUserLunch(user) // We do not want the user to receive more than one notification
             }
             .addOnFailureListener {
                 Log.e("NOTIFICATION", "OnFailure to get coworkers = ${it.message}")

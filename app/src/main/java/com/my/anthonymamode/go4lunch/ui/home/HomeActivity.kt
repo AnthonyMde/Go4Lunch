@@ -60,7 +60,6 @@ import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.textColor
 import org.jetbrains.anko.toast
 import java.util.Calendar
-import java.util.Locale
 
 private const val TLSE_LAT = 43.6043
 private const val TLSE_LNG = 1.4437
@@ -200,8 +199,9 @@ class HomeActivity : BaseActivity() {
         val intent = Intent(this, NotificationBroadcastReceiver::class.java)
         intent.putExtra(INTENT_EXTRA_USER_ID, userId)
         pendingIntent = PendingIntent.getBroadcast(this, NOTIFICATION_REQUEST_CODE, intent, 0)
-        val timeToFire = Calendar.getInstance(Locale.FRANCE).apply {
-            set(Calendar.HOUR_OF_DAY, 12)
+        val timeToFire = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 11)
+            set(Calendar.MINUTE, 30)
         }
         if (timeToFire.before(Calendar.getInstance())) {
             timeToFire.add(Calendar.DATE, 1)
