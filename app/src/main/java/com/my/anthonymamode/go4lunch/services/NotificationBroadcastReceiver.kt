@@ -37,7 +37,6 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
                 if (userData == null || !userData.hasLunch) return@addOnSuccessListener
 
                 user = userData
-                resetUserLunch(userData)
                 getCoworkersForThisPlace(user.lunch?.lunchOfTheDay)
             }
             .addOnFailureListener {
@@ -86,7 +85,8 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
             addNextIntentWithParentStack(resultIntent)
             getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
         }
-        val builder = NotificationCompat.Builder(context,
+        val builder = NotificationCompat.Builder(
+            context,
             CHANNEL_ID
         )
             .setSmallIcon(R.drawable.ic_login_logo_white)
@@ -114,6 +114,7 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
                 }
                 createNotificationChannel()
                 sendNotification() // Notification is launched in this call back because we have to wait for the coworkers list
+                resetUserLunch(user) // We do not want the user to receive more than one notification
             }
             .addOnFailureListener {
                 Log.e("NOTIFICATION", "OnFailure to get coworkers = ${it.message}")

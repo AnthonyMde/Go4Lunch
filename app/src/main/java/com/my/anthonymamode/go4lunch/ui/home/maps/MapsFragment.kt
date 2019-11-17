@@ -2,6 +2,7 @@ package com.my.anthonymamode.go4lunch.ui.home.maps
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -26,7 +27,6 @@ import com.my.anthonymamode.go4lunch.ui.detail.DetailRestaurantActivity
 import com.my.anthonymamode.go4lunch.ui.home.HomeViewModel
 import com.my.anthonymamode.go4lunch.utils.Resource
 import com.my.anthonymamode.go4lunch.utils.base.BaseFragment
-import com.my.anthonymamode.go4lunch.utils.debounceThatFunction
 import kotlinx.android.synthetic.main.fragment_maps.mapsFragmentRecenterFab
 import org.jetbrains.anko.support.v4.longToast
 import org.jetbrains.anko.support.v4.toast
@@ -34,6 +34,7 @@ import org.jetbrains.anko.support.v4.toast
 private const val ZOOM_LEVEL = 16f
 private const val MIN_ZOOM = 6f
 private const val MAX_ZOOM = 20f
+private const val DEBOUNCE_TIME = 600L
 
 class MapsFragment : BaseFragment(), OnMapReadyCallback {
     private val viewModel by activityViewModels<HomeViewModel>()
@@ -145,11 +146,15 @@ class MapsFragment : BaseFragment(), OnMapReadyCallback {
             setMaxZoomPreference(MAX_ZOOM)
             setOnCameraIdleListener {
                 mapsHelper?.setMapsCenter(cameraPosition.target)
-                lastTimePositionChanged = debounceThatFunction(
-                    { displayRestaurants(searchQuery) },
-                    600L,
-                    lastTimePositionChanged
-                )
+
+                // We debounce the function to avoid to many request
+                Handler().postDelayed({
+                    if (System.currentTimeMillis() - lastTimePositionChanged >= DEBOUNCE_TIME) {
+                        displayRestaurants(searchQuery)
+                    }
+                }, DEBOUNCE_TIME)
+                lastTimePositionChanged = System.currentTimeMillis()
+
                 lastPositionOnMap = mapsHelper?.getMapsCenter()
             }
         }

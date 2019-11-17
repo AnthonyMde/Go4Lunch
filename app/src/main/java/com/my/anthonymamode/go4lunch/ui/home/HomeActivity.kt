@@ -10,6 +10,7 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -46,7 +47,6 @@ import com.my.anthonymamode.go4lunch.ui.home.maps.MapsFragment
 import com.my.anthonymamode.go4lunch.ui.home.workmates.WorkmatesFragment
 import com.my.anthonymamode.go4lunch.utils.Resource
 import com.my.anthonymamode.go4lunch.utils.base.BaseActivity
-import com.my.anthonymamode.go4lunch.utils.debounceThatFunction
 import kotlinx.android.synthetic.main.activity_home.homeBottomNavBar
 import kotlinx.android.synthetic.main.activity_home.homeDrawerLayout
 import kotlinx.android.synthetic.main.activity_home.homeNavigationView
@@ -60,17 +60,19 @@ import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.textColor
 import org.jetbrains.anko.toast
 import java.util.Calendar
+import java.util.Locale
 
 private const val TLSE_LAT = 43.6043
 private const val TLSE_LNG = 1.4437
 private const val NOTIFICATION_REQUEST_CODE = 101
+private const val DEBOUNCE_TIME = 600L
 const val INTENT_EXTRA_USER_ID = "INTENT_EXTRA_USER_ID"
 
 class HomeActivity : BaseActivity() {
     // VARIABLES
     val viewModel by viewModels<HomeViewModel>()
     private var isHide: Boolean = false
-    private var lastTimeSearch: Long = 0L
+    private var lastTimeSearched: Long = 0L
     private var searchView: SearchView? = null
     private var mQuery: String = ""
     private var alarmManager: AlarmManager? = null
@@ -198,7 +200,7 @@ class HomeActivity : BaseActivity() {
         val intent = Intent(this, NotificationBroadcastReceiver::class.java)
         intent.putExtra(INTENT_EXTRA_USER_ID, userId)
         pendingIntent = PendingIntent.getBroadcast(this, NOTIFICATION_REQUEST_CODE, intent, 0)
-        val timeToFire = Calendar.getInstance().apply {
+        val timeToFire = Calendar.getInstance(Locale.FRANCE).apply {
             set(Calendar.HOUR_OF_DAY, 12)
         }
         if (timeToFire.before(Calendar.getInstance())) {
@@ -243,13 +245,15 @@ class HomeActivity : BaseActivity() {
                 return true
             }
 
+            // We debounce the function to avoid to many request
             override fun onQueryTextChange(newText: String?): Boolean {
                 mQuery = newText ?: ""
-                lastTimeSearch = debounceThatFunction(
-                    { viewModel.setPlaceSearchQuery(newText ?: "") },
-                    1000L,
-                    lastTimeSearch
-                )
+                Handler().postDelayed({
+                    if (System.currentTimeMillis() - lastTimeSearched >= DEBOUNCE_TIME) {
+                        viewModel.setPlaceSearchQuery(newText ?: "")
+                    }
+                }, DEBOUNCE_TIME)
+                lastTimeSearched = System.currentTimeMillis()
                 return true
             }
         })
