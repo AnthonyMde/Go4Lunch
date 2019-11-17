@@ -1,6 +1,7 @@
 package com.my.anthonymamode.go4lunch.ui.home
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.app.SearchManager
@@ -8,6 +9,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -61,8 +64,8 @@ import org.jetbrains.anko.textColor
 import org.jetbrains.anko.toast
 import java.util.Calendar
 
-private const val TLSE_LAT = 43.6043
-private const val TLSE_LNG = 1.4437
+private const val GPS_TIME_UPDATE = 3000L // in millis
+private const val GPS_DIST_UPDATE = 50F // in meters
 private const val NOTIFICATION_REQUEST_CODE = 101
 private const val DEBOUNCE_TIME = 600L
 const val INTENT_EXTRA_USER_ID = "INTENT_EXTRA_USER_ID"
@@ -318,11 +321,36 @@ class HomeActivity : BaseActivity() {
             fusedLocationClient.lastLocation
                 .addOnSuccessListener { loc: Location? ->
                     loc?.let {
-                        // TODO: add a better fallback if location is null
                         viewModel.setLastLocation(LatLng(it.latitude, it.longitude))
-                    } ?: viewModel.setLastLocation(LatLng(TLSE_LAT, TLSE_LNG))
+                    } ?: getAccurateLocation()
                 }
         }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun getAccurateLocation() {
+        // Acquire a reference to the system Location Manager
+        val locationManager = this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
+        // Define a listener that responds to location updates
+        val locationListener = object : LocationListener {
+            override fun onLocationChanged(location: Location?) {
+                location ?: return
+                viewModel.setLastLocation(LatLng(location.latitude, location.longitude))
+            }
+
+            override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+            override fun onProviderEnabled(provider: String?) {}
+            override fun onProviderDisabled(provider: String?) {}
+        }
+
+        // Register the listener with the Location Manager to receive location updates
+        locationManager.requestLocationUpdates(
+            LocationManager.GPS_PROVIDER,
+            GPS_TIME_UPDATE,
+            GPS_DIST_UPDATE,
+            locationListener
+        )
     }
 
     private fun redirectToLoginIfSessionExpired() {
